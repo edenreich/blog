@@ -1,13 +1,8 @@
-FROM strapi/strapi:alpine
+FROM node:13.10.1-buster-slim
 
-ENV DATABASE_CLIENT=sqlite
-ENV DATABASE_NAME=blog
-ENV DATABASE_HOST=0.0.0.0
-ENV DATABASE_PORT=3306
-ENV DATABASE_USERNAME=strapi
-ENV DATABASE_PASSWORD=strapi
+WORKDIR /app
 
-COPY src/admin/ /srv/app/
+COPY src/admin /app
 
 EXPOSE 1337
 

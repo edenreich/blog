@@ -15,7 +15,7 @@ services:
     depends_on: 
     - openssl
     
-  blog:
+  frontend:
     build:
       args: 
         MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
@@ -34,7 +34,7 @@ services:
       dockerfile:  ops/docker/admin/Dockerfile
     command: sh -c "yarn && yarn develop"
     volumes:
-    - ./src/admin:/srv/app:rw
+    - ./src/admin:/app:rw
     networks: 
     - app
   
