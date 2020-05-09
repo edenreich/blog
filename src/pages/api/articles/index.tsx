@@ -8,13 +8,14 @@ interface ResponseInterface {
     debug?: any;
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<ResponseInterface>) => {
+export default async (_req: NextApiRequest, res: NextApiResponse<ResponseInterface>) => {
 
     const articles: Article[] = [
         {
             id: uuid(),
             title: 'Build your own Kubernetes Cluster (K3S)',
-            content: 'Up comming...',
+            content: 'Creating your own kubernetes cluster on raspberry pi doesn\'t take much of a setup, in this article i\'m going to walk you throught the process of having a production ready environment at your home',
+            link: '/build-your-own-kubernetes-cluster-with-k3s',
             published_at: 'not published yet',
             updated_at: new Date,
             created_at: new Date
