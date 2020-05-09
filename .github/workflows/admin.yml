@@ -3,6 +3,7 @@ name: admin
 on:
   push:
     paths:
+    - '.github/workflows/admin.yml'
     - 'src/admin/**'
     - 'ops/docker/admin/**'
 

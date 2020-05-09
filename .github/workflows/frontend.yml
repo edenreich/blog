@@ -3,6 +3,7 @@ name: frontend
 on:
   push:
     paths:
+    - '.github/workflows/frontend.yml'
     - 'src/frontend/**'
     - 'ops/docker/frontend/**'
 
