@@ -32,6 +32,8 @@ services:
     build:
       context: .
       dockerfile:  ops/docker/admin/Dockerfile
+    environment: 
+      NODE_ENV: development
     command: sh -c "yarn && yarn develop"
     volumes:
     - ./src/admin:/app:rw
