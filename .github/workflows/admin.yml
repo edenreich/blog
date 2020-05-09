@@ -1,0 +1,50 @@
+name: admin
+
+on:
+  push:
+    paths:
+    - 'src/admin/**'
+
+env:
+  DOCKER_IMAGE_NAME: blog-admin
+  DOCKER_REPO: edenr/blog-admin
+  VERSION: ${{ github.run_number }}
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@master
+    - name: Docker Build
+      run: |
+        docker build \
+          -t ${{ env.DOCKER_REPO }}:latest \
+          -f ops/docker/blog/admin/Dockerfile .
+    - name: Docker Tag
+      run: docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.VERSION }}
+  push:
+    runs-on: self-hosted
+    needs: build
+    steps:
+    - name: Docker Login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    - name: Docker Push
+      run: |
+        docker push ${{ env.DOCKER_REPO }}:latest
+        docker push ${{ env.DOCKER_REPO }}:${{ env.VERSION }}
+  # deploy:
+  #   runs-on: self-hosted
+  #   needs: push
+  #   steps:
+  #   - uses: actions/checkout@master
+  #   - name: Deploy to Kubernetes
+  #     run: |
+  #       KUBECONFIG=/home/pi/.kube/config kubectl patch deployment ${{ env.DOCKER_IMAGE_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
+  # cleanup:
+  #   runs-on: self-hosted
+  #   needs: deploy
+  #   steps:
+  #   - name: Keep 5 Releases
+  #     run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+  #   - name: Remove Dangling Docker Images
+  #     run: docker system prune -f

@@ -1,9 +1,13 @@
-name: build
+name: frontend
 
-on: [push]
+on:
+  push:
+    paths:
+    - 'src/frontend/**'
 
 env:
-  DOCKER_REPO: edenr/blog
+  DOCKER_IMAGE_NAME: blog-frontend
+  DOCKER_REPO: edenr/blog-frontend
   VERSION: ${{ github.run_number }}
 
 jobs:
@@ -36,12 +40,12 @@ jobs:
     - uses: actions/checkout@master
     - name: Kubernetes Apply
       run: |
-        KUBECONFIG=/home/pi/.kube/config kubectl patch deployment blog -p '{"spec":{"template":{"spec":{"containers":[{"name":"blog","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
+        KUBECONFIG=/home/pi/.kube/config kubectl patch deployment ${{ env.DOCKER_IMAGE_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy
     steps:
     - name: Keep 5 Releases
-      run: docker rmi $(docker images | grep edenr/blog | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+      run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
     - name: Remove Dangling Docker Images
       run: docker system prune -f

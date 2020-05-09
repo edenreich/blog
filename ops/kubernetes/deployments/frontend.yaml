@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blog
-  namespace: blog
+  name: blog-frontend
+  namespace: blog-frontend
 spec:
   replicas: 10
   selector:
     matchLabels:
-      app: blog
+      app: blog-frontend
   strategy:
     rollingUpdate:
-      maxSurge: 10
-      maxUnavailable: 2
+      maxSurge: 25%
+      maxUnavailable: 25%
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: blog
+        app: blog-frontend
     spec:
       containers:
-      - name: blog
-        image: edenr/blog:latest
+      - name: blog-frontend
+        image: edenr/blog-frontend:latest
         resources:
           requests:
             cpu: "200m"
@@ -46,39 +46,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: blog
+  name: blog-frontend
 spec:
   selector:
-    app: blog
+    app: blog-frontend
   ports:
   - port: 8080
     targetPort: 3000
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: blog
-  annotations:
-    kubernetes.io/ingress.class: nginx
-spec:
-  tls:
-  - hosts:
-    - eden-reich.com
-    - www.eden-reich.com
-    secretName: eden-reich.com-tls
-  rules:  
-    - host: eden-reich.com
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: blog
-            servicePort: 8080
-    - host: www.eden-reich.com
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: blog
-            servicePort: 8080
 

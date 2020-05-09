@@ -21,10 +21,20 @@ services:
         MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
         MAILGUN_API_KEY: ${MAILGUN_API_KEY}
       context: .
-      dockerfile: ops/docker/blog/Dockerfile 
+      dockerfile: ops/docker/frontend/Dockerfile 
     command: sh -c "yarn && yarn dev"
     volumes:
-    - ./src:/app:rw
+    - ./src/frontend:/app:rw
+    networks: 
+    - app
+
+  admin:
+    build:
+      context: .
+      dockerfile:  ops/docker/admin/Dockerfile
+    command: sh -c "yarn && yarn develop"
+    volumes:
+    - ./src/admin:/srv/app:rw
     networks: 
     - app
   

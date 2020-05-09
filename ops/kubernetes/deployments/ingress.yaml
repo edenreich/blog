@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: blog
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - eden-reich.com
+    - www.eden-reich.com
+    secretName: eden-reich.com-tls
+  rules:  
+    - host: eden-reich.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: blog-frontend
+            servicePort: 8080
+    - host: www.eden-reich.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: blog-frontend
+            servicePort: 8080
+    - host: admin.eden-reich.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: blog-admin
+            servicePort: 8080

@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential python 
 
-COPY src .
+COPY src/frontend .
 
 RUN yarn && \ 
     yarn build && \

@@ -1,0 +1,14 @@
+FROM strapi/strapi:alpine
+
+ENV DATABASE_CLIENT=sqlite
+ENV DATABASE_NAME=blog
+ENV DATABASE_HOST=0.0.0.0
+ENV DATABASE_PORT=3306
+ENV DATABASE_USERNAME=strapi
+ENV DATABASE_PASSWORD=strapi
+
+COPY src/admin/ /srv/app/
+
+EXPOSE 1337
+
+CMD [ "yarn", "start" ]
