@@ -33,19 +33,19 @@ jobs:
       run: |
         docker push ${{ env.DOCKER_REPO }}:${{ env.VERSION }}
         docker push ${{ env.DOCKER_REPO }}:latest
-  # deploy:
-  #   runs-on: self-hosted
-  #   needs: push
-  #   steps:
-  #   - uses: actions/checkout@master
-  #   - name: Deploy to Kubernetes
-  #     run: |
-  #       KUBECONFIG=/home/pi/.kube/config kubectl patch deployment ${{ env.DOCKER_IMAGE_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
-  # cleanup:
-  #   runs-on: self-hosted
-  #   needs: deploy
-  #   steps:
-  #   - name: Keep 5 Releases
-  #     run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
-  #   - name: Remove Dangling Docker Images
-  #     run: docker system prune -f
+  deploy:
+    runs-on: self-hosted
+    needs: push
+    steps:
+    - uses: actions/checkout@master
+    - name: Deploy to Kubernetes
+      run: |
+        KUBECONFIG=/home/pi/.kube/config kubectl patch deployment ${{ env.DOCKER_IMAGE_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
+  cleanup:
+    runs-on: self-hosted
+    needs: deploy
+    steps:
+    - name: Keep 5 Releases
+      run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+    - name: Remove Dangling Docker Images
+      run: docker system prune -f
