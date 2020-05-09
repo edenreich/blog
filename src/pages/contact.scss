@@ -1,0 +1,87 @@
+
+@import '../assets/scss/colors.scss';
+@import '../assets/scss/breakpoints.scss';
+
+.contact {
+
+  .grid-icons {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 150px;
+  }
+
+  .grid-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 15px;
+  }
+
+  &__icons {
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__form {
+    position: relative;
+  }
+
+  &__form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+    &--error {
+      border: 1px solid $color-red;
+      display: block;
+      width: 100%;
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #495057;
+      background-color: #fff;
+      background-clip: padding-box;
+      border-radius: .25rem;
+      transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+  }
+
+  &__button {
+    background-color: $color-green;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+}
+
+@media (min-width: $breakpoint-tablet) {
+
+  .contact {
+
+    .grid-icons {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-form {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__button {
+      grid-column: 1/3;
+    }
+
+  }
+
+}

@@ -1,0 +1,163 @@
+.circle {
+    position: relative;
+    margin: 0 auto 20px;
+}
+.circle.full-circle {
+    width: 170px;
+    height: 170px;
+}
+.circle.semi-circle {
+    width: 170px;
+    height: 85px;
+}
+.circle .progressbar-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    margin: 0;
+    font-size: 40px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+.circle.semi-circle .progressbar-text {
+    -webkit-box-align: end;
+        -ms-flex-align: end;
+            align-items: flex-end;
+}
+.circle .progressbar-text:after {
+    content: "%";
+    display: block;
+    font-size: 20px;
+    padding-left: 2px;
+}
+.circle-progress h4 {
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+.progress-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.progress-list p {
+    margin-bottom: 5px;
+}
+.progress-list li {
+    margin-bottom: 15px;
+}
+.progress-list li .line {
+    position: relative;
+}
+.progressbar svg path:first-child {
+    stroke: rgba(0, 0, 0, 0.06);
+}
+.progressbar.border {
+    border: 1px solid transparent;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.progressbar.border svg path:first-child {
+    stroke: transparent;
+}
+.progressbar.line svg {
+    height: 12px;
+}
+.progressbar.line.border svg {
+    height: 10px;
+}
+.progressbar svg path:last-child,
+.progressbar.blue svg path:last-child {
+    stroke: #4c98c9;
+}
+.progressbar.green svg path:last-child {
+    stroke: #3fbfae;
+}
+.progressbar.orange svg path:last-child {
+    stroke: #ee7757;
+}
+.progressbar.red svg path:last-child {
+    stroke: #e45050;
+}
+.progressbar.yellow svg path:last-child {
+    stroke: #f1bd69;
+}
+.progressbar.pink svg path:last-child {
+    stroke: #df739b;
+}
+.progressbar.purple svg path:last-child {
+    stroke: #c78ed7;
+}
+.progressbar.brown svg path:last-child {
+    stroke: #9c7c6f;
+}
+.progressbar.navy svg path:last-child {
+    stroke: #34495e;
+}
+.progressbar.aqua svg path:last-child {
+    stroke: #28b8d8;
+}
+.progressbar.forest svg path:last-child {
+    stroke: #85ae7d;
+}
+.progressbar.lime svg path:last-child {
+    stroke: #afca74;
+}
+.progressbar.violet svg path:last-child {
+    stroke: #9a8eb2;
+}
+.progressbar.sky svg path:last-child {
+    stroke: #7bc4e6;
+}
+.progressbar.border,
+.progressbar.border.blue {
+    border-color: #4c98c9 !important;
+}
+.progressbar.border.green {
+    border-color: #3fbfae !important;
+}
+.progressbar.border.orange {
+    border-color: #ee7757 !important;
+}
+.progressbar.border.red {
+    border-color: #e45050 !important;
+}
+.progressbar.border.yellow {
+    border-color: #f1bd69 !important;
+}
+.progressbar.border.pink {
+    border-color: #df739b !important;
+}
+.progressbar.border.purple {
+    border-color: #c78ed7 !important;
+}
+.progressbar.border.brown {
+    border-color: #9c7c6f !important;
+}
+.progressbar.border.navy {
+    border-color: #34495e !important;
+}
+.progressbar.border.aqua {
+    border-color: #28b8d8 !important;
+}
+.progressbar.border.forest {
+    border-color: #85ae7d !important;
+}
+.progressbar.border.lime {
+    border-color: #afca74 !important;
+}
+.progressbar.border.violet {
+    border-color: #9a8eb2 !important;
+}
+.progressbar.border.sky {
+    border-color: #7bc4e6 !important;
+}

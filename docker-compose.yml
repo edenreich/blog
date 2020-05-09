@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  ingress:
+    build: 
+      context: .
+      dockerfile: ops/docker/ingress/Dockerfile
+    networks: 
+    - app
+    volumes:
+    - ./ops/docker/helpers/openssl/certs:/etc/nginx/certs:ro
+    ports:
+    - 80:80
+    - 443:443
+    depends_on: 
+    - openssl
+    
+  blog:
+    build:
+      args: 
+        MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
+        MAILGUN_API_KEY: ${MAILGUN_API_KEY}
+      context: .
+      dockerfile: ops/docker/blog/Dockerfile 
+    command: sh -c "yarn && yarn dev"
+    volumes:
+    - ./src:/app:rw
+    networks: 
+    - app
+  
+  openssl:
+    build:
+      context: .
+      dockerfile: ops/docker/helpers/openssl/Dockerfile
+    volumes:
+    - ./ops/docker/helpers/openssl/certs:/root/certs:rw
+
+
+networks:
+  app:

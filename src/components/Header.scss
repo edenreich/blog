@@ -1,0 +1,17 @@
+
+@import '../assets/scss/colors.scss';
+
+.grid-header {
+  display: grid;
+  grid-area: header;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas:
+    "navigation navigation navigation navigation navigation navigation navigation navigation navigation navigation navigation navigation";
+}
+
+.header {
+  position: relative;
+  width: 100%;
+  background-color: $color-green;
+}

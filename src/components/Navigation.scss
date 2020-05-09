@@ -1,0 +1,183 @@
+@import '../assets/scss/colors.scss';
+@import '../assets/scss/breakpoints.scss';
+
+.grid-navigation {
+  display: grid;
+  position: relative;
+  align-items: center;
+  grid-area: navigation;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 60px;
+  grid-template-areas:
+    "... button brand brand brand brand brand brand brand brand brand ..."
+    "links links links links links links links links links links links links";
+
+  .grid-button {
+    display: grid;
+    grid-area: button;
+  }
+
+  .grid-brand {
+    display: grid;
+    grid-area: brand;
+  }
+
+  .grid-links {
+    display: grid;
+    grid-area: links;
+    grid-template-rows: repeat(12, auto);
+  }
+
+}
+
+.navigation {
+  &--opened {
+    .navigation__links {
+      transform: translateX(0%);
+    }
+  }
+
+  &__overlay {
+    display: none;
+    z-index: 1;
+    position: fixed;
+    left: 0;
+    top: 60px;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+
+    &--show {
+      display: block;
+      background: $color-black-transparent;
+      z-index: 1;
+      position: fixed;
+      left: 0;
+      top: 60px;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__button {
+    position: relative;
+    height: 50px;
+    width: 50px;
+    border: 1px solid $color-white;
+    border-radius: 50%;
+    background-color: transparent;
+    
+    &:hover {
+      background-color: $color-black-transparent;
+    }
+
+    &--line {
+      height: 2px;
+      margin: 5px auto;
+      width: 50%;
+      background-color: $color-white;
+    }
+  }
+
+  &__brand {
+    font-weight: 700;
+    font-size: 1.5em;
+    justify-self: center;
+
+    a {
+      justify-self: flex-start;
+      color: $color-white;
+      text-decoration: none;
+    }  
+  }
+
+  &__links {
+    z-index: 4;
+    position: absolute;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform ease-in-out 650ms;
+    background-color: $color-green-transparent;
+
+    li {
+      position: relative;
+      text-align: center;
+      border-top: 1px solid $color-white;
+      padding: 20px;
+
+      a {
+        font-weight: 400;
+        font-size: 1.2em;
+        color: $color-white;
+        text-decoration: none;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        bottom: 0;
+        left: 0;
+        background-color: $color-white;
+        transition: all 0.3s ease-in-out 0s;
+        transform: scaleX(0);
+      }
+
+      &:hover {
+        &::before {
+          transform: scaleX(1);
+          transition: transform 0.3s ease-in-out 0s;
+        }
+      }
+
+      &.active { 
+        &::before {
+          transform: scaleX(1);
+          transition: transform 0.3s ease-in-out 0s;
+        }
+      }
+    }
+  }
+
+}
+
+@media (min-width: $breakpoint-tablet) {
+
+  .grid-navigation {
+
+    grid-template-areas: 
+      "... ... ... brand brand links links links links links ... ... ...";
+
+    .grid-button {
+      display: none;
+    }
+
+    .grid-links {
+      grid-template-columns: repeat(12, auto);
+      grid-template-rows: auto;
+    }
+  
+  }
+
+  .navigation {
+
+    &__brand {
+      justify-self: start;
+    }
+
+    &__links {
+      position: relative;
+      transform: translateX(0%);
+
+      li {
+        border-top: none;
+      }
+    }
+
+  }
+
+}

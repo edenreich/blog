@@ -1,0 +1,28 @@
+@import '../assets/scss/colors.scss';
+
+.slick-slider {
+  position: relative;
+  
+  .slick-slide {
+    padding: 2px;
+  }
+
+  .slick-dots {
+    li {
+      width: 20px;
+      height: 20px;
+      button {
+        border: 1px solid $color-gray;
+        border-radius: 50%;
+      }
+
+      &.slick-active {
+        button {
+          background: $color-gray;
+          border: 2px solid $color-green;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
