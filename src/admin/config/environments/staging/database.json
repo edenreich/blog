@@ -5,11 +5,13 @@
       "connector": "bookshelf",
       "settings": {
         "client": "sqlite",
-        "host": "${process.env.DATABASE_HOST || 'mysql'}",
-        "port": "${process.env.DATABASE_PORT || 3306}",
-        "database": "${process.env.DATABASE_NAME || 'blog'}",
-        "username": "${process.env.DATABASE_USERNAME || ''}",
-        "password": "${process.env.DATABASE_PASSWORD || ''}"
+        "filename": ".tmp/data.db",
+        "host": "",
+        "port": "",
+        "database": "",
+        "username": "",
+        "password": "",
+        "ssl": false
       },
       "options": {}
     }
