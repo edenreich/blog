@@ -4,9 +4,10 @@ WORKDIR /app
 
 ENV PORT=3000
 
-RUN yarn --production
+COPY src/admin .
 
-COPY src/admin /app
+RUN yarn --production \
+    && yarn build
 
 EXPOSE 3000
 
