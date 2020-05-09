@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'src/admin/**'
+    - 'ops/docker/admin/**'
 
 env:
   DOCKER_IMAGE_NAME: blog-admin

@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'src/frontend/**'
+    - 'ops/docker/frontend/**'
 
 env:
   DOCKER_IMAGE_NAME: blog-frontend
