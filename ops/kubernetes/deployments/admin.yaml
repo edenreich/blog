@@ -40,7 +40,7 @@ spec:
         #     path: /healthcheck
         volumeMounts:
         - name: mysql-persistent-storage
-          mountPath: .tmp
+          mountPath: /app/.tmp
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
