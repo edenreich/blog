@@ -39,16 +39,21 @@ spec:
         #     port: 3000
         #     path: /healthcheck
         volumeMounts:
-        - name: mysql-persistent-storage
+        - name: sqlite-persistent-storage
           mountPath: /app/.tmp
+        - name: uploads-persistent-storage
+          mountPath: /app/public/uploads
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: regcred
       volumes:
-      - name: mysql-persistent-storage
+      - name: sqlite-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: sqlite-pv-claim
+      - name: uploads-persistent-storage
+        persistentVolumeClaim:
+          claimName: uploads-pv-claim
 ---
 apiVersion: v1
 kind: Service
