@@ -21,10 +21,9 @@ jobs:
       run: |
         docker build \
           --build-arg MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }} \
+          -t ${{ env.DOCKER_REPO }}:${{ env.VERSION }} \
           -t ${{ env.DOCKER_REPO }}:latest \
           -f ops/docker/frontend/Dockerfile .
-    - name: Docker Tag
-      run: docker tag ${{ env.DOCKER_REPO }}:${{ env.VERSION }} ${{ env.DOCKER_REPO }}:latest
   push:
     runs-on: self-hosted
     needs: build

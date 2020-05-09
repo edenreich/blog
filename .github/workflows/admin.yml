@@ -20,10 +20,9 @@ jobs:
     - name: Docker Build
       run: |
         docker build \
+          -t ${{ env.DOCKER_REPO }}:${{ env.VERSION }} \
           -t ${{ env.DOCKER_REPO }}:latest \
           -f ops/docker/admin/Dockerfile .
-    - name: Docker Tag
-      run: docker tag ${{ env.DOCKER_REPO }}:${{ env.VERSION }} ${{ env.DOCKER_REPO }}:latest
   push:
     runs-on: self-hosted
     needs: build
