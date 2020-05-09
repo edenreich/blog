@@ -1,7 +1,20 @@
 import * as React from 'react';
 import Head from 'next/head';
+import axios from 'axios';
+import { Article } from '@/interfaces/article';
 
-class IndexPage extends React.Component {
+interface IProps {
+  articles?: Article[];
+}
+
+
+class IndexPage extends React.Component<IProps> {
+
+  static async getInitialProps() {
+    const res = await axios.get('http://localhost:3000/api/articles');
+
+    return { articles: res.data };
+  }
 
   render(): JSX.Element {
     return (
@@ -30,10 +43,16 @@ class IndexPage extends React.Component {
             <div className="grid-column">
               <h2>Blog Feed</h2>
               <p>Take a look on the latested posted articles:</p>
-              <article>
-                <h3>Build your own Kubernetes Cluster (K3S)<span className="date"> - date: not published yet</span></h3>
-                <p>Up comming...</p>
-              </article>
+              {
+                this.props.articles?.map((article: Article, key: number) => {
+                  return (
+                    <article key={key}>
+                      <h3>{ article.title }<span className="date"> - date: { article.published_at }</span></h3>
+                      <p>{ article.content }</p>
+                    </article>
+                  )
+                })
+              }
             </div>
             {/* <article>
               <h3>Build a lightweight API with PHP using symfony<span className="date"> - date: not published yet</span></h3>

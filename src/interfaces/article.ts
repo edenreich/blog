@@ -4,4 +4,11 @@
 //
 // import User from 'path/to/interfaces';
 
-export {};
+export interface Article {
+  id: string;
+  title: string;
+  content: string;
+  published_at: string;
+  updated_at: Date;
+  created_at: Date;
+}
