@@ -8,6 +8,7 @@ export interface Article {
   id: string;
   title: string;
   content: string;
+  link: string;
   published_at: string;
   updated_at: Date;
   created_at: Date;

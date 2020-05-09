@@ -2,6 +2,7 @@ import * as React from 'react';
 import Head from 'next/head';
 import axios from 'axios';
 import { Article } from '@/interfaces/article';
+import Link from 'next/link';
 
 interface IProps {
   articles?: Article[];
@@ -42,13 +43,13 @@ class IndexPage extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <h2>Blog Feed</h2>
-              <p>Take a look on the latested posted articles:</p>
+              <p>Take a look on the latest posted articles:</p>
               {
                 this.props.articles?.map((article: Article, key: number) => {
                   return (
                     <article key={key}>
                       <h3>{ article.title }<span className="date"> - date: { article.published_at }</span></h3>
-                      <p>{ article.content }</p>
+                      <p>{ article.content.substring(0, 200) } <Link href={article.link}><a>read more..</a></Link></p>
                     </article>
                   )
                 })
