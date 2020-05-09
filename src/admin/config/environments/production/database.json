@@ -4,12 +4,14 @@
     "default": {
       "connector": "bookshelf",
       "settings": {
-        "client": "mysql",
-        "host": "${process.env.DATABASE_HOST || 'mysql'}",
-        "port": "${process.env.DATABASE_PORT || 3306}",
-        "database": "${process.env.DATABASE_NAME || 'blog'}",
-        "username": "${process.env.DATABASE_USERNAME || 'root'}",
-        "password": "${process.env.DATABASE_PASSWORD || 'secret'}"
+        "client": "sqlite",
+        "filename": ".tmp/data.db",
+        "host": "",
+        "port": "",
+        "database": "",
+        "username": "",
+        "password": "",
+        "ssl": false
       },
       "options": {}
     }

@@ -29,7 +29,7 @@ spec:
             cpu: "200m"
             memory: "499Mi"
         ports:
-          - containerPort: 3000
+        - containerPort: 3000
         # readinessProbe:
         #   httpGet:
         #     port: 3000
@@ -38,10 +38,17 @@ spec:
         #   httpGet:
         #     port: 3000
         #     path: /healthcheck
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: .tmp
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: regcred
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service

@@ -9,6 +9,7 @@ spec:
   - hosts:
     - eden-reich.com
     - www.eden-reich.com
+    - admin.eden-reich.com
     secretName: eden-reich.com-tls
   rules:  
     - host: eden-reich.com
