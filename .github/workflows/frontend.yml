@@ -20,7 +20,7 @@ jobs:
         docker build \
           --build-arg MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }} \
           -t ${{ env.DOCKER_REPO }}:latest \
-          -f ops/docker/blog/Dockerfile .
+          -f ops/docker/frontend/Dockerfile .
     - name: Docker Tag
       run: docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.VERSION }}
   push:
