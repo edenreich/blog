@@ -32,7 +32,11 @@
 }
 
 .navigation {
+  z-index: 2;
+
   &--opened {
+    z-index: 2;
+
     .navigation__links {
       transform: translateX(0%);
     }
