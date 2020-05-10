@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Article } from '@/interfaces/article';
 import getConfig from 'next/config';
 import moment from 'moment';
+import ReactMarkDown from 'react-markdown';
 
 const { serverRuntimeConfig } = getConfig();
 
@@ -41,7 +42,7 @@ class Post extends React.Component<IProps> {
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
-              <h3>{ this.props.article?.title || 'Not Found' }<span className="date"> - date: {moment(this.props.article?.published_at).fromNow()}</span></h3>
+              <h3>{this.props.article?.title || 'No Title'}<span className="date"> - date: {moment(this.props.article?.published_at).fromNow()}</span></h3>
             </div>
           </div>
         </section>
@@ -49,7 +50,7 @@ class Post extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <article>
-                <div dangerouslySetInnerHTML={{__html: this.props.article?.content || '<p>Not Found</p>'}}/>
+                <ReactMarkDown source={this.props.article?.content}/>
               </article>
             </div>
           </div>
