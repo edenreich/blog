@@ -8,7 +8,8 @@
   "attributes": {
     "uid": {
       "type": "string",
-      "unique": true
+      "unique": true,
+      "private": true
     },
     "title": {
       "type": "string",
