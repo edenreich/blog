@@ -19,6 +19,7 @@
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.19.2",
     "formik": "^2.1.4",
+    "moment": "^2.25.3",
     "next": "latest",
     "nextjs-progressbar": "^0.0.4",
     "react": "^16.12.0",

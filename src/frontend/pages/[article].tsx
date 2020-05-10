@@ -4,6 +4,7 @@ import Head from 'next/head';
 import axios, { AxiosResponse } from 'axios';
 import { Article } from '@/interfaces/article';
 import getConfig from 'next/config';
+import moment from 'moment';
 
 const { serverRuntimeConfig } = getConfig();
 
@@ -40,7 +41,7 @@ class Post extends React.Component<IProps> {
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
-              <h3>{ this.props.article?.title || 'Not Found' }<span className="date"> - date: { this.props.article?.published_at }</span></h3>
+              <h3>{ this.props.article?.title || 'Not Found' }<span className="date"> - date: {moment(this.props.article?.published_at).fromNow()}</span></h3>
             </div>
           </div>
         </section>

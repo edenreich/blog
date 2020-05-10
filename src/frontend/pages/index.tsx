@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Article } from '@/interfaces/article';
 import Link from 'next/link';
 import getConfig from 'next/config';
+import moment from 'moment';
 
 const { serverRuntimeConfig } = getConfig();
 
@@ -57,7 +58,7 @@ class IndexPage extends React.Component<IProps> {
                 this.props.articles?.map((article: Article, key: number) => {
                   return (
                     <article key={key}>
-                      <h3>{article.title}<span className="date"> - date: {article.published_at}</span></h3>
+                      <h3>{article.title}<span className="date"> - date: {moment(article.published_at).fromNow()}</span></h3>
                       <p>{article.content.substring(0, 200)} <Link href={`${article.slug}`}><a>read more..</a></Link></p>
                     </article>
                   )
