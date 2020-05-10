@@ -14,19 +14,6 @@ interface IProps {
 
 class IndexPage extends React.Component<IProps> {
 
-  static async getInitialProps() {
-    let articles: Article[];
-    
-    try {
-      const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles`);
-      articles = response.data;
-    } catch {
-      articles = [];
-    }
-
-    return { articles: articles };
-  }
-
   render(): JSX.Element {
     return (
       <div id="home" className="home">
@@ -71,6 +58,19 @@ class IndexPage extends React.Component<IProps> {
     );
   }
 
+}
+
+export async function getStaticProps(): Promise<{ props: IProps }> {
+  let articles: Article[];
+  
+  try {
+    const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles`);
+    articles = response.data;
+  } catch {
+    articles = [];
+  }
+
+  return { props: { articles: articles } };
 }
 
 export default IndexPage;
