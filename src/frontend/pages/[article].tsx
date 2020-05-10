@@ -18,8 +18,8 @@ class Post extends React.Component<IProps> {
     let article: Article | null;
     
     try {
-      const res: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles/${ctx.query.article}`);
-      article = res.data;
+      const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles/${ctx.query.article}`);
+      article = response.data;
     } catch {
       article = null;
     }
