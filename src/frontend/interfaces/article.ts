@@ -6,6 +6,7 @@
 
 export interface Article {
   id: string;
+  uid: string;
   title: string;
   content: string;
   link: string;
