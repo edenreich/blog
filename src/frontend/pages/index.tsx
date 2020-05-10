@@ -65,18 +65,6 @@ class IndexPage extends React.Component<IProps> {
                 })
               }
             </div>
-            {/* <article>
-              <h3>Build a lightweight API with PHP using symfony<span className="date"> - date: not published yet</span></h3>
-              <p>Up comming...</p>
-            </article>
-            <article>
-              <h3>Great Weblayouts with CSS grids<span className="date"> - date: not published yet</span></h3>
-              <p>Up comming...</p>
-            </article>
-            <article>
-              <h3>Build a professional commandline interface with C++<span className="date"> - date: not published yet</span></h3>
-              <p>Up comming...</p>
-            </article>  */}
           </div>
         </section>
       </div>
