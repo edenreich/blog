@@ -57,8 +57,8 @@ class IndexPage extends React.Component<IProps> {
                 this.props.articles?.map((article: Article, key: number) => {
                   return (
                     <article key={key}>
-                      <h3>{ article.title }<span className="date"> - date: { article.published_at }</span></h3>
-                      <p>{ article.content.substring(0, 200) } <Link href={`${article.slug}`}><a>read more..</a></Link></p>
+                      <h3>{article.title}<span className="date"> - date: {article.published_at}</span></h3>
+                      <p>{article.content.substring(0, 200)} <Link href={`${article.slug}`}><a>read more..</a></Link></p>
                     </article>
                   )
                 })
