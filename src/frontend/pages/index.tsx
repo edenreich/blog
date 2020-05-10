@@ -65,7 +65,7 @@ export async function getStaticProps(): Promise<{ props: IProps }> {
   
   try {
     const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles`);
-    articles = response.data;
+    articles = response.data.filter((article: Article) => article.published);
   } catch {
     articles = [];
   }

@@ -14,4 +14,5 @@ export interface Article {
   published_at: string;
   updated_at: Date;
   created_at: Date;
+  published: boolean;
 }
