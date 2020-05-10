@@ -48,7 +48,7 @@ class Post extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <article>
-                <p>{ this.props.article?.content || 'Not Found' }</p>
+                <div dangerouslySetInnerHTML={{__html: this.props.article?.content || '<p>Not Found</p>'}}/>
               </article>
             </div>
           </div>
