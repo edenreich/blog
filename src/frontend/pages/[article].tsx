@@ -6,6 +6,8 @@ import { Article } from '@/interfaces/article';
 import getConfig from 'next/config';
 import moment from 'moment';
 import ReactMarkDown from 'react-markdown';
+import Prism from "prismjs";
+import "prismjs/themes/prism.css";
 
 const { serverRuntimeConfig } = getConfig();
 
@@ -26,6 +28,10 @@ class Post extends React.Component<IProps> {
     }
 
     return { article: article };
+  }
+
+  componentDidMount(): void {
+    Prism.highlightAll();
   }
 
   render(): JSX.Element {
@@ -50,7 +56,7 @@ class Post extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <article>
-                <ReactMarkDown source={this.props.article?.content}/>
+                <ReactMarkDown source={this.props.article?.content} escapeHtml={false}/>
               </article>
             </div>
           </div>

@@ -16,12 +16,14 @@
     "lint": "tslint --fix -c ./tslint.json '**/*{.ts,.tsx}'"
   },
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.19.2",
     "formik": "^2.1.4",
     "moment": "^2.25.3",
     "next": "latest",
     "nextjs-progressbar": "^0.0.4",
+    "prismjs": "^1.20.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-icons": "^3.9.0",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.21",
+    "@types/prismjs": "^1.16.0",
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
     "@types/react-lazyload": "^2.6.0",
