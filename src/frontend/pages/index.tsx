@@ -1,20 +1,29 @@
 import * as React from 'react';
 import Head from 'next/head';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Article } from '@/interfaces/article';
 import Link from 'next/link';
+import getConfig from 'next/config';
+
+const { serverRuntimeConfig } = getConfig();
 
 interface IProps {
   articles?: Article[];
 }
 
-
 class IndexPage extends React.Component<IProps> {
 
   static async getInitialProps() {
-    const res = await axios.get('http://localhost:3000/api/articles');
+    let articles: Article[];
+    
+    try {
+      const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles`);
+      articles = response.data;
+    } catch {
+      articles = [];
+    }
 
-    return { articles: res.data };
+    return { articles: articles };
   }
 
   render(): JSX.Element {
@@ -49,7 +58,7 @@ class IndexPage extends React.Component<IProps> {
                   return (
                     <article key={key}>
                       <h3>{ article.title }<span className="date"> - date: { article.published_at }</span></h3>
-                      <p>{ article.content.substring(0, 200) } <Link href={article.link}><a>read more..</a></Link></p>
+                      <p>{ article.content.substring(0, 200) } <Link href={`${article.slug}`}><a>read more..</a></Link></p>
                     </article>
                   )
                 })
