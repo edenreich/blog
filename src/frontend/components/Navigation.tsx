@@ -45,9 +45,9 @@ class Navigation extends React.Component<IProps, IState> {
   render(): JSX.Element {
     const linkFragments: JSX.Element[] | undefined = this.props.links?.map((link: LinkInterface) => {
       return (
-        <li 
-          key={link.id} 
-          className={ this.props.active == link.href ? 'active' : '' }
+        <li
+          key={link.id}
+          className={this.props.active === link.href ? 'active' : ''}
         >
           <Link href={link.href}>
             <a>{link.name}</a>

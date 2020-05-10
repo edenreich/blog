@@ -19,7 +19,7 @@ class Post extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
     let article: Article | null;
-    
+
     try {
       const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles/${ctx.query.article}`);
       article = response.data;
@@ -27,7 +27,7 @@ class Post extends React.Component<IProps> {
       article = null;
     }
 
-    return { article: article };
+    return { article };
   }
 
   componentDidMount(): void {

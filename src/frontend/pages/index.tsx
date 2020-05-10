@@ -48,7 +48,7 @@ class IndexPage extends React.Component<IProps> {
                       <h3>{article.title}<span className="date"> - date: {moment(article.published_at).fromNow()}</span></h3>
                       <p>{article.content.substring(0, 200)} <Link href={`${article.slug}`}><a>read more..</a></Link></p>
                     </article>
-                  )
+                  );
                 })
               }
             </div>
@@ -62,7 +62,7 @@ class IndexPage extends React.Component<IProps> {
 
 export async function getStaticProps(): Promise<{ props: IProps }> {
   let articles: Article[];
-  
+
   try {
     const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles`);
     articles = response.data.filter((article: Article) => article.published);
@@ -70,7 +70,7 @@ export async function getStaticProps(): Promise<{ props: IProps }> {
     articles = [];
   }
 
-  return { props: { articles: articles } };
+  return { props: { articles } };
 }
 
 export default IndexPage;

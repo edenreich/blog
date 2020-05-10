@@ -30,7 +30,7 @@ class ContactPage extends React.Component<IProps, IState> {
 
     this.state = {
       success: false,
-    }
+    };
   }
 
   render(): JSX.Element {
@@ -72,7 +72,7 @@ class ContactPage extends React.Component<IProps, IState> {
               <Formik
                 initialValues={{ name: '', email: '', tel: '', message: ''}}
                 validate={values => {
-                  let errors: FieldsInterface = {};
+                  const errors: FieldsInterface = {};
 
                   if (!values.name) {
                     errors.name = 'Required';
@@ -94,7 +94,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   if (response.data.success) {
                     this.setState({
                       success: true
-                    })
+                    });
                     resetForm();
                   }
 
@@ -111,58 +111,58 @@ class ContactPage extends React.Component<IProps, IState> {
                 }) => (
                   <form action="/api/email/send" method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
                     <div className="contact__form-group">
-                      <input 
+                      <input
                         type="text"
                         className={
                           errors.name && touched.name
                           ? "contact__form-control--error"
                           : "contact__form-control"
-                        } 
-                        name="name" 
-                        placeholder="Your name" 
+                        }
+                        name="name"
+                        placeholder="Your name"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.name}
                       />
                     </div>
                     <div className="contact__form-group">
-                      <input 
-                        type="email" 
+                      <input
+                        type="email"
                         className={
                           errors.email && touched.email
                           ? "contact__form-control--error"
                           : "contact__form-control"
-                        } 
-                        name="email" 
-                        placeholder="Your e-mail" 
+                        }
+                        name="email"
+                        placeholder="Your e-mail"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.email}
                       />
                     </div>
                     <div className="contact__form-group">
-                      <input 
-                        type="text" 
-                        className="contact__form-control" 
-                        name="tel" 
+                      <input
+                        type="text"
+                        className="contact__form-control"
+                        name="tel"
                         value={values.tel}
                         onChange={handleChange}
-                        placeholder="Phone" 
+                        placeholder="Phone"
                       />
                     </div>
                     <div className="contact__form-group">
-                      <textarea 
-                        name="message" 
-                        className="contact__form-control" 
-                        rows={3} 
+                      <textarea
+                        name="message"
+                        className="contact__form-control"
+                        rows={3}
                         value={values.message}
                         onChange={handleChange}
-                        placeholder="Type your message here..." 
-                        required 
+                        placeholder="Type your message here..."
+                        required
                       />
                     </div>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="contact__button"
                         disabled={isSubmitting}
                       >
