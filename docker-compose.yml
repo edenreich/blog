@@ -21,7 +21,9 @@ services:
         MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
         MAILGUN_API_KEY: ${MAILGUN_API_KEY}
       context: .
-      dockerfile: ops/docker/frontend/Dockerfile 
+      dockerfile: ops/docker/frontend/Dockerfile
+    environment: 
+      APP_ENV: development
     command: sh -c "yarn && yarn dev"
     volumes:
     - ./src/frontend:/app:rw

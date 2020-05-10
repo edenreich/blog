@@ -1,19 +1,29 @@
 import * as React from 'react';
+import { NextPageContext } from 'next';
 import Head from 'next/head';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Article } from '@/interfaces/article';
+import getConfig from 'next/config';
+
+const { serverRuntimeConfig } = getConfig();
 
 interface IProps {
-  article: Article;
+  article: Article | null;
 }
-
 
 class Post extends React.Component<IProps> {
 
-  static async getInitialProps() {
-    const res = await axios.get('http://localhost:3000/api/articles');
+  static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
+    let article: Article | null;
+    
+    try {
+      const res: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles/${ctx.query.post}`);
+      article = res.data;
+    } catch {
+      article = null;
+    }
 
-    return { article: res.data[0] };
+    return { article: article };
   }
 
   render(): JSX.Element {
@@ -30,7 +40,7 @@ class Post extends React.Component<IProps> {
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
-              <h3>{ this.props.article.title }<span className="date"> - date: { this.props.article.published_at }</span></h3>
+              <h3>{ this.props.article?.title || 'Not Found' }<span className="date"> - date: { this.props.article?.published_at }</span></h3>
             </div>
           </div>
         </section>
@@ -38,7 +48,7 @@ class Post extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <article>
-                <p>{ this.props.article.content }</p>
+                <p>{ this.props.article?.content || 'Not Found' }</p>
               </article>
             </div>
           </div>

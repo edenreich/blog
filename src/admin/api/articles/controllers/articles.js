@@ -5,4 +5,9 @@
  * to customize this controller
  */
 
-module.exports = {};
+module.exports = {
+    findOne: async (ctx) => {
+        return strapi.services.articles.findOne({slug: ctx.params.id});
+    }
+
+};
