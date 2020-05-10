@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-    findOne: async (ctx) => {
-        return strapi.services.articles.findOne({slug: ctx.params.id});
+    check: async (ctx) => {
+        return ctx.send(JSON.stringify({healthy: true}));
     }
 };
