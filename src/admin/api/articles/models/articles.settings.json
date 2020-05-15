@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "name": "articles"
+  },
+  "options": {},
+  "attributes": {
+    "uid": {
+      "type": "string",
+      "unique": true,
+      "private": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "published_at": {
+      "type": "datetime"
+    },
+    "updated_at": {
+      "type": "datetime"
+    },
+    "created_at": {
+      "type": "datetime"
+    },
+    "published": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    }
+  }
+}

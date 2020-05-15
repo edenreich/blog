@@ -1,0 +1,6 @@
+{
+    "default": {
+        "ip": "https://ingress",
+        "hostname": "dev-admin.eden-reich.com"
+    }
+}

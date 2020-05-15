@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-frontend
+  namespace: blog
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: blog-frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: blog-frontend
+    spec:
+      containers:
+      - name: blog-frontend
+        image: edenr/blog-frontend:latest
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        ports:
+          - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        livenessProbe:           
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        imagePullPolicy: Always
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-frontend
+  namespace: blog
+spec:
+  selector:
+    app: blog-frontend
+  ports:
+  - port: 8080
+    targetPort: 3000
+

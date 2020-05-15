@@ -1,0 +1,62 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: fast
+  namespace: blog
+provisioner: rancher.io/local-path
+parameters:
+  type: pd-ssd
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sqlite-pv-volume
+  namespace: blog
+spec:
+  storageClassName: fast
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/nfs/blog/sqlite"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlite-pv-claim
+  namespace: blog
+spec:
+  storageClassName: fast
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: uploads-pv-volume
+  namespace: blog
+spec:
+  storageClassName: fast
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/nfs/blog/uploads"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads-pv-claim
+  namespace: blog
+spec:
+  storageClassName: fast
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

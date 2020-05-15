@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-admin
+  namespace: blog
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: blog-admin
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: blog-admin
+    spec:
+      containers:
+      - name: blog-admin
+        image: edenr/blog-admin:latest
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        livenessProbe:           
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        volumeMounts:
+        - name: sqlite-persistent-storage
+          mountPath: /app/.tmp
+        - name: uploads-persistent-storage
+          mountPath: /app/public/uploads
+        imagePullPolicy: Always
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: sqlite-persistent-storage
+        persistentVolumeClaim:
+          claimName: sqlite-pv-claim
+      - name: uploads-persistent-storage
+        persistentVolumeClaim:
+          claimName: uploads-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-admin
+  namespace: blog
+spec:
+  selector:
+    app: blog-admin
+  ports:
+  - port: 8080
+    targetPort: 3000
+

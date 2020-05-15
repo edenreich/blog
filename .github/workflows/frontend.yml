@@ -1,0 +1,52 @@
+name: frontend
+
+on:
+  push:
+    paths:
+    - '.github/workflows/frontend.yml'
+    - 'src/frontend/**'
+    - 'ops/docker/frontend/**'
+
+env:
+  DOCKER_IMAGE_NAME: blog-frontend
+  DOCKER_REPO: edenr/blog-frontend
+  VERSION: ${{ github.run_number }}
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@master
+    - name: Docker Build
+      run: |
+        docker build \
+          --build-arg MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }} \
+          -t ${{ env.DOCKER_REPO }}:${{ env.VERSION }} \
+          -t ${{ env.DOCKER_REPO }}:latest \
+          -f ops/docker/frontend/Dockerfile .
+  push:
+    runs-on: self-hosted
+    needs: build
+    steps:
+    - name: Docker Login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
+    - name: Docker Push
+      run: |
+        docker push ${{ env.DOCKER_REPO }}:${{ env.VERSION }}
+        docker push ${{ env.DOCKER_REPO }}:latest
+  deploy:
+    runs-on: self-hosted
+    needs: push
+    steps:
+    - uses: actions/checkout@master
+    - name: Kubernetes Apply
+      run: |
+        KUBECONFIG=/home/pi/.kube/config kubectl patch deployment ${{ env.DOCKER_IMAGE_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
+  cleanup:
+    runs-on: self-hosted
+    needs: deploy
+    steps:
+    - name: Keep 5 Releases
+      run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+    - name: Remove Dangling Docker Images
+      run: docker system prune -f
