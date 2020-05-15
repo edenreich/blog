@@ -13,7 +13,7 @@ interface IProps {
   className: string;
   brand?: string;
   links?: LinkInterface[];
-  active?: string;
+  current: string;
 }
 
 interface IState {
@@ -47,7 +47,7 @@ class Navigation extends React.Component<IProps, IState> {
       return (
         <li
           key={link.id}
-          className={this.props.active === link.href ? 'active' : ''}
+          className={this.props.current === link.href ? 'active' : ''}
         >
           <Link href={link.href}>
             <a>{link.name}</a>

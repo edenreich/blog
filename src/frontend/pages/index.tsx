@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Head from 'next/head';
-import axios, { AxiosResponse } from 'axios';
+
 import { Article } from '@/interfaces/article';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import moment from 'moment';
+import ReactMarkDown from 'react-markdown';
 
-const { serverRuntimeConfig } = getConfig();
+import getConfig from 'next/config';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 
 interface IProps {
   articles?: Article[];
@@ -14,7 +15,27 @@ interface IProps {
 
 class IndexPage extends React.Component<IProps> {
 
+  static async getInitialProps(): Promise<any> {
+    const { publicRuntimeConfig } = getConfig();
+    const config = publicRuntimeConfig;
+    console.log('config: ', getConfig());
+    if (config.app.env === 'development') {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    }
+
+    const axiosConfig: AxiosRequestConfig = {
+      headers: { 
+        Host: config.apis.default.hostname
+      } 
+    };
+    const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles`, axiosConfig);
+    const articles: Article[] = response.data;
+
+    return { articles };
+  }
+
   render(): JSX.Element {
+    // console.log('indexPage: ', this.props);
     return (
       <div id="home" className="home">
         <Head>
@@ -42,11 +63,11 @@ class IndexPage extends React.Component<IProps> {
               <h2>Blog Feed</h2>
               <p>Take a look on the latest posted articles:</p>
               {
-                this.props.articles?.map((article: Article, key: number) => {
+                this.props.articles?.filter((article: Article) => article.published).map((article: Article, key: number) => {
                   return (
                     <article key={key}>
                       <h3>{article.title}<span className="date"> - date: {moment(article.published_at).fromNow()}</span></h3>
-                      <p>{article.content.substring(0, 200)} <Link href={`${article.slug}`}><a>read more..</a></Link></p>
+                      <ReactMarkDown source={article.content.substring(0, 200)} escapeHtml={false} /><Link href={`${article.slug}`}><a>read more..</a></Link>
                     </article>
                   );
                 })
@@ -58,19 +79,6 @@ class IndexPage extends React.Component<IProps> {
     );
   }
 
-}
-
-export async function getStaticProps(): Promise<{ props: IProps }> {
-  let articles: Article[];
-
-  try {
-    const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles`);
-    articles = response.data.filter((article: Article) => article.published);
-  } catch {
-    articles = [];
-  }
-
-  return { props: { articles } };
 }
 
 export default IndexPage;

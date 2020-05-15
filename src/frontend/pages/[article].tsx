@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { Article } from '@/interfaces/article';
 import getConfig from 'next/config';
 import moment from 'moment';
@@ -9,7 +9,7 @@ import ReactMarkDown from 'react-markdown';
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 
-const { serverRuntimeConfig } = getConfig();
+const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   article: Article | null;
@@ -21,7 +21,12 @@ class Post extends React.Component<IProps> {
     let article: Article | null;
 
     try {
-      const response: AxiosResponse = await axios.get(`${serverRuntimeConfig.apis.default}/articles/${ctx.query.article}`);
+      const axiosConfig: AxiosRequestConfig = { 
+        headers: { 
+          Host: publicRuntimeConfig.apis.default.hostname
+        } 
+      };
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.ip}/articles/${ctx.query.article}`, axiosConfig);
       article = response.data;
     } catch {
       article = null;
