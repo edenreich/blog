@@ -1,3 +1,6 @@
 {
-    "default": "http://admin:3000"
+    "default": {
+        "ip": "https://ingress",
+        "hostname": "dev-admin.eden-reich.com"
+    }
 }

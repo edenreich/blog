@@ -21,7 +21,8 @@ module.exports = withSass(withCss({
 
     return config;
   },
-  serverRuntimeConfig: {
+  publicRuntimeConfig: {
+    app: JSON.parse(fs.readFileSync(path.join('config', 'environments', env, 'app.json'), { encoding: 'utf-8' })),
     apis: JSON.parse(fs.readFileSync(path.join('config', 'environments', env, 'apis.json'), { encoding: 'utf-8' }))
   }
 }));
