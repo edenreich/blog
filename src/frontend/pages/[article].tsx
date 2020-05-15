@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { NextPageContext } from 'next';
+import getConfig from 'next/config';
 import Head from 'next/head';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { Article } from '@/interfaces/article';
-import getConfig from 'next/config';
+import { Article as IArticle } from '@/interfaces/article';
 import moment from 'moment';
 import ReactMarkDown from 'react-markdown';
 import Prism from "prismjs";
@@ -12,13 +12,13 @@ import "prismjs/themes/prism.css";
 const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
-  article: Article | null;
+  article: IArticle | null;
 }
 
-class Post extends React.Component<IProps> {
+class Article extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
-    let article: Article | null;
+    let article: IArticle | null;
 
     try {
       const axiosConfig: AxiosRequestConfig = { 
@@ -26,7 +26,8 @@ class Post extends React.Component<IProps> {
           Host: publicRuntimeConfig.apis.default.hostname
         } 
       };
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.ip}/articles/${ctx.query.article}`, axiosConfig);
+
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.ip}/articles/${ctx.query.article}`, axiosConfig);
       article = response.data;
     } catch {
       article = null;
@@ -72,4 +73,4 @@ class Post extends React.Component<IProps> {
 
 }
 
-export default Post;
+export default Article;
