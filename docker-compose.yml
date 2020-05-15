@@ -5,13 +5,13 @@ services:
     build: 
       context: .
       dockerfile: ops/docker/ingress/Dockerfile
-    networks: 
-    - app
     volumes:
     - ./ops/docker/helpers/openssl/certs:/etc/nginx/certs:ro
     ports:
     - 80:80
     - 443:443
+    networks: 
+    - app
     depends_on: 
     - openssl
     
