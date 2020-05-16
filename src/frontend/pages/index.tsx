@@ -18,7 +18,7 @@ class IndexPage extends React.Component<IProps> {
   static async getInitialProps(): Promise<any> {
     const { publicRuntimeConfig } = getConfig();
     const config = publicRuntimeConfig;
-    console.log('config: ', getConfig());
+
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
