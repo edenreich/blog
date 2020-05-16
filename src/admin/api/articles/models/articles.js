@@ -9,7 +9,13 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
   // Before saving a value.
   // Fired before an `insert` or `update` query.
-  // beforeSave: async (model, attrs, options) => {},
+  beforeSave: async (model, attrs, options) => {
+    if (typeof model.changed.published !== undefined && model.get('published') === true) {
+      model.set('published_at', new Date);
+    }
+
+    model.set('updated_at', new Date);
+  },
 
   // After saving a value.
   // Fired after an `insert` or `update` query.
