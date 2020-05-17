@@ -41,7 +41,7 @@ module.exports = {
   // Fired before an `insert` query.
   beforeCreate: async (model, _attrs, _options) => {
     model.set('created_at', new Date);
-    model.set('uid', uuidv4());
+    model.set('uuid', uuidv4());
   },
 
   // After creating a value.
