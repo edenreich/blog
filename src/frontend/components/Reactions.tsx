@@ -22,6 +22,12 @@ interface IState {
   selected: selection;
 }
 
+const axiosConfig: AxiosRequestConfig = { 
+  headers: { 
+    Host: publicRuntimeConfig.apis.default.hostname
+  } 
+};
+
 class Reactions extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
@@ -32,18 +38,21 @@ class Reactions extends React.Component<IProps, IState> {
       love: 0,
       dislike: 0,
       selected: null
-    }
+    };
+
+    axios.get(`/api/likes/count?article=${this.props.articleId}`, axiosConfig).then((response: AxiosResponse) => {
+      this.setState({
+        like: response.data.like,
+        love: response.data.love,
+        dislike: response.data.dislike,
+        selected: null
+      })
+    });
   }
 
   async handleReaction(event: React.MouseEvent): Promise<void> {
     const reactionType: any = event.currentTarget.id;
     const { articleId, visitor } = this.props;
-
-    const axiosConfig: AxiosRequestConfig = { 
-      headers: { 
-        Host: publicRuntimeConfig.apis.default.hostname
-      } 
-    };
 
     let response: AxiosResponse;
     let payload: any;

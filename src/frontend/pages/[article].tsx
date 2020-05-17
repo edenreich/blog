@@ -68,7 +68,7 @@ class Article extends React.Component<IProps> {
               <article>
                 <ReactMarkDown source={this.props.article?.content} escapeHtml={false} />
               </article>
-              <Reactions articleId={this.props.article?.uuid} visitor={this.props.visitor} />
+              <Reactions articleId={this.props.article?.id} visitor={this.props.visitor} />
             </div>
           </div>
         </section>
