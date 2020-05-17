@@ -18,16 +18,17 @@ class IndexPage extends React.Component<IProps> {
   static async getInitialProps(): Promise<any> {
     const { publicRuntimeConfig } = getConfig();
     const config = publicRuntimeConfig;
+    let axiosConfig: AxiosRequestConfig = {};
 
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+      axiosConfig = {
+        headers: { 
+          Host: config.apis.default.hostname
+        } 
+      };
     }
 
-    const axiosConfig: AxiosRequestConfig = {
-      headers: { 
-        Host: config.apis.default.hostname
-      } 
-    };
     const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles?_sort=created_at:DESC`, axiosConfig);
     const articles: Article[] = response.data;
 

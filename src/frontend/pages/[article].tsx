@@ -22,15 +22,20 @@ class Article extends React.Component<IProps> {
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
     const cookie: string | undefined = ctx.req?.headers.cookie; 
     let visitor: string | undefined = cookie?.substring(cookie?.indexOf('=')+1, cookie?.length);
+    const config = publicRuntimeConfig;
     let article: IArticle | null;
+    let axiosConfig: AxiosRequestConfig = {};
 
-    try {
-      const axiosConfig: AxiosRequestConfig = { 
+    if (config.app.env === 'development') {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+      axiosConfig = {
         headers: { 
-          Host: publicRuntimeConfig.apis.default.hostname
+          Host: config.apis.default.hostname
         } 
       };
+    }
 
+    try {
       const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.ip}/articles/${ctx.query.article}`, axiosConfig);
       article = response.data;
     } catch {
