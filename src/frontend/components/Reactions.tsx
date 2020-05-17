@@ -1,10 +1,14 @@
 
 import * as React from 'react';
 import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import getConfig from 'next/config';
 
 import './Reactions.scss';
 
 type selection = 'like' | 'love' | 'dislike' | null;
+
+const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   articleId: string | undefined;
@@ -24,34 +28,67 @@ class Reactions extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      like: 2,
-      love: 5,
-      dislike: 4,
+      like: 0,
+      love: 0,
+      dislike: 0,
       selected: null
     }
   }
 
-  handleReaction(event: React.MouseEvent): void {
+  async handleReaction(event: React.MouseEvent): Promise<void> {
     const reactionType: any = event.currentTarget.id;
-    // const { articleId, visitor } = this.props;
+    const { articleId, visitor } = this.props;
+
+    const axiosConfig: AxiosRequestConfig = { 
+      headers: { 
+        Host: publicRuntimeConfig.apis.default.hostname
+      } 
+    };
+
+    let response: AxiosResponse;
+    let payload: any;
 
     switch (reactionType) {
       case 'like':
-        // send: { id: visitor, type: 'like', article_id: articleId } to api and set state after response
-        // retrieve: total likes
-        this.setState({like: this.state.like+1}); 
+        payload = {
+          uuid: visitor,
+          ip_address: '127.0.0.1',
+          reaction_type: 'like',
+          article: articleId
+        };
+
+        await axios.post('/api/likes', payload, axiosConfig);
       break;
       case 'love':
-        // send love to api and set state after response
-        this.setState({love: this.state.love+1}); 
+        payload = {
+          uuid: visitor,
+          ip_address: '127.0.0.1',
+          reaction_type: 'love',
+          article: articleId
+        };
+
+        await axios.post('/api/likes', payload, axiosConfig);
       break;
       case 'dislike':
-        // send dislike to api and set state after response
-        this.setState({dislike: this.state.dislike+1}); 
+        payload = {
+          uuid: visitor,
+          ip_address: '127.0.0.1',
+          reaction_type: 'dislike',
+          article: articleId
+        };
+
+        await axios.post('/api/likes', payload, axiosConfig);
       break;
     }
 
-    this.setState({selected: reactionType});
+    response = await axios.get(`/api/likes/count?article=${articleId}`, axiosConfig);
+
+    this.setState({
+      like: response.data.like,
+      love: response.data.love,
+      dislike: response.data.dislike,
+      selected: reactionType
+    });
     
   }
 

@@ -35,6 +35,33 @@ module.exports = {
       reaction_type,
       count
     };
+  },
+
+  async count(article) {
+
+    const articleEntity = await strapi.query('articles').find({ id: article });
+
+    if (!articleEntity || articleEntity.length === 0) {
+      return {
+        like: 0,
+        love: 0,
+        dislike: 0,
+        errors: [
+          'article does not exists'
+        ]
+      };
+    }
+
+    const like = await strapi.query('likes').count({ reaction_type: 'like', article: article });
+    const love = await strapi.query('likes').count({ reaction_type: 'love', article: article });
+    const dislike = await strapi.query('likes').count({ reaction_type: 'dislike', article: article });
+
+    return {
+      like,
+      love,
+      dislike
+    }
+
   }
 
 };

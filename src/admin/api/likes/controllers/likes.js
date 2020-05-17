@@ -13,7 +13,6 @@ const required = ['uuid', 'ip_address', 'reaction_type', 'article']
 module.exports = {
 
   async create(ctx) {
-
     const { body } = ctx.request;
     const isValid = await this.validate(body);
 
@@ -34,5 +33,14 @@ module.exports = {
     }
 
     return true;
+  },
+
+  async count(ctx) {
+    const { query } = ctx.request;
+    const { article } = query;
+
+    const response = await strapi.services.likes.count(article);
+    return response;
   }
+
 };
