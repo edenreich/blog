@@ -28,14 +28,13 @@ class IndexPage extends React.Component<IProps> {
         Host: config.apis.default.hostname
       } 
     };
-    const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles`, axiosConfig);
+    const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles?_sort=created_at:DESC`, axiosConfig);
     const articles: Article[] = response.data;
 
     return { articles };
   }
 
   render(): JSX.Element {
-    // console.log('indexPage: ', this.props);
     return (
       <div id="home" className="home">
         <Head>
