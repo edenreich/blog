@@ -2,22 +2,26 @@ import * as React from 'react';
 import { NextPageContext } from 'next';
 import getConfig from 'next/config';
 import Head from 'next/head';
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { Article as IArticle } from '@/interfaces/article';
 import moment from 'moment';
-import ReactMarkDown from 'react-markdown';
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
+import ReactMarkDown from 'react-markdown';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { Article as IArticle } from '@/interfaces/article';
+import Reactions from '@/components/Reactions';
 
 const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
+  visitor: string | undefined;
   article: IArticle | null;
 }
 
 class Article extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
+    const cookie: string | undefined = ctx.req?.headers.cookie; 
+    let visitor: string | undefined = cookie?.substring(cookie?.indexOf('=')+1, cookie?.length);
     let article: IArticle | null;
 
     try {
@@ -33,7 +37,7 @@ class Article extends React.Component<IProps> {
       article = null;
     }
 
-    return { article };
+    return { visitor, article };
   }
 
   componentDidMount(): void {
@@ -62,8 +66,9 @@ class Article extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <article>
-                <ReactMarkDown source={this.props.article?.content} escapeHtml={false}/>
+                <ReactMarkDown source={this.props.article?.content} escapeHtml={false} />
               </article>
+              <Reactions articleId={this.props.article?.uid} visitor={this.props.visitor} />
             </div>
           </div>
         </section>
