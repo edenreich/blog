@@ -4,11 +4,13 @@
   "info": {
     "name": "articles"
   },
-  "options": {},
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
   "attributes": {
     "uuid": {
       "type": "uid",
-      "unique": true,
       "private": false
     },
     "title": {
@@ -24,12 +26,6 @@
       "required": true
     },
     "published_at": {
-      "type": "datetime"
-    },
-    "updated_at": {
-      "type": "datetime"
-    },
-    "created_at": {
       "type": "datetime"
     },
     "published": {
