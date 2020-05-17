@@ -21,8 +21,8 @@ module.exports = {
       return { message: 'invalid payload' }
     }
 
-    const response = await strapi.services.likes.create(body);
 
+    const response = await strapi.services.likes.create(body);
     return sanitizeEntity(response, { model: strapi.models.likes });
   },
 
