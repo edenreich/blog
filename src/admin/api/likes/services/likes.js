@@ -5,4 +5,26 @@
  * to customize this service
  */
 
-module.exports = {};
+module.exports = {
+
+  async create(data) {
+    const { uuid, reaction_type, article } = data;
+    
+    const entry = await strapi.query('likes').find({ uuid, article });
+
+    if (entry && entry.length > 0) {
+      await strapi.query('likes').update({ uuid }, data); 
+    } else {
+      
+      await strapi.query('likes').create(data);
+    }
+
+    const count = await strapi.query('likes').count({ reaction_type, article });
+
+    return {
+      reaction_type,
+      count
+    };
+  }
+
+};
