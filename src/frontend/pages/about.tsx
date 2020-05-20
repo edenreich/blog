@@ -6,6 +6,8 @@ import Carousel from '../components/Carousel';
 import Slide from '../components/Slide';
 import Lazyload from 'react-lazyload';
 
+import './about.scss';
+
 interface IProps {
   children?: React.ReactNode;
   route: string;
@@ -30,7 +32,9 @@ class AboutPage extends React.Component<IProps> {
               <h2 className="section-title text-center">
                 About Me
               </h2>
-              <figure><img src="pictures/profile_600.png" /></figure>
+              <figure>
+                <img className="about__me" src="pictures/profile_600.png" />
+              </figure>
               <h3>Who am I?</h3>
               <p className="lead">
                 I’m a passionate developer specializing in C++, PHP, Typescript, Javascript, Rust, CSS and some Go. I like to build desktop as well as web applications.
