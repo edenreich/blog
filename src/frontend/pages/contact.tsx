@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
-import { FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaEnvelope } from 'react-icons/fa';
 
 import './contact.scss';
 
@@ -50,12 +50,6 @@ class ContactPage extends React.Component<IProps, IState> {
               <h2>Get in Touch</h2>
               <p>Have questions? feel free to leave me a message.</p>
               <ul className="contact__icons grid-icons">
-                <li>
-                  <span><FaPhone color="#3fbfae" size="50px" /></span>
-                  <p>
-                    (+49) 17671577990
-                  </p>
-                </li>
                 <li>
                   <span><FaEnvelope color="#3fbfae" size="50px" /></span>
                   <p>
