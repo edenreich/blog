@@ -21,6 +21,23 @@
       "type": "string",
       "required": true
     },
+    "meta_keywords": {
+      "type": "string",
+      "required": false
+    },
+    "meta_description": {
+      "type": "string",
+      "required": false
+    },
+    "meta_thumbnail": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
     "content": {
       "type": "richtext",
       "required": true

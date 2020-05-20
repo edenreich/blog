@@ -57,8 +57,12 @@ class Article extends React.Component<IProps> {
           <meta charSet="utf-8" />
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta name="author" content="Eden Reich" />
-          <meta name="keywords" content="Eden,Eden Reich,PHP,C++,Typescript,Javascript,CPP,Go,Web" />
-          <meta name="description" content="welcome to my blog, here you may find interesting content about web app development." />
+          <meta name="keywords" content={this.props.article.meta_keywords} />
+          <meta name="description" content={this.props.article.meta_description} />
+          <meta property="og:site_name" content="Eden Reich" />
+          <meta property="og:title" content={this.props.article.title} />
+          <meta property="og:image" content={`${publicRuntimeConfig.apis.default.ip}${this.props.article.meta_thumbnail.formats.thumbnail.url}`} />
+          <meta property="og:description" content={this.props.article.meta_description} />
         </Head>
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
