@@ -5,10 +5,10 @@ import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const axiosConfig: AxiosRequestConfig = { 
-    headers: { 
+  const axiosConfig: AxiosRequestConfig = {
+    headers: {
       host: publicRuntimeConfig.apis.default.hostname
-    } 
+    }
   };
 
   if (publicRuntimeConfig.app.env === 'development') {

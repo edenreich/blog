@@ -20,8 +20,8 @@ interface IProps {
 class Article extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
-    const cookie: string | undefined = ctx.req?.headers.cookie; 
-    let visitor: string | undefined = cookie?.substring(cookie?.indexOf('=')+1, cookie?.length);
+    const cookie: string | undefined = ctx.req?.headers.cookie;
+    const visitor: string | undefined = cookie?.substring(cookie?.indexOf('=')+1, cookie?.length);
     const config = publicRuntimeConfig;
     let article: IArticle | null;
     let axiosConfig: AxiosRequestConfig = {};
@@ -29,9 +29,9 @@ class Article extends React.Component<IProps> {
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       axiosConfig = {
-        headers: { 
+        headers: {
           Host: config.apis.default.hostname
-        } 
+        }
       };
     }
 
