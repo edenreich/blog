@@ -103,23 +103,28 @@ class Reactions extends React.Component<IProps, IState> {
 
   render(): JSX.Element {
     return (
-      <div className="reactions">
-        <div className="reactions__reaction">
-          <AiFillLike id="like" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'like' ? '#4c98c9' : '#9a8eb2'}} />
-          <div className="reactions__reaction--count">
-            {this.state.like}
-          </div>
+      <div className="reactions grid-reactions">
+        <div className="reactions__hint grid-hint">
+          Did you find this article helpful ?
         </div>
-        <div className="reactions__reaction">
-          <AiFillHeart id="love" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'love' ? '#e45050' : '#9a8eb2'}} />
-          <div className="reactions__reaction--count">
-            {this.state.love}
+        <div className="grid-icons">
+          <div className="reactions__reaction">
+            <AiFillLike id="like" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'like' ? '#4c98c9' : '#9a8eb2'}} />
+            <div className="reactions__reaction--count">
+              {this.state.like}
+            </div>
           </div>
-        </div>
-        <div className="reactions__reaction">
-          <AiFillDislike id="dislike" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'dislike' ? '#272727' : '#9a8eb2'}} />
-          <div className="reactions__reaction--count">
-            {this.state.dislike}
+          <div className="reactions__reaction">
+            <AiFillHeart id="love" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'love' ? '#e45050' : '#9a8eb2'}} />
+            <div className="reactions__reaction--count">
+              {this.state.love}
+            </div>
+          </div>
+          <div className="reactions__reaction">
+            <AiFillDislike id="dislike" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'dislike' ? '#272727' : '#9a8eb2'}} />
+            <div className="reactions__reaction--count">
+              {this.state.dislike}
+            </div>
           </div>
         </div>
       </div>
