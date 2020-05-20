@@ -9,6 +9,8 @@ import ReactMarkDown from 'react-markdown';
 import getConfig from 'next/config';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 
+import './index.scss';
+
 interface IProps {
   articles?: Article[];
 }
@@ -23,9 +25,9 @@ class IndexPage extends React.Component<IProps> {
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       axiosConfig = {
-        headers: { 
+        headers: {
           Host: config.apis.default.hostname
-        } 
+        }
       };
     }
 
@@ -67,7 +69,10 @@ class IndexPage extends React.Component<IProps> {
                   return (
                     <article key={key}>
                       <h3>{article.title}<span className="date"> - date: {moment(article.published_at).fromNow()}</span></h3>
-                      <ReactMarkDown source={article.content.substring(0, 200)} escapeHtml={false} /><Link href={`${article.slug}`}><a>read more..</a></Link>
+                      <ReactMarkDown source={article.content.substring(0, 300)} escapeHtml={false} />
+                      <div className="home__text-preview">
+                        <Link href={`${article.slug}`}><a className="button-primary">read more..</a></Link>
+                      </div>
                     </article>
                   );
                 })
