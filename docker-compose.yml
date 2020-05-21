@@ -17,13 +17,12 @@ services:
     
   frontend:
     build:
-      args: 
-        MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
-        MAILGUN_API_KEY: ${MAILGUN_API_KEY}
       context: .
       dockerfile: ops/docker/frontend/Dockerfile
-    environment: 
-      APP_ENV: development
+    environment:
+      NODE_ENV: ${APP_ENV}
+      MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
+      MAILGUN_API_KEY: ${MAILGUN_API_KEY}
     command: sh -c "yarn && yarn dev"
     volumes:
     - ./src/frontend:/app:rw
@@ -35,7 +34,7 @@ services:
       context: .
       dockerfile:  ops/docker/admin/Dockerfile
     environment: 
-      NODE_ENV: development
+      NODE_ENV: ${APP_ENV}
     command: sh -c "yarn && yarn develop"
     volumes:
     - ./src/admin:/app:rw
