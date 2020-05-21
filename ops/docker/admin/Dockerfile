@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 
 COPY src/admin .
 
-RUN yarn --production --network-timeout 30000 \
+RUN yarn --production --network-timeout 1000000 \
     && yarn build
 
 EXPOSE 3000
