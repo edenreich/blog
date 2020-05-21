@@ -75,7 +75,7 @@ class Article extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <article>
-                <ReactMarkDown source={this.props.article?.content} escapeHtml={false} />
+                <ReactMarkDown source={this.props.article?.content} escapeHtml={false} linkTarget="_blank" />
               </article>
               <Reactions articleId={this.props.article?.id} visitor={this.props.visitor} />
             </div>
