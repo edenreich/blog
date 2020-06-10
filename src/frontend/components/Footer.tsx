@@ -22,7 +22,7 @@ class Footer extends React.Component<IProps> {
           </ul>
         </div>
         <div className="copy-rights">
-          <small>© 2020 Eden Reich. All rights reserved.</small>
+          <small>© 2020 Eden Reich.</small>
         </div>
       </footer>
     );

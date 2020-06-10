@@ -1,21 +1,13 @@
 'use strict';
 
 /**
- * Lifecycle callbacks for the `articles` model.
+ * Lifecycle callbacks for the `likes` model.
  */
-
-const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   // Before saving a value.
   // Fired before an `insert` or `update` query.
-  beforeSave: async (model, attrs, options) => {
-    if (typeof model.changed.published !== undefined && model.get('published') === true) {
-      model.set('published_at', new Date);
-    }
-
-    model.set('updated_at', new Date);
-  },
+  // beforeSave: async (model, attrs, options) => {},
 
   // After saving a value.
   // Fired after an `insert` or `update` query.
@@ -39,10 +31,7 @@ module.exports = {
 
   // Before creating a value.
   // Fired before an `insert` query.
-  beforeCreate: async (model, _attrs, _options) => {
-    model.set('created_at', new Date);
-    model.set('uuid', uuidv4());
-  },
+  // beforeCreate: async (model, attrs, options) => {},
 
   // After creating a value.
   // Fired after an `insert` query.

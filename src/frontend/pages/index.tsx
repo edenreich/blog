@@ -9,6 +9,8 @@ import ReactMarkDown from 'react-markdown';
 import getConfig from 'next/config';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 
+import './index.scss';
+
 interface IProps {
   articles?: Article[];
 }
@@ -18,24 +20,24 @@ class IndexPage extends React.Component<IProps> {
   static async getInitialProps(): Promise<any> {
     const { publicRuntimeConfig } = getConfig();
     const config = publicRuntimeConfig;
-    console.log('config: ', getConfig());
+    let axiosConfig: AxiosRequestConfig = {};
+
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+      axiosConfig = {
+        headers: {
+          Host: config.apis.default.hostname
+        }
+      };
     }
 
-    const axiosConfig: AxiosRequestConfig = {
-      headers: { 
-        Host: config.apis.default.hostname
-      } 
-    };
-    const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles`, axiosConfig);
+    const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles?_sort=created_at:DESC`, axiosConfig);
     const articles: Article[] = response.data;
 
     return { articles };
   }
 
   render(): JSX.Element {
-    // console.log('indexPage: ', this.props);
     return (
       <div id="home" className="home">
         <Head>
@@ -67,7 +69,10 @@ class IndexPage extends React.Component<IProps> {
                   return (
                     <article key={key}>
                       <h3>{article.title}<span className="date"> - date: {moment(article.published_at).fromNow()}</span></h3>
-                      <ReactMarkDown source={article.content.substring(0, 200)} escapeHtml={false} /><Link href={`${article.slug}`}><a>read more..</a></Link>
+                      <ReactMarkDown source={article.content.substring(0, 300)} escapeHtml={false} />
+                      <div className="home__text-preview">
+                        <Link href={`${article.slug}`}><a className="button-primary">read more..</a></Link>
+                      </div>
                     </article>
                   );
                 })

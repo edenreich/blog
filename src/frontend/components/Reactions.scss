@@ -1,0 +1,42 @@
+
+
+.grid-reactions {
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 100px auto;
+  align-items: center;
+  grid-template-areas: 
+    "hint hint hint"
+    "... reactions ...";
+
+  .grid-hint {
+    grid-area: hint;
+  }
+
+  .grid-icons {
+    grid-area: reactions;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+}
+
+.reactions {
+
+  a, a:focus {
+    color: inherit;
+  }
+
+  &__reaction {
+
+    &--count {
+      text-align: center;
+      border: 1px solid #e4e4e4;
+      border-radius: 50% 50%;
+      font-size: 0.8em;
+    }
+  }
+
+}

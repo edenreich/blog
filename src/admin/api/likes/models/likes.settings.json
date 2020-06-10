@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "likes",
+  "info": {
+    "name": "Likes"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "uuid": {
+      "type": "uid",
+      "private": false
+    },
+    "reaction_type": {
+      "type": "enumeration",
+      "enum": [
+        "like",
+        "love",
+        "dislike"
+      ]
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "article": {
+      "via": "likes",
+      "model": "articles"
+    }
+  }
+}

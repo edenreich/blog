@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
-import { FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaEnvelope } from 'react-icons/fa';
 
 import './contact.scss';
 
@@ -29,13 +29,13 @@ class ContactPage extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      success: false,
+      success: false
     };
   }
 
   render(): JSX.Element {
     return (
-      <div id="contact" className="contact">
+      <div id="contact" className="contact grid-contact">
         <Head>
           <title>Blog | Contact Page</title>
           <meta charSet="utf-8" />
@@ -50,13 +50,7 @@ class ContactPage extends React.Component<IProps, IState> {
               <h2>Get in Touch</h2>
               <p>Have questions? feel free to leave me a message.</p>
               <ul className="contact__icons grid-icons">
-                <li>
-                  <span><FaPhone color="#3fbfae" size="50px" /></span>
-                  <p>
-                    (+49) 17671577990
-                  </p>
-                </li>
-                <li>
+                <li className="grid-icon">
                   <span><FaEnvelope color="#3fbfae" size="50px" /></span>
                   <p>
                     <a href="mailto:eden.reich@gmail.com">eden.reich@gmail.com</a>
@@ -110,7 +104,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   handleSubmit,
                 }) => (
                   <form action="/api/email/send" method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
-                    <div className="contact__form-group">
+                    <div className="contact__form-group grid-form-group-1">
                       <input
                         type="text"
                         className={
@@ -125,7 +119,7 @@ class ContactPage extends React.Component<IProps, IState> {
                         value={values.name}
                       />
                     </div>
-                    <div className="contact__form-group">
+                    <div className="contact__form-group grid-form-group-2">
                       <input
                         type="email"
                         className={
@@ -140,7 +134,7 @@ class ContactPage extends React.Component<IProps, IState> {
                         value={values.email}
                       />
                     </div>
-                    <div className="contact__form-group">
+                    <div className="contact__form-group grid-form-group-3">
                       <input
                         type="text"
                         className="contact__form-control"
@@ -150,7 +144,7 @@ class ContactPage extends React.Component<IProps, IState> {
                         placeholder="Phone"
                       />
                     </div>
-                    <div className="contact__form-group">
+                    <div className="contact__form-group grid-form-group-4">
                       <textarea
                         name="message"
                         className="contact__form-control"
@@ -161,16 +155,20 @@ class ContactPage extends React.Component<IProps, IState> {
                         required
                       />
                     </div>
-                    <button
-                        type="submit"
-                        className="contact__button"
-                        disabled={isSubmitting}
-                      >
-                      {isSubmitting ? 'Sending...' : 'Send'}
-                    </button>
-                    <div className={this.state.success ? 'notification-box alert alert-success' : 'notification-box'} >
-                        {this.state.success ? 'Thanks! I\'ll reach you out as soon as possible !' : ''}
+                    <div className="contact__form-group grid-form-button">
+                      <button
+                          type="submit"
+                          className="contact__button"
+                          disabled={isSubmitting}
+                        >
+                        {isSubmitting ? 'Sending...' : 'Send'}
+                      </button>
                     </div>
+                    {
+                      this.state.success && <div className={'contact__notification-box grid-form-notification'} >
+                        Thanks! I'll reach you out as soon as possible !
+                      </div>
+                    }
                   </form>
                 )}
               />

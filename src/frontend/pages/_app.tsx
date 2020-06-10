@@ -20,7 +20,7 @@ interface IProps extends AppInitialProps {
 }
 
 interface IState {
-  articles: Article[]
+  articles: Article[];
 }
 
 class Blog extends App<IProps, IState> {

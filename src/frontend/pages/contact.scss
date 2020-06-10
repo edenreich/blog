@@ -2,19 +2,60 @@
 @import '../assets/scss/colors.scss';
 @import '../assets/scss/breakpoints.scss';
 
-.contact {
+.grid-contact {
 
   .grid-icons {
     display: grid;
-    grid-template-columns: 1fr;
     grid-template-rows: 150px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "icon";
+  
+    .grid-icon {
+      grid-area: icon;
+    }
   }
 
   .grid-form {
     display: grid;
-    grid-template-columns: 1fr;
     grid-gap: 15px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+    "form-group-1"
+    "form-group-2"
+    "form-group-3"
+    "form-group-4"
+    "form-button"
+    "form-notification";
+
+    .grid-form-group-1 {
+      grid-area: form-group-1;
+    }
+
+    .grid-form-group-2 {
+      grid-area: form-group-2;
+    }
+
+    .grid-form-group-3 {
+      grid-area: form-group-3;
+    }
+
+    .grid-form-group-4 {
+      grid-area: form-group-4;
+    }
+
+    .grid-form-button {
+      grid-area: form-button;
+    }
+
+    .grid-form-notification {
+      grid-area: form-notification;
+    }
   }
+
+}
+
+.contact {
 
   &__icons {
     justify-items: center;
@@ -24,6 +65,10 @@
 
   &__form {
     position: relative;
+  }
+
+  input {
+    width: 100%
   }
 
   &__form-control {
@@ -62,24 +107,34 @@
     text-align: center;
     text-decoration: none;
     font-size: 16px;
+    width: 100%;
+  }
+
+  &__notification-box {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
   }
 
 }
 
 @media (min-width: $breakpoint-tablet) {
 
-  .contact {
-
-    .grid-icons {
-      grid-template-columns: 1fr 1fr;
-    }
+  .grid-contact {
 
     .grid-form {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    &__button {
-      grid-column: 1/3;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-areas:
+        "form-group-1 form-group-1 form-group-2 form-group-2"
+        "form-group-3 form-group-3 ............ ............"
+        "form-group-4 form-group-4 form-group-4 form-group-4"
+        "............ form-button  form-button  ............"
+        "form-notification form-notification form-notification form-notification";
     }
 
   }

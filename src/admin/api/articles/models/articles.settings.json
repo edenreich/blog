@@ -4,12 +4,14 @@
   "info": {
     "name": "articles"
   },
-  "options": {},
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
   "attributes": {
-    "uid": {
-      "type": "string",
-      "unique": true,
-      "private": true
+    "uuid": {
+      "type": "uid",
+      "private": false
     },
     "title": {
       "type": "string",
@@ -19,6 +21,23 @@
       "type": "string",
       "required": true
     },
+    "meta_keywords": {
+      "type": "string",
+      "required": false
+    },
+    "meta_description": {
+      "type": "string",
+      "required": false
+    },
+    "meta_thumbnail": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
     "content": {
       "type": "richtext",
       "required": true
@@ -26,16 +45,14 @@
     "published_at": {
       "type": "datetime"
     },
-    "updated_at": {
-      "type": "datetime"
-    },
-    "created_at": {
-      "type": "datetime"
-    },
     "published": {
       "type": "boolean",
       "default": false,
       "required": false
+    },
+    "likes": {
+      "collection": "likes",
+      "via": "article"
     }
   }
 }
