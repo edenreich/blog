@@ -23,7 +23,7 @@
     "moment": "^2.25.3",
     "next": "latest",
     "nextjs-progressbar": "^0.0.4",
-    "prismjs": "^1.20.0",
+    "prismjs": "^1.21.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-icons": "^3.9.0",
