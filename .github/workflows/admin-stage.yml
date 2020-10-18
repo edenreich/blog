@@ -25,6 +25,8 @@ jobs:
       - name: Docker Build
         run: |
           DOCKER_BUILDKIT=1 docker build \
+            --target stage \
+            --build-arg APP_ENV=stage \
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -t ${{ env.DOCKER_REPO }}:latest \
             -f ops/docker/admin/Dockerfile .
@@ -53,8 +55,8 @@ jobs:
     needs: deploy
     steps:
       - name: Remove all images from github-runner
-        run: docker rmi -f $(docker images -q)
+        run: docker rmi -f $(docker images -q) 2> /dev/null || true
       - name: Keep 5 Releases
-        run: for server in ${{ env.SERVERS }}; do ssh $server /bin/sh -c 'docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk \'{ printf "%s\t", $3 }\' | xargs) || true'; done
+        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh -v $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
       - name: Remove Dangling Docker Images
         run: docker system prune -f
