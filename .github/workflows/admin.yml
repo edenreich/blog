@@ -2,15 +2,19 @@ name: admin
 
 on:
   push:
+    branches:
+    - master
     paths:
     - '.github/workflows/admin.yml'
     - 'src/admin/**'
     - 'ops/docker/admin/**'
+    - 'ops/kubernetes/deployments/admin/**'
 
 env:
   DOCKER_IMAGE_NAME: blog-admin
   DOCKER_REPO: edenr/blog-admin
-  VERSION: ${{ github.run_number }}
+  DEPLOYMENT_NAME: blog-admin
+  DEPLOYMENT_VERSION: ${{ github.run_number }}
 
 jobs:
   build:
@@ -20,7 +24,7 @@ jobs:
     - name: Docker Build
       run: |
         docker build \
-          -t ${{ env.DOCKER_REPO }}:${{ env.VERSION }} \
+          -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
           -t ${{ env.DOCKER_REPO }}:latest \
           -f ops/docker/admin/Dockerfile .
   push:
@@ -31,7 +35,7 @@ jobs:
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
     - name: Docker Push
       run: |
-        docker push ${{ env.DOCKER_REPO }}:${{ env.VERSION }}
+        docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
         docker push ${{ env.DOCKER_REPO }}:latest
   deploy:
     runs-on: self-hosted
@@ -40,7 +44,9 @@ jobs:
     - uses: actions/checkout@master
     - name: Deploy to Kubernetes
       run: |
-        KUBECONFIG=/home/pi/.kube/config kubectl patch deployment ${{ env.DOCKER_IMAGE_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.VERSION }}"}]}}}}'
+        kubectl config use-context production
+        kubectl apply -f ops/kubernetes/deployments/admin/
+        kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy

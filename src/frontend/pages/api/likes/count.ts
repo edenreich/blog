@@ -15,6 +15,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   }
 
-  const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.ip}/likes/count?article=${req.query.article}`, axiosConfig);
+  const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/likes/count?article=${req.query.article}`, axiosConfig);
   res.status(200).json(response.data);
 };

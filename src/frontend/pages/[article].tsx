@@ -36,7 +36,7 @@ class Article extends React.Component<IProps> {
     }
 
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.ip}/articles/${ctx.query.article}`, axiosConfig);
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles/${ctx.query.article}`, axiosConfig);
       article = response.data;
     } catch {
       article = null;
@@ -61,7 +61,7 @@ class Article extends React.Component<IProps> {
           <meta name="description" content={this.props.article.meta_description} />
           <meta property="og:site_name" content="Eden Reich" />
           <meta property="og:title" content={this.props.article.title} />
-          <meta property="og:image" content={`${publicRuntimeConfig.apis.default.ip}${this.props.article.meta_thumbnail.formats.thumbnail.url}`} />
+          <meta property="og:image" content={`${publicRuntimeConfig.apis.default.url}${this.props.article.meta_thumbnail.formats.thumbnail.url}`} />
           <meta property="og:description" content={this.props.article.meta_description} />
         </Head>
         <section className="content__section">

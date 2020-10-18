@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blog-admin
+  name: blog-frontend
   namespace: blog
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
-      app: blog-admin
+      app: blog-frontend
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -16,11 +16,11 @@ spec:
   template:
     metadata:
       labels:
-        app: blog-admin
+        app: blog-frontend
     spec:
       containers:
-      - name: blog-admin
-        image: edenr/blog-admin:latest
+      - name: blog-frontend
+        image: edenr/blog-frontend:latest
         resources:
           requests:
             cpu: "200m"
@@ -28,8 +28,24 @@ spec:
           limits:
             cpu: "200m"
             memory: "499Mi"
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: app_env
+        - name: MAILGUN_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: mailgun
+              key: domain
+        - name: MAILGUN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mailgun
+              key: api_key
         ports:
-        - containerPort: 3000
+          - containerPort: 3000
         readinessProbe:
           httpGet:
             port: 3000
@@ -38,32 +54,7 @@ spec:
           httpGet:
             port: 3000
             path: /healthcheck
-        volumeMounts:
-        - name: sqlite-persistent-storage
-          mountPath: /app/.tmp
-        - name: uploads-persistent-storage
-          mountPath: /app/public/uploads
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: regcred
-      volumes:
-      - name: sqlite-persistent-storage
-        persistentVolumeClaim:
-          claimName: sqlite-pv-claim
-      - name: uploads-persistent-storage
-        persistentVolumeClaim:
-          claimName: uploads-pv-claim
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: blog-admin
-  namespace: blog
-spec:
-  selector:
-    app: blog-admin
-  ports:
-  - port: 8080
-    targetPort: 3000
-

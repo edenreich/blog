@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blog-frontend
+  name: blog-admin
   namespace: blog
 spec:
-  replicas: 10
+  replicas: 1
   selector:
     matchLabels:
-      app: blog-frontend
+      app: blog-admin
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -16,11 +16,11 @@ spec:
   template:
     metadata:
       labels:
-        app: blog-frontend
+        app: blog-admin
     spec:
       containers:
-      - name: blog-frontend
-        image: edenr/blog-frontend:latest
+      - name: blog-admin
+        image: edenr/blog-admin:latest
         resources:
           requests:
             cpu: "200m"
@@ -29,18 +29,13 @@ spec:
             cpu: "200m"
             memory: "499Mi"
         env:
-        - name: MAILGUN_DOMAIN
+        - name: APP_ENV
           valueFrom:
-            secretKeyRef:
-              name: mailgun
-              key: domain
-        - name: MAILGUN_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: mailgun
-              key: api-key
+            configMapKeyRef:
+              name: blog-environment
+              key: app_env
         ports:
-          - containerPort: 3000
+        - containerPort: 3000
         readinessProbe:
           httpGet:
             port: 3000
@@ -49,20 +44,19 @@ spec:
           httpGet:
             port: 3000
             path: /healthcheck
+        volumeMounts:
+        - name: sqlite-persistent-storage
+          mountPath: /app/.tmp
+        - name: uploads-persistent-storage
+          mountPath: /app/public/uploads
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: regcred
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: blog-frontend
-  namespace: blog
-spec:
-  selector:
-    app: blog-frontend
-  ports:
-  - port: 8080
-    targetPort: 3000
-
+      volumes:
+      - name: sqlite-persistent-storage
+        persistentVolumeClaim:
+          claimName: sqlite-pv-claim
+      - name: uploads-persistent-storage
+        persistentVolumeClaim:
+          claimName: uploads-pv-claim

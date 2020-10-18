@@ -1,19 +1,19 @@
-name: frontend
+name: admin-stage
 
 on:
   push:
     branches:
-    - master
+    - develop
     paths:
-    - '.github/workflows/frontend.yml'
-    - 'src/frontend/**'
-    - 'ops/docker/frontend/**'
-    - 'ops/kubernetes/deployments/frontend/**'
+    - '.github/workflows/admin-stage.yml'
+    - 'src/admin/**'
+    - 'ops/docker/admin/**'
+    - 'ops/kubernetes/deployments/admin/**'
 
 env:
-  DOCKER_IMAGE_NAME: blog-frontend
-  DOCKER_REPO: edenr/blog-frontend
-  DEPLOYMENT_NAME: blog-frontend
+  DOCKER_IMAGE_NAME: blog-admin
+  DOCKER_REPO: edenr/blog-admin
+  DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
         docker build \
           -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
           -t ${{ env.DOCKER_REPO }}:latest \
-          -f ops/docker/frontend/Dockerfile .
+          -f ops/docker/admin/Dockerfile .
   push:
     runs-on: self-hosted
     needs: build
@@ -42,10 +42,10 @@ jobs:
     needs: push
     steps:
     - uses: actions/checkout@master
-    - name: Kubernetes Apply
+    - name: Deploy to Kubernetes
       run: |
-        kubectl config use-context production
-        kubectl apply -f ops/kubernetes/deployments/frontend/
+        kubectl config use-context stage
+        kubectl apply -f ops/kubernetes/deployments/admin/
         kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted

@@ -1,11 +1,11 @@
-name: frontend
+name: frontend-stage
 
 on:
   push:
     branches:
-    - master
+    - develop
     paths:
-    - '.github/workflows/frontend.yml'
+    - '.github/workflows/frontend-stage.yml'
     - 'src/frontend/**'
     - 'ops/docker/frontend/**'
     - 'ops/kubernetes/deployments/frontend/**'
@@ -44,7 +44,7 @@ jobs:
     - uses: actions/checkout@master
     - name: Kubernetes Apply
       run: |
-        kubectl config use-context production
+        kubectl config use-context stage
         kubectl apply -f ops/kubernetes/deployments/frontend/
         kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:

@@ -31,7 +31,7 @@ class IndexPage extends React.Component<IProps> {
       };
     }
 
-    const response: AxiosResponse = await axios.get(`${config.apis.default.ip}/articles?_sort=created_at:DESC`, axiosConfig);
+    const response: AxiosResponse = await axios.get(`${config.apis.default.url}/articles?_sort=created_at:DESC`, axiosConfig);
     const articles: Article[] = response.data;
 
     return { articles };
