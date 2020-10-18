@@ -3,12 +3,12 @@ name: admin
 on:
   push:
     branches:
-    - master
+      - master
     paths:
-    - '.github/workflows/admin.yml'
-    - 'src/admin/**'
-    - 'ops/docker/admin/**'
-    - 'ops/kubernetes/deployments/admin/**'
+      - ".github/workflows/admin.yml"
+      - "src/admin/**"
+      - "ops/docker/admin/**"
+      - "ops/kubernetes/deployments/admin/**"
 
 env:
   DOCKER_IMAGE_NAME: blog-admin
@@ -20,38 +20,38 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@master
-    - name: Docker Build
-      run: |
-        DOCKER_BUILDKIT=1 docker build \
-          -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
-          -t ${{ env.DOCKER_REPO }}:latest \
-          -f ops/docker/admin/Dockerfile .
+      - uses: actions/checkout@master
+      - name: Docker Build
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+            -t ${{ env.DOCKER_REPO }}:latest \
+            -f ops/docker/admin/Dockerfile .
   push:
     runs-on: self-hosted
     needs: build
     steps:
-    - name: Docker Login
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
-    - name: Docker Push
-      run: |
-        docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-        docker push ${{ env.DOCKER_REPO }}:latest
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
+      - name: Docker Push
+        run: |
+          docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+          docker push ${{ env.DOCKER_REPO }}:latest
   deploy:
     runs-on: self-hosted
     needs: push
     steps:
-    - uses: actions/checkout@master
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl config use-context production
-        kubectl apply -f ops/kubernetes/deployments/admin/
-        kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+      - uses: actions/checkout@master
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl config use-context production
+          kubectl apply -f ops/kubernetes/deployments/admin/
+          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy
     steps:
-    - name: Keep 5 Releases
-      run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
-    - name: Remove Dangling Docker Images
-      run: docker system prune -f
+      - name: Keep 5 Releases
+        run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+      - name: Remove Dangling Docker Images
+        run: docker system prune -f
