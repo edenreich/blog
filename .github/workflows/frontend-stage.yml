@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@master
     - name: Docker Build
       run: |
-        docker build \
+        DOCKER_BUILDKIT=1 docker build \
           -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
           -t ${{ env.DOCKER_REPO }}:latest \
           -f ops/docker/frontend/Dockerfile .
