@@ -15,7 +15,7 @@ env:
   DOCKER_REPO: edenr/blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
-  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
+  SERVERS: echo k8s-master k8s-node1 k8s-node2 k8s-node3 | xargs
 
 jobs:
   # build:
@@ -60,3 +60,4 @@ jobs:
         run: for server in "${{ env.SERVERS }}"; do echo $server; done
       - name: Remove Dangling Docker Images
         run: docker system prune -f
+# ssh -v $server /bin/sh -c "docker rmi \$(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf \"%s\t\", $3 }' | xargs) || true"
