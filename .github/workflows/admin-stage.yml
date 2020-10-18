@@ -57,6 +57,6 @@ jobs:
       - name: Remove all images from github-runner
         run: docker rmi -f $(docker images -q) 2> /dev/null || true
       - name: Keep 5 Releases
-        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh -v $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
+        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
       - name: Remove Dangling Docker Images
         run: docker system prune -f
