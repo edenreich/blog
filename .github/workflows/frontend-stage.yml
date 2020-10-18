@@ -18,6 +18,16 @@ env:
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
 
 jobs:
+  cleanup:
+    runs-on: self-hosted
+    needs: deploy
+    steps:
+      - name: Remove all images from github-runner
+        run: docker rmi -f $(docker images -q)
+      - name: Keep 5 Releases
+        run: for server in "${{ env.SERVERS }}"; do ssh -v $server /bin/sh -c "docker rmi \$(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf \"%s\t\", $3 }' | xargs) || true"; done
+      - name: Remove Dangling Docker Images
+        run: docker system prune -f
   # build:
   #   runs-on: self-hosted
   #   steps:
@@ -50,13 +60,3 @@ jobs:
   #         kubectl config use-context stage
   #         kubectl apply -f ops/kubernetes/deployments/frontend/
   #         kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
-  cleanup:
-    runs-on: self-hosted
-    needs: deploy
-    steps:
-      - name: Remove all images from github-runner
-        run: docker rmi -f $(docker images -q)
-      - name: Keep 5 Releases
-        run: for server in "${{ env.SERVERS }}"; do ssh -v $server /bin/sh -c "docker rmi \$(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf \"%s\t\", $3 }' | xargs) || true"; done
-      - name: Remove Dangling Docker Images
-        run: docker system prune -f
