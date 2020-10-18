@@ -4,7 +4,7 @@ metadata:
   name: blog-frontend
   namespace: blog
 spec:
-  replicas: 10
+  replicas: 1
   selector:
     matchLabels:
       app: blog-frontend
@@ -29,6 +29,11 @@ spec:
             cpu: "200m"
             memory: "499Mi"
         env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: app_env
         - name: MAILGUN_DOMAIN
           valueFrom:
             secretKeyRef:
@@ -38,14 +43,14 @@ spec:
           valueFrom:
             secretKeyRef:
               name: mailgun
-              key: api-key
+              key: api_key
         ports:
           - containerPort: 3000
         readinessProbe:
           httpGet:
             port: 3000
             path: /healthcheck
-        livenessProbe:           
+        livenessProbe:
           httpGet:
             port: 3000
             path: /healthcheck
@@ -53,16 +58,3 @@ spec:
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: regcred
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: blog-frontend
-  namespace: blog
-spec:
-  selector:
-    app: blog-frontend
-  ports:
-  - port: 8080
-    targetPort: 3000
-

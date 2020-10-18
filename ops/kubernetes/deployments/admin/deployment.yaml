@@ -4,7 +4,7 @@ metadata:
   name: blog-admin
   namespace: blog
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: blog-admin
@@ -28,6 +28,12 @@ spec:
           limits:
             cpu: "200m"
             memory: "499Mi"
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: app_env
         ports:
         - containerPort: 3000
         readinessProbe:
@@ -54,16 +60,3 @@ spec:
       - name: uploads-persistent-storage
         persistentVolumeClaim:
           claimName: uploads-pv-claim
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: blog-admin
-  namespace: blog
-spec:
-  selector:
-    app: blog-admin
-  ports:
-  - port: 8080
-    targetPort: 3000
-
