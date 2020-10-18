@@ -2,9 +2,6 @@ import * as React from 'react';
 import Head from 'next/head';
 
 import ProgressBar from '../components/ProgressBar';
-import Carousel from '../components/Carousel';
-import Slide from '../components/Slide';
-import Lazyload from 'react-lazyload';
 
 import './about.scss';
 
