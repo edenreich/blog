@@ -15,7 +15,7 @@ env:
   DOCKER_REPO: edenr/blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
-  SERVERS: k8s-master k8s-node1
+  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
 
 jobs:
   build:
