@@ -31,10 +31,11 @@ services:
 
   admin:
     build:
+      target: development
+      args:
+        APP_ENV: development
       context: .
       dockerfile:  ops/docker/admin/Dockerfile
-    environment: 
-      NODE_ENV: ${APP_ENV}
     command: sh -c "yarn && yarn develop"
     volumes:
     - ./src/admin:/app:rw
