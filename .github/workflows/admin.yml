@@ -15,6 +15,7 @@ env:
   DOCKER_REPO: edenr/blog-admin
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
+  SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
 
 jobs:
   build:
@@ -51,7 +52,9 @@ jobs:
     runs-on: self-hosted
     needs: deploy
     steps:
+      - name: Remove all images from github-runner
+        run: docker rmi -f $(docker images -q)
       - name: Keep 5 Releases
-        run: docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+        run: for server in ${{ env.SERVERS }}; do ssh $server /bin/sh -c 'docker rmi $(docker images | grep ${{ env.DOCKER_REPO }} | sort -r | tail -n +6 | awk \'{ printf "%s\t", $3 }\' | xargs) || true'; done
       - name: Remove Dangling Docker Images
         run: docker system prune -f
