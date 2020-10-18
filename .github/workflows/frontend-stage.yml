@@ -55,7 +55,7 @@ jobs:
     # needs: deploy
     steps:
       - name: Remove all images from github-runner
-        run: docker rmi -f $(docker images -q)
+        run: docker rmi -f $(docker images -q) 2> /dev/null || true
       - name: Keep 5 Releases
         run: for server in "${{ env.SERVERS }}"; do echo $server; done
       - name: Remove Dangling Docker Images
