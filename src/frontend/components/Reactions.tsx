@@ -22,11 +22,15 @@ interface IState {
   selected: selection;
 }
 
-const axiosConfig: AxiosRequestConfig = {
-  headers: {
-    Host: publicRuntimeConfig.apis.default.hostname
-  }
-};
+let axiosConfig: AxiosRequestConfig = {};
+if (publicRuntimeConfig.app.env === 'development') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  axiosConfig = {
+    headers: {
+      Host: publicRuntimeConfig.apis.default.hostname
+    }
+  };
+}
 
 class Reactions extends React.Component<IProps, IState> {
 
@@ -67,7 +71,7 @@ class Reactions extends React.Component<IProps, IState> {
         };
 
         await axios.post('/api/likes', payload, axiosConfig);
-      break;
+        break;
       case 'love':
         payload = {
           uuid: visitor,
@@ -77,7 +81,7 @@ class Reactions extends React.Component<IProps, IState> {
         };
 
         await axios.post('/api/likes', payload, axiosConfig);
-      break;
+        break;
       case 'dislike':
         payload = {
           uuid: visitor,
@@ -87,7 +91,7 @@ class Reactions extends React.Component<IProps, IState> {
         };
 
         await axios.post('/api/likes', payload, axiosConfig);
-      break;
+        break;
     }
 
     response = await axios.get(`/api/likes/count?article=${articleId}`, axiosConfig);
@@ -109,19 +113,19 @@ class Reactions extends React.Component<IProps, IState> {
         </div>
         <div className="grid-icons">
           <div className="reactions__reaction">
-            <AiFillLike id="like" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'like' ? '#4c98c9' : '#9a8eb2'}} />
+            <AiFillLike id="like" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{ color: this.state.selected === 'like' ? '#4c98c9' : '#9a8eb2' }} />
             <div className="reactions__reaction--count">
               {this.state.like}
             </div>
           </div>
           <div className="reactions__reaction">
-            <AiFillHeart id="love" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'love' ? '#e45050' : '#9a8eb2'}} />
+            <AiFillHeart id="love" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{ color: this.state.selected === 'love' ? '#e45050' : '#9a8eb2' }} />
             <div className="reactions__reaction--count">
               {this.state.love}
             </div>
           </div>
           <div className="reactions__reaction">
-            <AiFillDislike id="dislike" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{color: this.state.selected === 'dislike' ? '#272727' : '#9a8eb2'}} />
+            <AiFillDislike id="dislike" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{ color: this.state.selected === 'dislike' ? '#272727' : '#9a8eb2' }} />
             <div className="reactions__reaction--count">
               {this.state.dislike}
             </div>
