@@ -9,11 +9,12 @@ import ReactMarkDown from 'react-markdown';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
+import type { IVisitor } from '@/interfaces/visitor';
 
 const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
-  visitor: string | undefined;
+  visitor: IVisitor;
   article: IArticle | null;
 }
 
@@ -21,7 +22,11 @@ class Article extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
     const cookie: string | undefined = ctx.req?.headers.cookie;
-    const visitor: string | undefined = cookie?.substring(cookie?.indexOf('=')+1, cookie?.length);
+    const visitor: IVisitor = {
+      cfuid: cookie?.substring(cookie?.indexOf('cfduid=')+1, cookie?.length),
+      ip: ctx.req?.headers['x-real-ip'],
+    };
+
     const config = publicRuntimeConfig;
     let article: IArticle | null;
     let axiosConfig: AxiosRequestConfig = {};

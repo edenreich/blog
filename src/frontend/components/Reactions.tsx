@@ -3,6 +3,7 @@ import * as React from 'react';
 import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import getConfig from 'next/config';
+import type { IVisitor } from '@/interfaces/visitor';
 
 import './Reactions.scss';
 
@@ -12,7 +13,7 @@ const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   articleId: string | undefined;
-  visitor: string | undefined;
+  visitor: IVisitor;
 }
 
 interface IState {
@@ -64,8 +65,8 @@ class Reactions extends React.Component<IProps, IState> {
     switch (reactionType) {
       case 'like':
         payload = {
-          uuid: visitor,
-          ip_address: '127.0.0.1',
+          uuid: visitor.cfuid,
+          ip_address: visitor.ip,
           reaction_type: 'like',
           article: articleId
         };
@@ -74,8 +75,8 @@ class Reactions extends React.Component<IProps, IState> {
         break;
       case 'love':
         payload = {
-          uuid: visitor,
-          ip_address: '127.0.0.1',
+          uuid: visitor.cfuid,
+          ip_address: visitor.ip,
           reaction_type: 'love',
           article: articleId
         };
@@ -84,8 +85,8 @@ class Reactions extends React.Component<IProps, IState> {
         break;
       case 'dislike':
         payload = {
-          uuid: visitor,
-          ip_address: '127.0.0.1',
+          uuid: visitor.cfuid,
+          ip_address: visitor.ip,
           reaction_type: 'dislike',
           article: articleId
         };
