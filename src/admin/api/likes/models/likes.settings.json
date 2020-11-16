@@ -10,8 +10,8 @@
   },
   "attributes": {
     "uuid": {
-      "type": "uid",
-      "private": false,
+      "type": "string",
+      "private": true,
       "required": true
     },
     "reaction_type": {
@@ -26,7 +26,6 @@
       "type": "string"
     },
     "article": {
-      "unique": true,
       "model": "articles",
       "via": "likes"
     }
