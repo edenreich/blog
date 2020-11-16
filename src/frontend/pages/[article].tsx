@@ -25,7 +25,7 @@ class Article extends React.Component<IProps> {
     const config = publicRuntimeConfig;
     let article: IArticle | null;
     let axiosConfig: AxiosRequestConfig = {};
-
+    console.log('HEADERS: ', ctx.req?.headers);
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       axiosConfig = {
