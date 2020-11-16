@@ -30,7 +30,6 @@ class Article extends React.Component<IProps> {
     const config = publicRuntimeConfig;
     let article: IArticle | null;
     let axiosConfig: AxiosRequestConfig = {};
-    console.log('HEADERS: ', ctx.req?.headers);
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       axiosConfig = {
@@ -41,7 +40,7 @@ class Article extends React.Component<IProps> {
     }
 
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles/${ctx.query.article}`, axiosConfig);
+      const response: AxiosResponse = await axios.get(`${config.apis.default.url}/articles/${ctx.query.article}`, axiosConfig);
       article = response.data;
     } catch {
       article = null;
