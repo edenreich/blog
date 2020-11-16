@@ -3,6 +3,7 @@ import * as React from 'react';
 import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import getConfig from 'next/config';
+import { IVisitor } from '@/interfaces/visitor';
 
 import './Reactions.scss';
 
@@ -12,7 +13,7 @@ const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   articleId: string | undefined;
-  visitor: string | undefined;
+  visitor: IVisitor;
 }
 
 interface IState {
@@ -58,43 +59,20 @@ class Reactions extends React.Component<IProps, IState> {
     const reactionType: any = event.currentTarget.id;
     const { articleId, visitor } = this.props;
 
-    let response: AxiosResponse;
-    let payload: any;
-
-    switch (reactionType) {
-      case 'like':
-        payload = {
-          uuid: visitor,
-          ip_address: '127.0.0.1',
-          reaction_type: 'like',
-          article: articleId
-        };
-
-        await axios.post('/api/likes', payload, axiosConfig);
-        break;
-      case 'love':
-        payload = {
-          uuid: visitor,
-          ip_address: '127.0.0.1',
-          reaction_type: 'love',
-          article: articleId
-        };
-
-        await axios.post('/api/likes', payload, axiosConfig);
-        break;
-      case 'dislike':
-        payload = {
-          uuid: visitor,
-          ip_address: '127.0.0.1',
-          reaction_type: 'dislike',
-          article: articleId
-        };
-
-        await axios.post('/api/likes', payload, axiosConfig);
-        break;
+    if (['like', 'love', 'dislike'].indexOf(reactionType) === -1) {
+      console.warn('Invalid reaction type!');
+      return;
     }
 
-    response = await axios.get(`/api/likes/count?article=${articleId}`, axiosConfig);
+    const payload: any = {
+      uuid: visitor.cfuid,
+      ip_address: visitor.ip,
+      reaction_type: reactionType,
+      article: articleId
+    };
+
+    await axios.post('/api/likes', payload, axiosConfig);
+    const response: AxiosResponse = await axios.get(`/api/likes/count?article=${articleId}`, axiosConfig);
 
     this.setState({
       like: response.data.like,
@@ -102,7 +80,6 @@ class Reactions extends React.Component<IProps, IState> {
       dislike: response.data.dislike,
       selected: reactionType
     });
-
   }
 
   render(): JSX.Element {

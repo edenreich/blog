@@ -3,17 +3,18 @@ import { NextPageContext } from 'next';
 import getConfig from 'next/config';
 import Head from 'next/head';
 import moment from 'moment';
-import Prism from "prismjs";
-import "prismjs/themes/prism.css";
+import Prism from 'prismjs';
+import 'prismjs/themes/prism.css';
 import ReactMarkDown from 'react-markdown';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
+import { IVisitor } from '@/interfaces/visitor';
 
 const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
-  visitor: string | undefined;
+  visitor: IVisitor;
   article: IArticle | null;
 }
 
@@ -21,11 +22,14 @@ class Article extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
     const cookie: string | undefined = ctx.req?.headers.cookie;
-    const visitor: string | undefined = cookie?.substring(cookie?.indexOf('=')+1, cookie?.length);
+    const visitor: IVisitor = {
+      cfuid: cookie?.split(';').map((c) => c.trim()).map((c) => c.split('=')).map((c) => { if (c[0] === '__cfduid') { return c[1]; } else { return undefined; } }).filter((c) => c !== undefined)[0],
+      ip: ctx.req?.headers['x-real-ip'],
+    };
+console.log('HEADERS: ', ctx.req?.headers);
     const config = publicRuntimeConfig;
     let article: IArticle | null;
     let axiosConfig: AxiosRequestConfig = {};
-
     if (config.app.env === 'development') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       axiosConfig = {
@@ -36,7 +40,7 @@ class Article extends React.Component<IProps> {
     }
 
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles/${ctx.query.article}`, axiosConfig);
+      const response: AxiosResponse = await axios.get(`${config.apis.default.url}/articles/${ctx.query.article}`, axiosConfig);
       article = response.data;
     } catch {
       article = null;

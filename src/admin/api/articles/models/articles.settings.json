@@ -51,8 +51,8 @@
       "required": false
     },
     "likes": {
-      "collection": "likes",
-      "via": "article"
+      "via": "article",
+      "collection": "likes"
     }
   }
 }

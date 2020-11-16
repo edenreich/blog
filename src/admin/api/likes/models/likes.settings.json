@@ -10,8 +10,9 @@
   },
   "attributes": {
     "uuid": {
-      "type": "uid",
-      "private": false
+      "type": "string",
+      "private": true,
+      "required": true
     },
     "reaction_type": {
       "type": "enumeration",
@@ -25,8 +26,8 @@
       "type": "string"
     },
     "article": {
-      "via": "likes",
-      "model": "articles"
+      "model": "articles",
+      "via": "likes"
     }
   }
 }
