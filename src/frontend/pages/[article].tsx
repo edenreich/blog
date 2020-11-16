@@ -9,7 +9,7 @@ import ReactMarkDown from 'react-markdown';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
-import type { IVisitor } from '@/interfaces/visitor';
+import { IVisitor } from '@/interfaces/visitor';
 
 const { publicRuntimeConfig } = getConfig();
 

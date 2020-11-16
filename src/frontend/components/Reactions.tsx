@@ -3,7 +3,7 @@ import * as React from 'react';
 import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import getConfig from 'next/config';
-import type { IVisitor } from '@/interfaces/visitor';
+import { IVisitor } from '@/interfaces/visitor';
 
 import './Reactions.scss';
 
