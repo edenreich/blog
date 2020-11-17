@@ -6,7 +6,7 @@ import moment from 'moment';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import ReactMarkDown from 'react-markdown';
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
 import { IVisitor } from '@/interfaces/visitor';
@@ -27,20 +27,10 @@ class Article extends React.Component<IProps> {
       ip: ctx.req?.headers['x-real-ip'],
     };
 console.log('HEADERS: ', ctx.req?.headers);
-    const config = publicRuntimeConfig;
     let article: IArticle | null;
-    let axiosConfig: AxiosRequestConfig = {};
-    if (config.app.env === 'development') {
-      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-      axiosConfig = {
-        headers: {
-          Host: config.apis.default.hostname
-        }
-      };
-    }
 
     try {
-      const response: AxiosResponse = await axios.get(`${config.apis.default.url}/articles/${ctx.query.article}`, axiosConfig);
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles/${ctx.query.article}`);
       article = response.data;
     } catch {
       article = null;

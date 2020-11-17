@@ -10,8 +10,10 @@ services:
     ports:
     - 80:80
     - 443:443
-    networks: 
+    networks:
     - app
+    extra_hosts:
+    - "eden-reich.com dev.eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
     depends_on: 
     - openssl
     
@@ -23,12 +25,15 @@ services:
       context: .
       dockerfile: ops/docker/frontend/Dockerfile
     environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
       MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
       MAILGUN_API_KEY: ${MAILGUN_API_KEY}
     volumes:
     - ./src/frontend:/app:rw
-    networks: 
+    networks:
     - app
+    extra_hosts:
+    - "eden-reich.com dev.eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
 
   admin:
     build:
@@ -41,6 +46,8 @@ services:
     - ./src/admin:/app:rw
     networks: 
     - app
+    extra_hosts:
+    - "eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
   
   openssl:
     build:
