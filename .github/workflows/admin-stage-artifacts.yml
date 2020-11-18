@@ -17,7 +17,6 @@ jobs:
       - name: Docker Build Artifacts
         run: |
           DOCKER_BUILDKIT=1 docker build \
-            --target stage \
-            --build-arg APP_ENV=stage \
+            --target admin-stage-artifacts \
             -t admin-stage-artifacts:latest \
             -f ops/docker/admin/artifacts/Dockerfile .
