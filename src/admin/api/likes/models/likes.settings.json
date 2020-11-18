@@ -25,6 +25,11 @@
     "article": {
       "model": "articles",
       "via": "likes"
+    },
+    "session": {
+      "unique": true,
+      "model": "sessions",
+      "via": "likes"
     }
   }
 }
