@@ -1,6 +1,6 @@
 ARG APP_ENV=production
 
-FROM node:12-buster-slim AS development
+FROM node:14-buster-slim AS development
 WORKDIR /app
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
@@ -10,7 +10,7 @@ VOLUME [ "/app" ]
 EXPOSE 3000
 CMD [ "/bin/sh", "-c", "yarn && yarn dev" ]
 
-FROM node:12-buster-slim AS stage
+FROM node:14-buster-slim AS stage
 WORKDIR /app
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
@@ -22,7 +22,7 @@ COPY --from=admin-stage-artifacts /tmp/build build
 EXPOSE 3000
 CMD [ "yarn", "start" ]
 
-FROM node:12-buster-slim AS production
+FROM node:14-buster-slim AS production
 WORKDIR /app
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
