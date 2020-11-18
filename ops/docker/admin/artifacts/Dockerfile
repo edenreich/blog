@@ -4,7 +4,7 @@ RUN apt-get update && \
 
 FROM builder AS admin-stage-artifacts
 WORKDIR /tmp
-ENV NODE_ENV=production
+ENV NODE_ENV=stage
 COPY src/admin/config/environments/stage ./config/environments/stage
 COPY src/admin/yarn.lock .
 COPY src/admin/package.json .
