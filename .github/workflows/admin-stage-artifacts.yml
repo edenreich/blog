@@ -1,0 +1,23 @@
+name: admin-stage-artifacts
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - ".github/workflows/admin-stage-artifacts.yml"
+      - "src/admin/package.json"
+      - "ops/docker/admin/artifacts/**"
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@master
+      - name: Docker Build Artifacts
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+            --target stage \
+            --build-arg APP_ENV=stage \
+            -t admin-stage-artifacts:latest \
+            -f ops/docker/admin/artifacts/Dockerfile .
