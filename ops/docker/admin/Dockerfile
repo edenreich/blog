@@ -29,7 +29,7 @@ ENV NODE_ENV=$APP_ENV
 ENV HOST='0.0.0.0'
 ENV PORT=3000
 COPY src/admin .
-COPY --from=admin-stage-artifacts /tmp/node_modules node_modules
-COPY --from=admin-stage-artifacts /tmp/build build
+COPY --from=admin-production-artifacts /tmp/node_modules node_modules
+COPY --from=admin-production-artifacts /tmp/build build
 EXPOSE 3000
 CMD [ "yarn", "start" ]
