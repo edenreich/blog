@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sessions",
+  "info": {
+    "name": "sessions"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "uuid": {
+      "type": "uid",
+      "required": true
+    },
+    "ip_address": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "likes": {
+      "via": "session",
+      "collection": "likes"
+    }
+  }
+}

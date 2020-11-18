@@ -1,6 +1,5 @@
 {
     "default": {
-        "url": "https://admin.eden-reich.com",
-        "hostname": "admin.eden-reich.com"
+        "url": "https://admin.eden-reich.com"
     }
 }

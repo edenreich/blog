@@ -22,7 +22,7 @@ declare type Small = {
   height: number;
   path: string | null;
   url: string;
-}
+};
 
 declare type Formats = {
   thumbnail: Thumbnail;
@@ -66,8 +66,8 @@ export interface Article {
   meta_thumbnail: ArticleThumbnail;
   content: string;
   published: boolean;
-  likes: Array<Like>;
+  likes: Like[];
   published_at: string;
   updated_at: Date;
   created_at: Date;
-};
+}

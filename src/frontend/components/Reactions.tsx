@@ -1,15 +1,12 @@
 
 import * as React from 'react';
 import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import getConfig from 'next/config';
+import axios, { AxiosResponse } from 'axios';
 import { IVisitor } from '@/interfaces/visitor';
 
 import './Reactions.scss';
 
 type selection = 'like' | 'love' | 'dislike' | null;
-
-const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   articleId: string | undefined;
@@ -21,16 +18,6 @@ interface IState {
   love: number;
   dislike: number;
   selected: selection;
-}
-
-let axiosConfig: AxiosRequestConfig = {};
-if (publicRuntimeConfig.app.env === 'development') {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-  axiosConfig = {
-    headers: {
-      Host: publicRuntimeConfig.apis.default.hostname
-    }
-  };
 }
 
 class Reactions extends React.Component<IProps, IState> {
@@ -45,7 +32,7 @@ class Reactions extends React.Component<IProps, IState> {
       selected: null
     };
 
-    axios.get(`/api/likes/count?article=${this.props.articleId}`, axiosConfig).then((response: AxiosResponse) => {
+    axios.get(`/api/likes/count?article=${this.props.articleId}`).then((response: AxiosResponse) => {
       this.setState({
         like: response.data.like,
         love: response.data.love,
@@ -65,14 +52,14 @@ class Reactions extends React.Component<IProps, IState> {
     }
 
     const payload: any = {
-      uuid: visitor.cfuid,
-      ip_address: visitor.ip,
+      uuid: visitor.uuid,
       reaction_type: reactionType,
       article: articleId
     };
+    console.log('Payload: ', payload);
 
-    await axios.post('/api/likes', payload, axiosConfig);
-    const response: AxiosResponse = await axios.get(`/api/likes/count?article=${articleId}`, axiosConfig);
+    await axios.post('/api/likes', payload);
+    const response: AxiosResponse = await axios.get(`/api/likes/count?article=${articleId}`);
 
     this.setState({
       like: response.data.like,

@@ -1,6 +1,5 @@
 {
     "default": {
-        "url": "https://admin-stage.eden-reich.com",
-        "hostname": "admin-stage.eden-reich.com"
+        "url": "https://admin-stage.eden-reich.com"
     }
 }

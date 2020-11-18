@@ -7,7 +7,8 @@
     "rules": {
         "semicolon": [true, "always"],
         "no-console": false,
-        "quotemark": [true, "single", "jsx-double"]
+        "quotemark": [true, "single", "jsx-double"],
+        "eofline": true
     },
     "rulesDirectory": [],
     "linterOptions": {

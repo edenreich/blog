@@ -2,13 +2,12 @@
 
 const { sanitizeEntity } = require('strapi-utils');
 
-
 /**
  * Read the documentation (https://strapi.io/documentation/3.0.0-beta.x/concepts/controllers.html#core-controllers)
  * to customize this controller
  */
 
-const required = ['uuid', 'reaction_type', 'article']
+const required = ['ip_address'];
 
 module.exports = {
 
@@ -20,8 +19,8 @@ module.exports = {
       return { message: 'invalid payload' }
     }
 
-    const response = await strapi.services.likes.create(body);
-    return sanitizeEntity(response, { model: strapi.models.likes });
+    const response = await strapi.services.sessions.create(body);
+    return sanitizeEntity(response, { model: strapi.models.sessions });
   },
 
   async validate(body) {
@@ -33,13 +32,5 @@ module.exports = {
 
     return true;
   },
-
-  async count(ctx) {
-    const { query } = ctx.request;
-    const { article } = query;
-
-    const response = await strapi.services.likes.count(article);
-    return response;
-  }
 
 };

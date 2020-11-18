@@ -7,7 +7,7 @@ import moment from 'moment';
 import ReactMarkDown from 'react-markdown';
 
 import getConfig from 'next/config';
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import './index.scss';
 
@@ -19,19 +19,8 @@ class IndexPage extends React.Component<IProps> {
 
   static async getInitialProps(): Promise<any> {
     const { publicRuntimeConfig } = getConfig();
-    const config = publicRuntimeConfig;
-    let axiosConfig: AxiosRequestConfig = {};
 
-    if (config.app.env === 'development') {
-      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-      axiosConfig = {
-        headers: {
-          Host: config.apis.default.hostname
-        }
-      };
-    }
-
-    const response: AxiosResponse = await axios.get(`${config.apis.default.url}/articles?_sort=created_at:DESC`, axiosConfig);
+    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles?_sort=created_at:DESC`);
     const articles: Article[] = response.data;
 
     return { articles };

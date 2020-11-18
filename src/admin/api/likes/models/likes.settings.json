@@ -22,11 +22,13 @@
         "dislike"
       ]
     },
-    "ip_address": {
-      "type": "string"
-    },
     "article": {
       "model": "articles",
+      "via": "likes"
+    },
+    "session": {
+      "unique": true,
+      "model": "sessions",
       "via": "likes"
     }
   }
