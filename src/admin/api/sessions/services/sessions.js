@@ -10,13 +10,15 @@ module.exports = {
   async create(data) {
     const { ip_address } = data;
 
+    if (typeof ip_address === 'undefined') return;
+
     const session = await strapi.query('sessions').find({ ip_address });
 
     if (session && session.length > 0) {
       return session;
     } else {
       await strapi.query('sessions').create(data);
-      return await strapi.query('sessions').find({ ip_address });
+      return await strapi.query('sessions').findOne({ ip_address });
     }
   },
 
