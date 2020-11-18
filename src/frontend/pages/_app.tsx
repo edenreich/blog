@@ -37,8 +37,9 @@ class Blog extends App<IProps, IState> {
     try {
       const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.default.url}/sessions`, { ip_address: ipAddress }, { headers: { 'Content-Type': 'application/json' } });
       session = response.data[0];
-    } catch {
+    } catch (error) {
       session = null;
+      console.error(error);
     }
 
     if (Component.getInitialProps) {

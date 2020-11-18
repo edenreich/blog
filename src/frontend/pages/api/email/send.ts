@@ -58,9 +58,8 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResponseInterfac
         await axios({url, data: formData, method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
         res.statusCode = 200;
         res.end(JSON.stringify(responseData));
-    } catch (err) {
+    } catch (error) {
         responseData.success = false;
-        responseData.debug = err;
         res.statusCode = 500;
         res.end(JSON.stringify(responseData));
     }
