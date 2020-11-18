@@ -1,6 +1,6 @@
 ARG APP_ENV=production
 
-FROM node:13.10.1-buster-slim AS builder
+FROM node:15.2-buster-slim AS builder
 WORKDIR /tmp
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get remove --auto-remove -y build-essential python && \
     rm -rf /var/lib/apt/lists/*
 
-FROM node:13.10.1-buster-slim AS development
+FROM node:15.2-buster-slim AS development
 WORKDIR /app
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
@@ -24,7 +24,7 @@ VOLUME [ "/app" ]
 EXPOSE 3000
 CMD [ "/bin/sh", "-c", "yarn && yarn dev" ]
 
-FROM node:13.10.1-buster-slim AS stage
+FROM node:15.2-buster-slim AS stage
 WORKDIR /app
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
@@ -36,7 +36,7 @@ COPY --from=builder /tmp/build build
 EXPOSE 3000
 CMD [ "yarn", "start" ]
 
-FROM node:13.10.1-buster-slim AS production
+FROM node:15.2-buster-slim AS production
 WORKDIR /app
 ARG APP_ENV
 ENV NODE_ENV=$APP_ENV
