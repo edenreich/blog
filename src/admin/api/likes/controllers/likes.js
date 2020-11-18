@@ -8,7 +8,7 @@ const { sanitizeEntity } = require('strapi-utils');
  * to customize this controller
  */
 
-const required = ['uuid', 'ip_address', 'reaction_type', 'article']
+const required = ['uuid', 'reaction_type', 'article']
 
 module.exports = {
 

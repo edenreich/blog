@@ -22,9 +22,6 @@
         "dislike"
       ]
     },
-    "ip_address": {
-      "type": "string"
-    },
     "article": {
       "model": "articles",
       "via": "likes"
