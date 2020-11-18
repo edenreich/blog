@@ -1,4 +1,7 @@
 export interface IVisitor {
-  cfuid: string;
-  ip: string | string[];
+  id: string;
+  uuid: string;
+  ip_address: string;
+  updated_at: Date;
+  created_at: Date;
 }

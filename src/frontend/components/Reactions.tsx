@@ -52,8 +52,8 @@ class Reactions extends React.Component<IProps, IState> {
     }
 
     const payload: any = {
-      uuid: visitor.cfuid,
-      ip_address: visitor.ip,
+      uuid: visitor.uuid,
+      ip_address: visitor.ip_address,
       reaction_type: reactionType,
       article: articleId
     };

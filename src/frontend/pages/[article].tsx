@@ -14,19 +14,13 @@ import { IVisitor } from '@/interfaces/visitor';
 const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
-  visitor: IVisitor;
+  visitor?: IVisitor;
   article: IArticle | null;
 }
 
 class Article extends React.Component<IProps> {
 
   static async getInitialProps(ctx: NextPageContext): Promise<IProps> {
-    const cookie: string | undefined = ctx.req?.headers.cookie;
-    const visitor: IVisitor = {
-      cfuid: cookie?.split(';').map((c) => c.trim()).map((c) => c.split('=')).map((c) => { if (c[0] === '__cfduid') { return c[1]; } else { return undefined; } }).filter((c) => c !== undefined)[0],
-      ip: ctx.req?.headers['x-real-ip'],
-    };
-console.log('HEADERS: ', ctx.req?.headers);
     let article: IArticle | null;
 
     try {
@@ -36,7 +30,7 @@ console.log('HEADERS: ', ctx.req?.headers);
       article = null;
     }
 
-    return { visitor, article };
+    return { article };
   }
 
   componentDidMount(): void {

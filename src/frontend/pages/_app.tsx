@@ -1,7 +1,7 @@
+import axios, { AxiosResponse } from 'axios';
+import getConfig from 'next/config';
 import App, { AppContext } from 'next/app';
-
-import '@/assets/scss/reset.scss';
-import '@/assets/scss/global.scss';
+import { AppInitialProps } from 'next/dist/next-server/lib/utils';
 
 import Layout from '@/components/Layout';
 import NextNProgress from 'nextjs-progressbar';
@@ -11,12 +11,16 @@ import Content from '@/components/Content';
 import Footer from '@/components/Footer';
 
 import { Article } from '@/interfaces/article';
-import { AppInitialProps } from 'next/dist/next-server/lib/utils';
+import { IVisitor } from '@/interfaces/visitor';
 
+import '@/assets/scss/reset.scss';
+import '@/assets/scss/global.scss';
+
+const { publicRuntimeConfig } = getConfig();
 
 interface IProps extends AppInitialProps {
+  session: IVisitor;
   pageProps: any;
-  apis: any;
 }
 
 interface IState {
@@ -25,14 +29,23 @@ interface IState {
 
 class Blog extends App<IProps, IState> {
 
-  static async getInitialProps({Component, ctx}: AppContext): Promise<any>{
+  static async getInitialProps({ Component, ctx }: AppContext): Promise<any> {
     let pageProps = {};
+
+    const ipAddress: string | string[] = ctx.req?.headers['x-real-ip'];
+    let session;
+    try {
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.default.url}/sessions`, { ip_address: ipAddress }, { headers: { 'Content-Type': 'application/json' } });
+      session = response.data[0];
+    } catch {
+      session = null;
+    }
 
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }
 
-    return { pageProps };
+    return { session, pageProps };
   }
 
   render(): JSX.Element {
@@ -72,7 +85,7 @@ class Blog extends App<IProps, IState> {
           />
         </Header>
         <Content className="grid-content">
-          <this.props.Component {...this.props.pageProps} />
+          <this.props.Component visitor={this.props.session} {...this.props.pageProps} />
         </Content>
         <Footer className="grid-footer" />
       </Layout>
