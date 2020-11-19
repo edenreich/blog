@@ -1,9 +1,6 @@
-ARG APP_ENV=production
-
 FROM node:14-buster-slim AS development
 WORKDIR /app
-ARG APP_ENV
-ENV NODE_ENV=$APP_ENV
+ENV NODE_ENV=development
 ENV HOST='0.0.0.0'
 ENV PORT=3000
 VOLUME [ "/app" ]
@@ -12,8 +9,7 @@ CMD [ "/bin/sh", "-c", "yarn && yarn dev" ]
 
 FROM node:14-buster-slim AS stage
 WORKDIR /app
-ARG APP_ENV
-ENV NODE_ENV=$APP_ENV
+ENV NODE_ENV=stage
 ENV HOST='0.0.0.0'
 ENV PORT=3000
 COPY src/admin .
@@ -24,8 +20,7 @@ CMD [ "yarn", "start" ]
 
 FROM node:14-buster-slim AS production
 WORKDIR /app
-ARG APP_ENV
-ENV NODE_ENV=$APP_ENV
+ENV NODE_ENV=production
 ENV HOST='0.0.0.0'
 ENV PORT=3000
 COPY src/admin .
