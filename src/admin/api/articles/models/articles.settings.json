@@ -42,9 +42,6 @@
       "type": "richtext",
       "required": true
     },
-    "published_at": {
-      "type": "datetime"
-    },
     "published": {
       "type": "boolean",
       "default": false,

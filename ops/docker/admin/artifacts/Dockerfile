@@ -1,6 +1,6 @@
 FROM node:14-buster-slim AS builder
 RUN apt-get update && \
-    apt-get install -y build-essential libpng-dev python
+    apt-get install -y build-essential python
 
 FROM builder AS admin-stage-artifacts
 WORKDIR /tmp

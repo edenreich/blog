@@ -25,8 +25,7 @@ jobs:
       - name: Docker Build
         run: |
           DOCKER_BUILDKIT=1 docker build \
-            --target stage \
-            --build-arg APP_ENV=stage \
+            --target stage
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -t ${{ env.DOCKER_REPO }}:latest \
             -f ops/docker/admin/Dockerfile .
