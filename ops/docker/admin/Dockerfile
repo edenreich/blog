@@ -5,7 +5,7 @@ ENV HOST='0.0.0.0'
 ENV PORT=3000
 VOLUME [ "/app" ]
 EXPOSE 3000
-CMD [ "/bin/sh", "-c", "yarn && yarn dev" ]
+CMD [ "/bin/sh", "-c", "yarn && yarn develop" ]
 
 FROM node:14-buster-slim AS stage
 WORKDIR /app
