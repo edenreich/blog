@@ -39,7 +39,7 @@ services:
     build:
       target: development
       args:
-        APP_ENV: development
+        NODE_ENV: development
       context: .
       dockerfile:  ops/docker/admin/Dockerfile
     volumes:
@@ -49,6 +49,20 @@ services:
     extra_hosts:
     - "eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
   
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: blog
+    ports:
+    - 5432:5432
+    networks:
+    - app
+    volumes:
+    - ./src/admin/database:/docker-entrypoint-initdb.d
+    - database-data:/var/lib/postgresql/data
+
   openssl:
     build:
       context: .
@@ -56,6 +70,8 @@ services:
     volumes:
     - ./ops/docker/helpers/openssl/certs:/root/certs:rw
 
+volumes:
+  database-data:
 
 networks:
   app:
