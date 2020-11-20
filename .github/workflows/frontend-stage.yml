@@ -24,6 +24,10 @@ jobs:
       - name: Check if package.json has been changed
         run: git diff --quiet --exit-code src/frontend/package.json
       - name: Build Artifacts
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+            -t frontend-artifacts:latest \
+            -f ops/docker/frontend/artifacts/Dockerfile .
         if: ${{ failure() }}
 
   build:
