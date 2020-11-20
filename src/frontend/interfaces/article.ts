@@ -67,7 +67,7 @@ export interface Article {
   content: string;
   published: boolean;
   likes: Like[];
-  published_at: string;
+  published_at: Date;
   updated_at: Date;
   created_at: Date;
 }
