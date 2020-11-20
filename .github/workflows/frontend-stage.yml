@@ -22,7 +22,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Check if package.json has been changed
-        run: git diff --quiet --exit-code $(git rev-parse HEAD^) -- src/frontend/package.json
+        run: git diff --quiet --exit-code $(git log --format="%H" -n 2 | tail -n 1) -- src/frontend/package.json
       - name: Build Artifacts
         run: |
           DOCKER_BUILDKIT=1 docker build \
