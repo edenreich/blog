@@ -36,6 +36,7 @@ jobs:
           fi
   build-artifacts:
     runs-on: self-hosted
+    needs: check
     steps:
       - uses: actions/checkout@master
       - name: Build Artifacts
@@ -47,6 +48,7 @@ jobs:
             -f ops/docker/admin/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
+    needs: build-artifacts
     steps:
       - uses: actions/checkout@master
       - name: Docker Build
