@@ -37,17 +37,17 @@ jobs:
   build-artifacts:
     runs-on: self-hosted
     needs: check
-    if: ${{ needs.check.outputs.run_job == 'true' }}
     steps:
       - uses: actions/checkout@master
       - name: Build Artifacts
+        if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
           DOCKER_BUILDKIT=1 docker build \
             -t frontend-artifacts:latest \
             -f ops/docker/frontend/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
-    needs: [check, build-artifacts]
+    needs: build-artifacts
     steps:
       - uses: actions/checkout@master
       - name: Docker Build
