@@ -55,10 +55,11 @@ class IndexPage extends React.Component<IProps> {
               <p>Take a look on the latest posted articles:</p>
               {
                 this.props.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
+                  console.log('thumbnail url: ', article.meta_thumbnail.formats.thumbnail.url);
                   return (
                     <article key={key}>
                       <div className="home__article__title">
-                        <img src={article.meta_thumbnail.previewUrl} />
+                        <img src={article.meta_thumbnail.formats.thumbnail?.url} />
                         <h3>{article.title}</h3>
                         <span className="home__article__date"><small>{moment(article.published_at).fromNow()}</small></span>
                       </div>
