@@ -18,7 +18,7 @@ env:
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
 
 jobs:
-  test:
+  check:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
@@ -31,9 +31,15 @@ jobs:
           else
             echo "::set-output name=run_job::false"
           fi
+
+  test:
+    runs-on: self-hosted
+    needs: check
+    if: ${{ needs.check.outputs.run_job == 'true' }}
+    steps:
       - name: Build Artifacts
         run: echo Running job....
-        if: ${{ outputs.run_job == 'true' }}
+        
   # build-artifacts:
   #   runs-on: self-hosted
   #   steps:
