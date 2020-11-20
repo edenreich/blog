@@ -56,7 +56,6 @@ class Reactions extends React.Component<IProps, IState> {
       reaction_type: reactionType,
       article: articleId
     };
-    console.log('Payload: ', payload);
 
     await axios.post('/api/likes', payload);
     const response: AxiosResponse = await axios.get(`/api/likes/count?article=${articleId}`);
