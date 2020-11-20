@@ -32,7 +32,6 @@ jobs:
             -t frontend-artifacts:latest \
             -f ops/docker/frontend/artifacts/Dockerfile .
         if: ${{ failure() }}
-
   build:
     runs-on: self-hosted
     needs: build-artifacts
