@@ -18,6 +18,14 @@ env:
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
 
 jobs:
+  build-artifacts:
+    runs-on: self-hosted
+    steps:
+      - name: Check if package.json has been changed
+        run: git diff --quiet --exit-code src/frontend/package.json
+      - name: Build Artifacts
+        if: ${{ failure() }}
+
   build:
     runs-on: self-hosted
     steps:
@@ -26,10 +34,8 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
             --target stage \
-            --build-arg APP_ENV=stage \
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -t ${{ env.DOCKER_REPO }}:latest \
-            --cache-from ${{ env.DOCKER_REPO }}:latest \
             -f ops/docker/frontend/Dockerfile .
   push:
     runs-on: self-hosted
