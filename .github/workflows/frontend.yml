@@ -18,6 +18,20 @@ env:
   SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
 
 jobs:
+  build-artifacts:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 2
+      - name: Check if package.json has been changed
+        run: git diff --quiet --exit-code $(git log --format="%H" -n 2 | tail -n 1) -- src/frontend/package.json
+      - name: Build Artifacts
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+            -t frontend-artifacts:latest \
+            -f ops/docker/frontend/artifacts/Dockerfile .
+        if: ${{ failure() }}
   build:
     runs-on: self-hosted
     steps:
