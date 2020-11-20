@@ -38,7 +38,7 @@ jobs:
   test:
     runs-on: self-hosted
     needs: check
-    # if: ${{ needs.check.outputs.run_job == 'true' }}
+    if: ${{ needs.check.outputs.run_job == 'true' }}
     steps:
       - name: Build Artifacts
         run: echo Running job....${{ needs.check.outputs.run_job }}
