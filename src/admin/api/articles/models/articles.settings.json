@@ -2,11 +2,13 @@
   "kind": "collectionType",
   "collectionName": "articles",
   "info": {
-    "name": "articles"
+    "name": "articles",
+    "description": "Present posted and draft articles"
   },
   "options": {
     "increments": true,
-    "timestamps": true
+    "timestamps": true,
+    "draftAndPublish": true
   },
   "attributes": {
     "uuid": {
@@ -42,14 +44,9 @@
       "type": "richtext",
       "required": true
     },
-    "published": {
-      "type": "boolean",
-      "default": false,
-      "required": false
-    },
     "likes": {
-      "via": "article",
-      "collection": "likes"
+      "collection": "likes",
+      "via": "article"
     }
   }
 }

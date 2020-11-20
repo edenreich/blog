@@ -23,8 +23,8 @@
       ]
     },
     "article": {
-      "model": "articles",
-      "via": "likes"
+      "via": "likes",
+      "model": "articles"
     },
     "session": {
       "unique": true,

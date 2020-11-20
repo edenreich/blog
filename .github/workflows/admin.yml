@@ -18,8 +18,37 @@ env:
   SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
 
 jobs:
+  check:
+    outputs:
+      run_job: ${{ steps.check_file.outputs.run_job }}
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 2
+      - name: Check if package.json has been changed
+        id: check_file
+        run: |
+          if [ $(git diff --name-only HEAD^ HEAD | grep src/admin/package.json) ]; then 
+            echo "::set-output name=run_job::true"
+          else
+            echo "::set-output name=run_job::false"
+          fi
+  build-artifacts:
+    runs-on: self-hosted
+    needs: check
+    steps:
+      - uses: actions/checkout@master
+      - name: Build Artifacts
+        if: ${{ needs.check.outputs.run_job == 'true' }}
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+            --target admin-production-artifacts \
+            -t admin-production-artifacts:latest \
+            -f ops/docker/admin/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
+    needs: build-artifacts
     steps:
       - uses: actions/checkout@master
       - name: Docker Build

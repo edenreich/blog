@@ -27,6 +27,8 @@ class IndexPage extends React.Component<IProps> {
   }
 
   render(): JSX.Element {
+    const { publicRuntimeConfig } = getConfig();
+
     return (
       <div id="home" className="home">
         <Head>
@@ -54,13 +56,19 @@ class IndexPage extends React.Component<IProps> {
               <h2>Blog Feed</h2>
               <p>Take a look on the latest posted articles:</p>
               {
-                this.props.articles?.filter((article: Article) => article.published).map((article: Article, key: number) => {
+                this.props.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
                   return (
                     <article key={key}>
-                      <h3>{article.title}<span className="date"> - date: {moment(article.updated_at).fromNow()}</span></h3>
-                      <ReactMarkDown source={article.content.substring(0, 300)} escapeHtml={false} />
-                      <div className="home__text-preview">
-                        <Link href={`${article.slug}`}><a className="button-primary">read more..</a></Link>
+                      <div className="home__article__title">
+                        <img src={`${publicRuntimeConfig.apis.default.url}${article.meta_thumbnail.formats.thumbnail?.url}`} />
+                        <h3>{article.title}</h3>
+                        <span className="home__article__date"><small>{moment(article.published_at).fromNow()}</small></span>
+                      </div>
+                      <div className="home__article__content">
+                        <ReactMarkDown source={article.content.substring(0, 300)} escapeHtml={false} />
+                      </div>
+                      <div className="home__article__text-preview">
+                        <Link href={`${article.slug}`}><a className="button-primary">Read more..</a></Link>
                       </div>
                     </article>
                   );
