@@ -18,60 +18,72 @@ env:
   SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
 
 jobs:
-  build-artifacts:
+  test:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
         with:
           fetch-depth: 2
       - name: Check if package.json has been changed
-        run: git diff --quiet --exit-code $(git log --format="%H" -n 2 | tail -n 1) -- src/frontend/package.json
+        run: if [[ git diff --name-only HEAD^ HEAD | grep src/frontend/package.json ]]; then echo "::set-output name=run_job::true" else echo "::set-output name=run_job::false" fi
       - name: Build Artifacts
-        run: |
-          DOCKER_BUILDKIT=1 docker build \
-            -t frontend-artifacts:latest \
-            -f ops/docker/frontend/artifacts/Dockerfile .
-        if: ${{ failure() }}
-  build:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@master
-      - name: Docker Build
-        run: |
-          DOCKER_BUILDKIT=1 docker build \
-            --target production \
-            --build-arg APP_ENV=production \
-            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
-            -t ${{ env.DOCKER_REPO }}:latest \
-            --cache-from ${{ env.DOCKER_REPO }}:latest \
-            -f ops/docker/frontend/Dockerfile .
-  push:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: Docker Login
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
-      - name: Docker Push
-        run: |
-          docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker push ${{ env.DOCKER_REPO }}:latest
-  deploy:
-    runs-on: self-hosted
-    needs: push
-    steps:
-      - uses: actions/checkout@master
-      - name: Kubernetes Apply
-        run: |
-          kubectl config use-context production
-          kubectl apply -f ops/kubernetes/deployments/frontend/
-          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
-  cleanup:
-    runs-on: self-hosted
-    needs: deploy
-    steps:
-      - name: Remove all images from github-runner
-        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
-      - name: Keep 5 Releases
-        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
-      - name: Remove Dangling Docker Images
-        run: docker system prune -f
+        run: echo Running job....
+        if: ${{ outputs.run_job == 'true' }}
+  # build-artifacts:
+  #   runs-on: self-hosted
+  #   steps:
+  #     - uses: actions/checkout@master
+  #       with:
+  #         fetch-depth: 2
+  #     - name: Check if package.json has been changed
+  #       run: git diff --quiet --exit-code $(git log --format="%H" -n 2 | tail -n 1) -- src/frontend/package.json
+  #     - name: Build Artifacts
+  #       run: |
+  #         DOCKER_BUILDKIT=1 docker build \
+  #           -t frontend-artifacts:latest \
+  #           -f ops/docker/frontend/artifacts/Dockerfile .
+  #       if: ${{ failure() }}
+  # build:
+  #   runs-on: self-hosted
+  #   needs: build-artifacts
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Docker Build
+  #       run: |
+  #         DOCKER_BUILDKIT=1 docker build \
+  #           --target production \
+  #           --build-arg APP_ENV=production \
+  #           -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+  #           -t ${{ env.DOCKER_REPO }}:latest \
+  #           --cache-from ${{ env.DOCKER_REPO }}:latest \
+  #           -f ops/docker/frontend/Dockerfile .
+  # push:
+  #   runs-on: self-hosted
+  #   needs: build
+  #   steps:
+  #     - name: Docker Login
+  #       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
+  #     - name: Docker Push
+  #       run: |
+  #         docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+  #         docker push ${{ env.DOCKER_REPO }}:latest
+  # deploy:
+  #   runs-on: self-hosted
+  #   needs: push
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Kubernetes Apply
+  #       run: |
+  #         kubectl config use-context production
+  #         kubectl apply -f ops/kubernetes/deployments/frontend/
+  #         kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+  # cleanup:
+  #   runs-on: self-hosted
+  #   needs: deploy
+  #   steps:
+  #     - name: Remove all images from github-runner
+  #       run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
+  #     - name: Keep 5 Releases
+  #       run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
+  #     - name: Remove Dangling Docker Images
+  #       run: docker system prune -f
