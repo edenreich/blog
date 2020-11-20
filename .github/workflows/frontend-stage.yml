@@ -21,6 +21,7 @@ jobs:
   build-artifacts:
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@master
       - name: Check if package.json has been changed
         run: git diff --quiet --exit-code $(git log --format="%H" -n 2 | tail -n 1) -- src/frontend/package.json
       - name: Build Artifacts
