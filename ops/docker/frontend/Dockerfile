@@ -21,6 +21,7 @@ WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=development
 ENV NODE_ENV=development
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential python
 EXPOSE 3000
 CMD [ "yarn", "dev" ]
 

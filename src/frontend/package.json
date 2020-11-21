@@ -21,7 +21,7 @@
     "axios": "^0.19.2",
     "formik": "^2.1.4",
     "moment": "^2.25.3",
-    "next": "latest",
+    "next": "^10.0.2",
     "nextjs-progressbar": "^0.0.4",
     "prismjs": "^1.21.0",
     "react": "^16.12.0",

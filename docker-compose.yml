@@ -20,8 +20,6 @@ services:
   frontend:
     build:
       target: development
-      args:
-        APP_ENV: development
       context: .
       dockerfile: ops/docker/frontend/Dockerfile
     environment:
@@ -79,12 +77,12 @@ services:
       if [ ! -d /frontend/node_modules ]; then
         apt-get update;
         apt-get install -y build-essential python;
-        yarn;
+        yarn upgrade && yarn;
       fi
       if [ ! -d /admin/node_modules ]; then 
         apt-get update apt-get install -y build-essential python;
         cd /admin;
-        yarn;
+        yarn upgrade && yarn;
       fi
     working_dir: /frontend
     volumes:
