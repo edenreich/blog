@@ -43,8 +43,8 @@ jobs:
         if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
           DOCKER_BUILDKIT=1 docker build \
-            --target admin-production-artifacts \
-            -t admin-production-artifacts:latest \
+            --target admin-artifacts \
+            -t admin-artifacts:latest \
             -f ops/docker/admin/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
@@ -83,7 +83,9 @@ jobs:
     needs: deploy
     steps:
       - name: Remove all images from github-runner
-        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
+        run: |
+          docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
+          docker system prune -f
       - name: Keep 5 Releases
         run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
       - name: Remove Dangling Docker Images

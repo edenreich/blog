@@ -31,17 +31,14 @@ class Blog extends App<IProps, IState> {
 
   static async getInitialProps({ Component, ctx }: AppContext): Promise<any> {
     let pageProps = {};
-
-    const ipAddress: string | string[] = ctx.req?.headers['x-real-ip'];
     let session;
     try {
-      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.default.url}/sessions`, { ip_address: ipAddress }, { headers: { 'Content-Type': 'application/json' } });
-      session = response.data[0];
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/sessions`, {} ,{ headers:  ctx?.req?.headers });
+      session = response.data;
     } catch (error) {
       session = null;
       console.error(error);
     }
-
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }

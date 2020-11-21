@@ -1,3 +1,4 @@
 {
-    "env": "stage"
+    "env": "stage",
+    "url": "https://stage.eden-reich.com"
 }

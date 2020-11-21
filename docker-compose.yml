@@ -70,6 +70,27 @@ services:
     volumes:
     - ./ops/docker/helpers/openssl/certs:/root/certs:rw
 
+  npm:
+    image: node:14-buster-slim
+    command:
+    - /bin/bash 
+    - -c
+    - |
+      if [ ! -d /frontend/node_modules ]; then
+        apt-get update;
+        apt-get install -y build-essential python;
+        yarn;
+      fi
+      if [ ! -d /admin/node_modules ]; then 
+        apt-get update apt-get install -y build-essential python;
+        cd /admin;
+        yarn;
+      fi
+    working_dir: /frontend
+    volumes:
+    - ./src/frontend:/frontend:rw
+    - ./src/admin:/admin:rw
+
 volumes:
   database-data:
 

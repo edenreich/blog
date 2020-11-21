@@ -12,9 +12,9 @@ module.exports = {
 
     if (typeof ip_address === 'undefined') return;
 
-    const session = await strapi.query('sessions').find({ ip_address });
+    const session = await strapi.query('sessions').findOne({ ip_address });
 
-    if (session && session.length > 0) {
+    if (session) {
       return session;
     } else {
       await strapi.query('sessions').create(data);

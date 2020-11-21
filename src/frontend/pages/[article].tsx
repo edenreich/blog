@@ -24,7 +24,7 @@ class Article extends React.Component<IProps> {
     let article: IArticle | null;
 
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles/${ctx.query.article}`);
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles/${ctx.query.article}`);
       article = response.data;
     } catch (error) {
       article = null;
