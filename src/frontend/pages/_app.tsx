@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import getConfig from 'next/config';
 import App, { AppContext } from 'next/app';
 import { AppInitialProps } from 'next/dist/next-server/lib/utils';
 
@@ -16,8 +15,6 @@ import { IVisitor } from '@/interfaces/visitor';
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/global.scss';
 
-const { publicRuntimeConfig } = getConfig();
-
 interface IProps extends AppInitialProps {
   session: IVisitor;
   pageProps: any;
@@ -31,17 +28,14 @@ class Blog extends App<IProps, IState> {
 
   static async getInitialProps({ Component, ctx }: AppContext): Promise<any> {
     let pageProps = {};
-
-    const ipAddress: string | string[] = ctx.req?.headers['x-real-ip'];
     let session;
     try {
-      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.default.url}/sessions`, { ip_address: ipAddress }, { headers: { 'Content-Type': 'application/json' } });
+      const response: AxiosResponse = await axios.post(`/api/sessions`, {} ,{ headers: { 'Content-Type': 'application/json' } });
       session = response.data[0];
     } catch (error) {
       session = null;
       console.error(error);
     }
-
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }
