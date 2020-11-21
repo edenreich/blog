@@ -19,6 +19,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);
-    res.status(200).json({ message: 'could not create or find the session.' });
+    res.status(404).json({ message: 'could not create or find the session.' });
   }
 };
