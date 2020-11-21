@@ -13,6 +13,6 @@ COPY src/frontend/assets assets
 COPY src/frontend/utils utils
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential python && \
-    yarn global add mkdirp@latest && \
+    npm i -g mkdirp@latest && \
     NODE_ENV=production yarn install --modules-folder ./production_node_modules && \
     yarn install --modules-folder ./development_node_modules
