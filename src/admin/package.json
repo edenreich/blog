@@ -10,7 +10,7 @@
     "strapi": "strapi"
   },
   "devDependencies": {},
-  "dependencies": { 
+  "dependencies": {
     "strapi": "3.3.3",
     "strapi-admin": "3.3.3",
     "strapi-utils": "3.3.3",
