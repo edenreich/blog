@@ -10,8 +10,8 @@ COPY src/frontend/interfaces interfaces
 COPY src/frontend/components components
 COPY src/frontend/pages pages
 COPY src/frontend/assets assets
+COPY src/frontend/utils utils
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential python && \
-    yarn && \
-    yarn build && \
-    NODE_ENV=production yarn
+    NODE_ENV=production yarn install --modules-folder ./production_node_modules && \
+    yarn install --modules-folder ./development_node_modules
