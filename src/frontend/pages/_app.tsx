@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import getConfig from 'next/config';
 import App, { AppContext } from 'next/app';
 import { AppInitialProps } from 'next/dist/next-server/lib/utils';
 
@@ -15,6 +16,8 @@ import { IVisitor } from '@/interfaces/visitor';
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/global.scss';
 
+const { publicRuntimeConfig } = getConfig();
+
 interface IProps extends AppInitialProps {
   session: IVisitor;
   pageProps: any;
@@ -30,7 +33,7 @@ class Blog extends App<IProps, IState> {
     let pageProps = {};
     let session;
     try {
-      const response: AxiosResponse = await axios.post(`/api/sessions`, {} ,{ headers: { 'Content-Type': 'application/json' } });
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/sessions`, {} ,{ headers: { 'Content-Type': 'application/json' } });
       session = response.data[0];
     } catch (error) {
       session = null;
