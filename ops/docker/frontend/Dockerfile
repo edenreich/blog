@@ -1,12 +1,14 @@
 FROM node:14-buster-slim AS development
 WORKDIR /app
+ENV PORT=3000
 ENV APP_ENV=development
 ENV NODE_ENV=development
 EXPOSE 3000
-CMD [ "/bin/sh", "-c", "yarn && yarn dev" ]
+CMD [ "yarn", "dev" ]
 
 FROM node:14-buster-slim AS stage
 WORKDIR /app
+ENV PORT=3000
 ENV APP_ENV=stage
 ENV NODE_ENV=production
 COPY src/frontend .
@@ -17,6 +19,7 @@ CMD [ "yarn", "start" ]
 
 FROM node:14-buster-slim AS production
 WORKDIR /app
+ENV PORT=3000
 ENV APP_ENV=production
 ENV NODE_ENV=production
 COPY src/frontend .
