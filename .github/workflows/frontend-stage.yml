@@ -18,29 +18,29 @@ env:
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
 
 jobs:
-  check:
-    outputs:
-      run_job: ${{ steps.check_file.outputs.run_job }}
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@master
-        with:
-          fetch-depth: 2
-      - name: Check if package.json has been changed
-        id: check_file
-        run: |
-          if [ $(git diff --name-only HEAD^ HEAD | grep src/frontend/package.json) ]; then 
-            echo "::set-output name=run_job::true"
-          else
-            echo "::set-output name=run_job::false"
-          fi
+  # check:
+  #   outputs:
+  #     run_job: ${{ steps.check_file.outputs.run_job }}
+  #   runs-on: self-hosted
+  #   steps:
+  #     - uses: actions/checkout@master
+  #       with:
+  #         fetch-depth: 2
+  #     - name: Check if package.json has been changed
+  #       id: check_file
+  #       run: |
+  #         if [ $(git diff --name-only HEAD^ HEAD | grep src/frontend/package.json) ]; then 
+  #           echo "::set-output name=run_job::true"
+  #         else
+  #           echo "::set-output name=run_job::false"
+  #         fi
   build-artifacts:
     runs-on: self-hosted
-    needs: check
+    # needs: check
     steps:
       - uses: actions/checkout@master
       - name: Build Artifacts
-        if: ${{ needs.check.outputs.run_job == 'true' }}
+        # if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
           DOCKER_BUILDKIT=1 docker build \
             -t frontend-artifacts:latest \
