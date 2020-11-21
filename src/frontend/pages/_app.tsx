@@ -34,7 +34,7 @@ class Blog extends App<IProps, IState> {
     let session;
     try {
       const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/sessions`, {} ,{ headers:  ctx.req.headers });
-      session = response.data[0];
+      session = response.data;
     } catch (error) {
       session = null;
       console.error(error);
