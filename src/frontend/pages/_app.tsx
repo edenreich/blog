@@ -33,7 +33,7 @@ class Blog extends App<IProps, IState> {
     let pageProps = {};
     let session;
     try {
-      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/sessions`, {} ,{ headers: { 'Content-Type': 'application/json' } });
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/sessions`, {} ,{ headers:  ctx.req.headers });
       session = response.data[0];
     } catch (error) {
       session = null;
