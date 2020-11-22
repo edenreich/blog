@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Link from 'next/link';
 import Head from 'next/head';
 
 import { Formik } from 'formik';
@@ -53,7 +54,9 @@ class ContactPage extends React.Component<IProps, IState> {
                 <li className="grid-icon">
                   <span><FaEnvelope color="#3fbfae" size="50px" /></span>
                   <p>
-                    <a href="mailto:eden.reich@gmail.com">eden.reich@gmail.com</a>
+                    <Link href="mailto:eden.reich@gmail.com">
+                      <a>eden.reich@gmail.com</a>
+                    </Link>
                   </p>
                 </li>
               </ul>
@@ -109,8 +112,8 @@ class ContactPage extends React.Component<IProps, IState> {
                         type="text"
                         className={
                           errors.name && touched.name
-                          ? "contact__form-control--error"
-                          : "contact__form-control"
+                          ? 'contact__form-control--error'
+                          : 'contact__form-control'
                         }
                         name="name"
                         placeholder="Your name"
@@ -124,8 +127,8 @@ class ContactPage extends React.Component<IProps, IState> {
                         type="email"
                         className={
                           errors.email && touched.email
-                          ? "contact__form-control--error"
-                          : "contact__form-control"
+                          ? 'contact__form-control--error'
+                          : 'contact__form-control'
                         }
                         name="email"
                         placeholder="Your e-mail"

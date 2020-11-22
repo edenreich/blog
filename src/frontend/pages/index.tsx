@@ -68,7 +68,9 @@ class IndexPage extends React.Component<IProps> {
                         <ReactMarkDown source={article.content.substring(0, 300)} escapeHtml={false} />
                       </div>
                       <div className="home__article__text-preview">
-                        <Link href={`${article.slug}`}><a className="button-primary">Read more..</a></Link>
+                        <Link href={article.slug}>
+                          <a className="button-primary">Read more..</a>
+                        </Link>
                       </div>
                     </article>
                   );

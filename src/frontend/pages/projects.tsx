@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 
 import './projects.scss';
 
@@ -33,26 +34,30 @@ class ProjectsPage extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column projects__list">
               <div className="card">
-                <a href="https://github.com/edenreich/console-component" target="_blank">
-                  <div className="card__teaser">
-                    <img src="pictures/projects/console_component.jpg" />
-                  </div>
-                  <h3>Console Component</h3>
-                  <p>
-                    An easy to use component for building powerful console applications written in C++
-                  </p>
-                </a>
+                <Link href="https://github.com/edenreich/console-component">
+                  <a target="_blank">
+                    <div className="card__teaser">
+                      <img src="pictures/projects/console_component.jpg" />
+                    </div>
+                    <h3>Console Component</h3>
+                    <p>
+                      An easy to use component for building powerful console applications written in C++
+                    </p>
+                  </a>
+                </Link>
               </div>
               <div className="card">
-                <a href="https://github.com/edenreich/gke-terraform" target="_blank">
-                  <div className="card__teaser">
-                    <img src="pictures/projects/terraform_gke.png" />
-                  </div>
-                  <h3>Terraform a GKE Cluster</h3>
-                  <p>
-                    Minimalistic terraform module for deploying a GKE cluster
-                  </p>
-                </a>
+                <Link href="https://github.com/edenreich/gke-terraform">
+                  <a target="_blank">
+                    <div className="card__teaser">
+                      <img src="pictures/projects/terraform_gke.png" />
+                    </div>
+                    <h3>Terraform a GKE Cluster</h3>
+                    <p>
+                      Minimalistic terraform module for deploying a GKE cluster
+                    </p>
+                  </a>
+                </Link>
               </div>
               {/* <div className="card"></div>
               <div className="card"></div>
