@@ -11,8 +11,8 @@ on:
       - "ops/kubernetes/deployments/frontend/**"
 
 env:
-  DOCKER_IMAGE_NAME: blog-frontend
-  DOCKER_REPO: edenr/blog-frontend
+  DOCKER_IMAGE_NAME: stage-blog-frontend
+  DOCKER_REPO: edenr/stage-blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3

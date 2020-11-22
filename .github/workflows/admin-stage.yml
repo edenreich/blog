@@ -11,8 +11,8 @@ on:
       - "ops/kubernetes/deployments/admin/**"
 
 env:
-  DOCKER_IMAGE_NAME: blog-admin
-  DOCKER_REPO: edenr/blog-admin
+  DOCKER_IMAGE_NAME: stage-blog-admin
+  DOCKER_REPO: edenr/stage-blog-admin
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
