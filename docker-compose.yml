@@ -11,7 +11,8 @@ services:
     - 80:80
     - 443:443
     networks:
-    - app
+      app:
+        ipv4_address: 172.20.255.5
     extra_hosts:
     - "eden-reich.com dev.eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
     depends_on: 
@@ -31,7 +32,7 @@ services:
     networks:
     - app
     extra_hosts:
-    - "eden-reich.com dev.eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
+    - "eden-reich.com dev.eden-reich.com dev-admin.eden-reich.com:172.20.255.5"
 
   admin:
     build:
@@ -45,7 +46,7 @@ services:
     networks: 
     - app
     extra_hosts:
-    - "eden-reich.com dev-admin.eden-reich.com:127.0.0.1"
+    - "eden-reich.com dev-admin.eden-reich.com:172.20.255.5"
   
   postgres:
     image: postgres
@@ -94,3 +95,6 @@ volumes:
 
 networks:
   app:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
