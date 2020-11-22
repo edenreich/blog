@@ -15,49 +15,24 @@ interface IProps {
   articles?: Article[];
 }
 
-interface IState {
-  articles?: Article[];
-}
+class IndexPage extends React.Component<IProps> {
 
-class IndexPage extends React.Component<IProps, IState> {
-
-  // static async getInitialProps(): Promise<any> {
-  //   const { publicRuntimeConfig } = getConfig();
-  //   let articles: Article[];
-  //   try {
-  //     const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles`);
-  //     articles = response.data;
-  //   } catch (error) {
-  //     articles = [];
-  //   }
-
-  //   return { articles };
-  // }
-
-  constructor(props: IProps) {
-    super(props);
+  static async getInitialProps(): Promise<any> {
     const { publicRuntimeConfig } = getConfig();
-    axios.get(`${publicRuntimeConfig.app.url}/api/articles`).then((response: AxiosResponse) => {
-      this.setState({articles: response.data});
-    }).catch((error) => {
-      this.setState({articles: []});
-      console.error(error);
-    });
-  }
+    let articles: Article[];
+    try {
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles`);
+      articles = response.data;
+    } catch (error) {
+      articles = [];
+    }
 
-  componentDidMount(): void {
-    const { publicRuntimeConfig } = getConfig();
-    axios.get(`${publicRuntimeConfig.app.url}/api/articles`).then((response: AxiosResponse) => {
-      this.setState({articles: response.data});
-    }).catch((error) => {
-      this.setState({articles: []});
-      console.error(error);
-    });
+    return { articles };
   }
 
   render(): JSX.Element {
     const { publicRuntimeConfig } = getConfig();
-    console.log('STATE: ', this.state);
+
     return (
       <div id="home" className="home">
         <Head>
@@ -85,7 +60,7 @@ class IndexPage extends React.Component<IProps, IState> {
               <h2>Blog Feed</h2>
               <p>Take a look on the latest posted articles:</p>
               {
-                this.state?.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
+                this.props.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
                   return (
                     <article key={key}>
                       <div className="home__article__title">
