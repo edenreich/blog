@@ -22,7 +22,7 @@
     "cors": "^2.8.5",
     "formik": "^2.1.4",
     "moment": "^2.25.3",
-    "next": "^10.0.2",
+    "next": "^10.0.1",
     "nextjs-progressbar": "^0.0.4",
     "prismjs": "^1.21.0",
     "react": "^16.12.0",
