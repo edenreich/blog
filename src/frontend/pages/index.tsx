@@ -64,7 +64,7 @@ class IndexPage extends React.Component<IProps> {
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
               <h2>Blog Feed</h2>
-              <p>Take a look on the latest posted articles:</p>
+              <p>Latest posted articles:</p>
               {
                 this.props.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
                   return (
