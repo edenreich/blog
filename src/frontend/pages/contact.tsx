@@ -1,12 +1,15 @@
 import * as React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import getConfig from 'next/config';
 
 import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
 import { FaEnvelope } from 'react-icons/fa';
 
 import './contact.scss';
+
+const { publicRuntimeConfig } = getConfig();
 
 interface FieldsInterface {
   name?: string;
@@ -86,7 +89,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   return errors;
                 }}
                 onSubmit={async (values, { resetForm, setSubmitting }) => {
-                  const response: AxiosResponse = await axios.post('/api/email/send', JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
+                  const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/email/send`, JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
 
                   if (response.data.success) {
                     this.setState({
@@ -106,7 +109,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   handleBlur,
                   handleSubmit,
                 }) => (
-                  <form action="/api/email/send" method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
+                  <form action={`${publicRuntimeConfig.app.url}/api/email/send`} method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
                     <div className="contact__form-group grid-form-group-1">
                       <input
                         type="text"
