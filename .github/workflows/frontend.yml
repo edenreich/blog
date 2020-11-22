@@ -11,7 +11,6 @@ on:
       - "ops/kubernetes/deployments/frontend/**"
 
 env:
-  DOCKER_IMAGE_NAME: blog-frontend
   DOCKER_REPO: edenr/blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
@@ -82,7 +81,7 @@ jobs:
         run: |
           kubectl config use-context production
           kubectl apply -f ops/kubernetes/deployments/frontend/
-          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DEPLOYMENT_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy
