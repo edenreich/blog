@@ -10,9 +10,9 @@ module.exports = {
   async create(data) {
     const { session, reaction_type, article } = data;
   
-    const articleEntity = await strapi.query('articles').find({ id: article });
+    const articleEntity = await strapi.query('articles').findOne({ id: article });
 
-    if (!articleEntity || articleEntity.length === 0) {
+    if (!articleEntity) {
       return {
         count: 0,
         errors: [
@@ -21,9 +21,9 @@ module.exports = {
       };
     }
 
-    const entry = await strapi.query('likes').find({ session, article });
+    const like = await strapi.query('likes').findOne({ session, article });
 
-    if (entry && entry.length > 0) {
+    if (like) {
       await strapi.query('likes').update({ session, article }, data); 
     } else {
       await strapi.query('likes').create(data);
