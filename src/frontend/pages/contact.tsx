@@ -1,11 +1,15 @@
 import * as React from 'react';
+import Link from 'next/link';
 import Head from 'next/head';
+import getConfig from 'next/config';
 
 import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
 import { FaEnvelope } from 'react-icons/fa';
 
 import './contact.scss';
+
+const { publicRuntimeConfig } = getConfig();
 
 interface FieldsInterface {
   name?: string;
@@ -34,15 +38,22 @@ class ContactPage extends React.Component<IProps, IState> {
   }
 
   render(): JSX.Element {
+    const title = 'Blog | Contact';
+    const description = 'Welcome to my blog, I\'ll be posting about web app development, native apps, DevOps and more.';
+
     return (
       <div id="contact" className="contact grid-contact">
         <Head>
-          <title>Blog | Contact Page</title>
+          <title>{title}</title>
           <meta charSet="utf-8" />
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta name="author" content="Eden Reich" />
           <meta name="keywords" content="Eden,Eden Reich,PHP,C++,Typescript,Javascript,CPP,Go,Web" />
-          <meta name="description" content="welcome to my blog, here you may find interesting content about web app development." />
+          <meta name="description" content={description} />
+          <meta property="og:site_name" content="Eden Reich" />
+          <meta property="og:title" content={title} />
+          <meta property="og:image" content="/pictures/profile_600.png" />
+          <meta property="og:description" content={description} />
         </Head>
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
@@ -53,7 +64,9 @@ class ContactPage extends React.Component<IProps, IState> {
                 <li className="grid-icon">
                   <span><FaEnvelope color="#3fbfae" size="50px" /></span>
                   <p>
-                    <a href="mailto:eden.reich@gmail.com">eden.reich@gmail.com</a>
+                    <Link href="mailto:eden.reich@gmail.com">
+                      <a>eden.reich@gmail.com</a>
+                    </Link>
                   </p>
                 </li>
               </ul>
@@ -83,7 +96,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   return errors;
                 }}
                 onSubmit={async (values, { resetForm, setSubmitting }) => {
-                  const response: AxiosResponse = await axios.post('/api/email/send', JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
+                  const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/email/send`, JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
 
                   if (response.data.success) {
                     this.setState({
@@ -103,14 +116,14 @@ class ContactPage extends React.Component<IProps, IState> {
                   handleBlur,
                   handleSubmit,
                 }) => (
-                  <form action="/api/email/send" method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
+                  <form action={`${publicRuntimeConfig.app.url}/api/email/send`} method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
                     <div className="contact__form-group grid-form-group-1">
                       <input
                         type="text"
                         className={
                           errors.name && touched.name
-                          ? "contact__form-control--error"
-                          : "contact__form-control"
+                          ? 'contact__form-control--error'
+                          : 'contact__form-control'
                         }
                         name="name"
                         placeholder="Your name"
@@ -124,8 +137,8 @@ class ContactPage extends React.Component<IProps, IState> {
                         type="email"
                         className={
                           errors.email && touched.email
-                          ? "contact__form-control--error"
-                          : "contact__form-control"
+                          ? 'contact__form-control--error'
+                          : 'contact__form-control'
                         }
                         name="email"
                         placeholder="Your e-mail"

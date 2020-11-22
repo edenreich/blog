@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Link from 'next/link';
 
 interface IProps {
   image: string;
@@ -12,7 +13,9 @@ class Slide extends React.Component<IProps> {
   render(): JSX.Element {
     return (
       <div>
-        <a href={this.props.href}><img src={this.props.image} /></a>
+        <Link href={this.props.href}>
+          <a><img src={this.props.image} /></a>
+        </Link>
       </div>
     );
   }

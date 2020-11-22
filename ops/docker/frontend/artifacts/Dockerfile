@@ -1,4 +1,4 @@
-FROM node:14-buster-slim AS frontend-artifacts
+FROM node:15.2.1-buster-slim AS frontend-artifacts
 WORKDIR /tmp
 COPY src/frontend/yarn.lock .
 COPY src/frontend/package.json .
@@ -13,6 +13,6 @@ COPY src/frontend/assets assets
 COPY src/frontend/utils utils
 RUN apt-get update && \
     apt-get install -y build-essential python && \
-    yarn install && \
+    yarn upgrade && yarn install && \
     yarn install --modules-folder ./development_node_modules && \
     NODE_ENV=production yarn install --modules-folder ./production_node_modules

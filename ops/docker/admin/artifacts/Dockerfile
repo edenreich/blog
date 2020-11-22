@@ -7,4 +7,4 @@ WORKDIR /tmp
 ENV NODE_ENV=production
 COPY src/admin/yarn.lock .
 COPY src/admin/package.json .
-RUN yarn --network-timeout 1000000
+RUN yarn upgrade && yarn --network-timeout 1000000

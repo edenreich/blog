@@ -1,4 +1,4 @@
-FROM node:14-buster-slim AS builder
+FROM node:15.2.1-buster-slim AS builder
 WORKDIR /tmp
 COPY src/frontend/yarn.lock .
 COPY src/frontend/package.json .
@@ -16,15 +16,17 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential python && \
     NODE_ENV=production yarn build
 
-FROM node:14-buster-slim AS development
+FROM node:15.2.1-buster-slim AS development
 WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=development
 ENV NODE_ENV=development
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential python
 EXPOSE 3000
 CMD [ "yarn", "dev" ]
 
-FROM node:14-buster-slim AS stage
+FROM node:15.2.1-buster-slim AS stage
 WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=stage
@@ -35,7 +37,7 @@ COPY --from=builder /tmp/.next .next
 EXPOSE 3000
 CMD [ "yarn", "start" ]
 
-FROM node:14-buster-slim AS production
+FROM node:15.2.1-buster-slim AS production
 WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=production

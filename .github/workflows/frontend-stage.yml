@@ -16,24 +16,28 @@ env:
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
+  ARTIFACT_FILES: src/frontend/package.json ops/docker/frontend/artifacts/Dockerfile
 
 jobs:
   check:
     outputs:
-      run_job: ${{ steps.check_file.outputs.run_job }}
+      run_job: ${{ steps.check_files.outputs.run_job }}
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
         with:
           fetch-depth: 2
-      - name: Check if package.json has been changed
-        id: check_file
+      - name: Check if relevant artifact files have been changed
+        id: check_files
         run: |
-          if [ $(git diff --name-only HEAD^ HEAD | grep src/frontend/package.json) ]; then 
-            echo "::set-output name=run_job::true"
-          else
-            echo "::set-output name=run_job::false"
-          fi
+          for file in $(echo ${{ env.ARTIFACT_FILES }} | xargs); do
+            if [ $(git diff --name-only HEAD^ HEAD | grep $file) ]; then 
+              echo "::set-output name=run_job::true"
+              break
+            else
+              echo "::set-output name=run_job::false"
+            fi
+          done
   build-artifacts:
     runs-on: self-hosted
     needs: check
