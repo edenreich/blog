@@ -37,13 +37,21 @@ class IndexPage extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     const { publicRuntimeConfig } = getConfig();
-    console.log('CALLED!');
     axios.get(`${publicRuntimeConfig.app.url}/api/articles`).then((response: AxiosResponse) => {
-      console.log('RESPONSE DATA: ', response.data);
       this.setState({articles: response.data});
     }).catch((error) => {
-      console.log('[error]======>', error);
       this.setState({articles: []});
+      console.error(error);
+    });
+  }
+
+  componentDidMount(): void {
+    const { publicRuntimeConfig } = getConfig();
+    axios.get(`${publicRuntimeConfig.app.url}/api/articles`).then((response: AxiosResponse) => {
+      this.setState({articles: response.data});
+    }).catch((error) => {
+      this.setState({articles: []});
+      console.error(error);
     });
   }
 
