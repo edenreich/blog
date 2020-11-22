@@ -45,8 +45,6 @@ spec:
             port: 3000
             path: /healthcheck
         volumeMounts:
-        - name: sqlite-persistent-storage
-          mountPath: /app/.tmp
         - name: uploads-persistent-storage
           mountPath: /app/public/uploads
         imagePullPolicy: Always
@@ -54,9 +52,6 @@ spec:
       imagePullSecrets:
       - name: regcred
       volumes:
-      - name: sqlite-persistent-storage
-        persistentVolumeClaim:
-          claimName: sqlite-pv-claim
       - name: uploads-persistent-storage
         persistentVolumeClaim:
           claimName: uploads-pv-claim
