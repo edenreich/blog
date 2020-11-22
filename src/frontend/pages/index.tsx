@@ -15,20 +15,41 @@ interface IProps {
   articles?: Article[];
 }
 
-class IndexPage extends React.Component<IProps> {
+interface IState {
+  articles?: Article[];
+}
 
-  static async getInitialProps(): Promise<any> {
+class IndexPage extends React.Component<IProps, IState> {
+
+  // static async getInitialProps(): Promise<any> {
+  //   const { publicRuntimeConfig } = getConfig();
+  //   let articles: Article[];
+  //   try {
+  //     const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles`);
+  //     articles = response.data;
+  //   } catch (error) {
+  //     articles = [];
+  //   }
+
+  //   return { articles };
+  // }
+
+  constructor(props: IProps) {
+    super(props);
     const { publicRuntimeConfig } = getConfig();
-
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles?_sort=created_at:DESC`);
-    const articles: Article[] = response.data;
-
-    return { articles };
+    console.log('CALLED!');
+    axios.get(`${publicRuntimeConfig.app.url}/api/articles`).then((response: AxiosResponse) => {
+      console.log('RESPONSE DATA: ', response.data);
+      this.setState({articles: response.data});
+    }).catch((error) => {
+      console.log('[error]======>', error);
+      this.setState({articles: []});
+    });
   }
 
   render(): JSX.Element {
     const { publicRuntimeConfig } = getConfig();
-
+    console.log('STATE: ', this.state);
     return (
       <div id="home" className="home">
         <Head>
@@ -56,7 +77,7 @@ class IndexPage extends React.Component<IProps> {
               <h2>Blog Feed</h2>
               <p>Take a look on the latest posted articles:</p>
               {
-                this.props.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
+                this.state?.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
                   return (
                     <article key={key}>
                       <div className="home__article__title">
