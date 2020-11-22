@@ -45,8 +45,8 @@
       "required": true
     },
     "likes": {
-      "collection": "likes",
-      "via": "article"
+      "via": "article",
+      "collection": "likes"
     }
   }
 }

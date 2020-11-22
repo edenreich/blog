@@ -57,7 +57,7 @@ class Reactions extends React.Component<IProps, IState> {
     }
 
     const payload: any = {
-      uuid: visitor.uuid,
+      session: visitor.uuid,
       reaction_type: reactionType,
       article: articleId
     };
