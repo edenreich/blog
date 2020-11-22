@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: blog-admin
-        image: edenr/blog-admin:latest
+        image: edenr/stage-blog-admin:latest
         resources:
           requests:
             cpu: "200m"
