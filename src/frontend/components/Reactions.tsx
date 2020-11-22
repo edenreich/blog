@@ -35,13 +35,15 @@ class Reactions extends React.Component<IProps, IState> {
       selected: null
     };
 
-    axios.get(`${publicRuntimeConfig.app.url}/api/likes/count?article=${this.props.articleId}`).then((response: AxiosResponse) => {
+    axios.get(`${publicRuntimeConfig.app.url}/api/likes/count?article=${this.props.articleId}`, { headers: { 'Content-Type': 'application/json' } }).then((response: AxiosResponse) => {
       this.setState({
         like: response.data.like,
         love: response.data.love,
         dislike: response.data.dislike,
         selected: null
       });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -60,15 +62,18 @@ class Reactions extends React.Component<IProps, IState> {
       article: articleId
     };
 
-    await axios.post(`${publicRuntimeConfig.app.url}/api/likes`, payload, { headers: 'Content-Type: application/json' });
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/likes/count?article=${articleId}`);
-
-    this.setState({
-      like: response.data.like,
-      love: response.data.love,
-      dislike: response.data.dislike,
-      selected: reactionType
-    });
+    try {
+      await axios.post(`${publicRuntimeConfig.app.url}/api/likes`, payload, { headers: { 'Content-Type': 'application/json' } });
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/likes/count?article=${articleId}`, { headers: { 'Content-Type': 'application/json' } });
+      this.setState({
+        like: response.data.like,
+        love: response.data.love,
+        dislike: response.data.dislike,
+        selected: reactionType
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render(): JSX.Element {
