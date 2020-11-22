@@ -17,7 +17,8 @@ module.exports = {
     const isValid = await this.validate(body);
 
     if (!isValid) {
-      return { message: 'invalid payload' }
+      ctx.send({ message: 'invalid payload' }, 422);
+      return;
     }
 
     const response = await strapi.services.likes.create(body);
@@ -25,8 +26,11 @@ module.exports = {
   },
 
   async validate(body) {
-    for (const attribute in body) {
-      if (required.indexOf(attribute) !== -1 && body[attribute] == '') {
+    for (const attribute of required) {
+      if (
+        Object.keys(body).indexOf(attribute) === -1 ||
+        (Object.keys(body).indexOf(attribute) !== -1 && body[attribute] == '')
+      ) {
         return false;
       }
     }
