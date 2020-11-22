@@ -1,4 +1,4 @@
-FROM node:14-buster-slim AS frontend-artifacts
+FROM node:15.2.1-buster-slim AS frontend-artifacts
 WORKDIR /tmp
 COPY src/frontend/yarn.lock .
 COPY src/frontend/package.json .
