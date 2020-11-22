@@ -12,15 +12,22 @@ interface IProps {
 class ProjectsPage extends React.Component<IProps> {
 
   render(): JSX.Element {
+    const title = 'Blog | Projects';
+    const description = 'Welcome to my blog, I\'ll be posting about web app development, native apps, DevOps and more.';
+
     return (
       <div id="projects" className="projects">
         <Head>
-          <title>Blog | Projects Page</title>
+          <title>{title}</title>
           <meta charSet="utf-8" />
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta name="author" content="Eden Reich" />
           <meta name="keywords" content="Eden,Eden Reich,PHP,C++,Typescript,Javascript,CPP,Go,Web" />
-          <meta name="description" content="welcome to my blog, here you may find interesting content about web app development." />
+          <meta name="description" content={description} />
+          <meta property="og:site_name" content="Eden Reich" />
+          <meta property="og:title" content={title} />
+          <meta property="og:image" content="/pictures/profile_600.png" />
+          <meta property="og:description" content={description} />
         </Head>
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
@@ -59,16 +66,6 @@ class ProjectsPage extends React.Component<IProps> {
                   </a>
                 </Link>
               </div>
-              {/* <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div> */}
             </div>
           </div>
         </section>
