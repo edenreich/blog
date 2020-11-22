@@ -66,7 +66,7 @@ services:
       - ./ops/docker/helpers/openssl/certs:/root/certs:rw
 
   npm:
-    image: node:14-buster-slim
+    image: node:15.2.1-buster-slim
     command:
       - /bin/bash
       - -c
