@@ -11,8 +11,7 @@ on:
       - "ops/kubernetes/deployments/admin/**"
 
 env:
-  DOCKER_IMAGE_NAME: blog-admin
-  DOCKER_REPO: edenr/blog-admin
+  DOCKER_REPO: edenr/stage-blog-admin
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
@@ -81,7 +80,7 @@ jobs:
         run: |
           kubectl config use-context stage
           kubectl apply -f ops/kubernetes/deployments/admin/
-          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DEPLOYMENT_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy

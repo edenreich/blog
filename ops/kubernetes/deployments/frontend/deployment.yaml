@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: blog-frontend
-        image: edenr/blog-frontend:latest
+        image: edenr/stage-blog-frontend:latest
         resources:
           requests:
             cpu: "200m"

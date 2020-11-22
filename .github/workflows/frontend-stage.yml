@@ -11,8 +11,7 @@ on:
       - "ops/kubernetes/deployments/frontend/**"
 
 env:
-  DOCKER_IMAGE_NAME: blog-frontend
-  DOCKER_REPO: edenr/blog-frontend
+  DOCKER_REPO: edenr/stage-blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
@@ -80,7 +79,7 @@ jobs:
         run: |
           kubectl config use-context stage
           kubectl apply -f ops/kubernetes/deployments/frontend/
-          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DEPLOYMENT_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy

@@ -2,15 +2,17 @@
   "kind": "collectionType",
   "collectionName": "likes",
   "info": {
-    "name": "Likes"
+    "name": "Likes",
+    "description": "Store the likes of articles"
   },
   "options": {
     "increments": true,
-    "timestamps": true
+    "timestamps": true,
+    "draftAndPublish": false
   },
   "attributes": {
     "uuid": {
-      "type": "string",
+      "type": "uid",
       "private": true,
       "required": true
     },
@@ -23,13 +25,13 @@
       ]
     },
     "article": {
-      "via": "likes",
-      "model": "articles"
+      "model": "articles",
+      "via": "likes"
     },
     "session": {
-      "unique": true,
-      "model": "sessions",
-      "via": "likes"
+      "type": "uid",
+      "private": true,
+      "required": true
     }
   }
 }
