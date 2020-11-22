@@ -1,24 +1,24 @@
-version: '3.7'
+version: "3.7"
 
 services:
   ingress:
-    build: 
+    build:
       context: .
       dockerfile: ops/docker/ingress/Dockerfile
     volumes:
-    - ./ops/docker/helpers/openssl/certs:/etc/nginx/certs:ro
+      - ./ops/docker/helpers/openssl/certs:/etc/nginx/certs:ro
     ports:
-    - 80:80
-    - 443:443
+      - 80:80
+      - 443:443
     networks:
       app:
         aliases:
           - eden-reich.com
           - dev.eden-reich.com
           - dev-admin.eden-reich.com
-    depends_on: 
-    - openssl
-    
+    depends_on:
+      - openssl
+
   frontend:
     build:
       target: development
@@ -29,9 +29,9 @@ services:
       MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
       MAILGUN_API_KEY: ${MAILGUN_API_KEY}
     volumes:
-    - ./src/frontend:/app:rw
+      - ./src/frontend:/app:rw
     networks:
-    - app
+      - app
 
   admin:
     build:
@@ -39,12 +39,12 @@ services:
       args:
         NODE_ENV: development
       context: .
-      dockerfile:  ops/docker/admin/Dockerfile
+      dockerfile: ops/docker/admin/Dockerfile
     volumes:
-    - ./src/admin:/app:rw
-    networks: 
-    - app
-  
+      - ./src/admin:/app:rw
+    networks:
+      - app
+
   postgres:
     image: postgres
     environment:
@@ -52,40 +52,40 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: blog
     ports:
-    - 5432:5432
+      - 5432:5432
     networks:
-    - app
+      - app
     volumes:
-    - ./src/admin/database:/docker-entrypoint-initdb.d
-    - database-data:/var/lib/postgresql/data
+      - ./src/admin/database:/docker-entrypoint-initdb.d
+      - database-data:/var/lib/postgresql/data
 
   openssl:
     build:
       context: .
       dockerfile: ops/docker/helpers/openssl/Dockerfile
     volumes:
-    - ./ops/docker/helpers/openssl/certs:/root/certs:rw
+      - ./ops/docker/helpers/openssl/certs:/root/certs:rw
 
   npm:
     image: node:14-buster-slim
     command:
-    - /bin/bash 
-    - -c
-    - |
-      if [ ! -d /frontend/node_modules ]; then
-        apt-get update;
-        apt-get install -y build-essential python;
-        yarn upgrade && yarn;
-      fi
-      if [ ! -d /admin/node_modules ]; then 
-        apt-get update apt-get install -y build-essential python;
-        cd /admin;
-        yarn upgrade && yarn;
-      fi
+      - /bin/bash
+      - -c
+      - |
+        if [ ! -d /frontend/node_modules ]; then
+          apt-get update;
+          apt-get install -y build-essential python;
+          yarn upgrade && yarn;
+        fi
+        if [ ! -d /admin/node_modules ]; then 
+          apt-get update apt-get install -y build-essential python;
+          cd /admin;
+          yarn upgrade && yarn;
+        fi
     working_dir: /frontend
     volumes:
-    - ./src/frontend:/frontend:rw
-    - ./src/admin:/admin:rw
+      - ./src/frontend:/frontend:rw
+      - ./src/admin:/admin:rw
 
 volumes:
   database-data:
