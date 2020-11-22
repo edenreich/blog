@@ -81,7 +81,7 @@ jobs:
         run: |
           kubectl config use-context stage
           kubectl apply -f ops/kubernetes/deployments/admin/
-          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DOCKER_IMAGE_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DEPLOYMENT_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
   cleanup:
     runs-on: self-hosted
     needs: deploy
