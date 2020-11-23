@@ -29,7 +29,7 @@
       "via": "likes"
     },
     "session": {
-      "type": "uid",
+      "type": "string",
       "private": true,
       "required": true
     }

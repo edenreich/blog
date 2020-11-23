@@ -11,10 +11,11 @@ on:
       - "ops/kubernetes/deployments/frontend/**"
 
 env:
+  DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/stage-blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
-  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
+  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
   ARTIFACT_FILES: src/frontend/package.json ops/docker/frontend/artifacts/Dockerfile
 
 jobs:
@@ -45,7 +46,7 @@ jobs:
       - name: Build Artifacts
         if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             -t frontend-artifacts:latest \
             -f ops/docker/frontend/artifacts/Dockerfile .
   build:
@@ -55,11 +56,14 @@ jobs:
       - uses: actions/checkout@master
       - name: Docker Build
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             --target stage \
-            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+            --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
             -f ops/docker/frontend/Dockerfile .
+      - name: Docker Tag Image
+        run: |
+          docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
   push:
     runs-on: self-hosted
     needs: build
@@ -85,8 +89,8 @@ jobs:
     needs: deploy
     steps:
       - name: Remove all related images from github-runner
-        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
+        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 5 Releases
-        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
+        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done

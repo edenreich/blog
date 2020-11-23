@@ -11,6 +11,7 @@ on:
       - "ops/kubernetes/deployments/admin/**"
 
 env:
+  DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/blog-admin
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
@@ -45,7 +46,7 @@ jobs:
       - name: Build Artifacts
         if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             --target admin-artifacts \
             -t admin-artifacts:latest \
             -f ops/docker/admin/artifacts/Dockerfile .
@@ -56,11 +57,14 @@ jobs:
       - uses: actions/checkout@master
       - name: Docker Build
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             --target production \
-            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+            --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
             -f ops/docker/admin/Dockerfile .
+      - name: Docker Tag Image
+        run: |
+          docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
   push:
     runs-on: self-hosted
     needs: build
@@ -86,8 +90,8 @@ jobs:
     needs: deploy
     steps:
       - name: Remove all related images from github-runner
-        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
+        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 5 Releases
-        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
+        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
