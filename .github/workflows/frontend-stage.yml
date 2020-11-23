@@ -93,4 +93,4 @@ jobs:
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 5 Releases
-        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
+        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done

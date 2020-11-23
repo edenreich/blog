@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -x
-
-term=$1;
+term=$1
 
 if [ -z $1 ]
 then
@@ -10,7 +8,6 @@ then
     exit 1
 fi
 
-echo "==> Removing ${term} images on $(hostname). Keeping 5 versions";
+echo "==> Removing all unused images on $(hostname)."
 
-#docker rmi -f $(docker images | grep $term | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
 sudo k3s crictl rmi --prune || true
