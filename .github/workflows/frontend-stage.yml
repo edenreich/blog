@@ -57,8 +57,9 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
             --target stage \
-            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+            --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
+            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -f ops/docker/frontend/Dockerfile .
   push:
     runs-on: self-hosted

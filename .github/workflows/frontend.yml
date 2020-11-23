@@ -57,10 +57,9 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
             --target production \
-            --build-arg APP_ENV=production \
-            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
-            -t ${{ env.DOCKER_REPO }}:latest \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
+            -t ${{ env.DOCKER_REPO }}:latest \
+            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -f ops/docker/frontend/Dockerfile .
   push:
     runs-on: self-hosted
