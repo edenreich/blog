@@ -87,7 +87,7 @@ jobs:
     needs: deploy
     steps:
       - name: Remove all related images from github-runner
-        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | awk '{ printf "%s\t", $3 }' | xargs) || true
+        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v ${{ env.DOCKER_REPO }}:latest | awk '{ printf "%s\t", $3 }' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 5 Releases
