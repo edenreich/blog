@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - ".github/workflows/admin-stage.yml"
+      - ".github/workflows/admin-stage.yml" 
       - "src/admin/**"
       - "ops/docker/admin/**"
       - "ops/kubernetes/deployments/admin/**"

@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - ".github/workflows/frontend-stage.yml"
+      - ".github/workflows/frontend-stage.yml" 
       - "src/frontend/**"
       - "ops/docker/frontend/**"
       - "ops/kubernetes/deployments/frontend/**"
