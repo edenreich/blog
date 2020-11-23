@@ -59,8 +59,11 @@ jobs:
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -f ops/docker/frontend/Dockerfile .
+      - name: Docker Tag Image
+        run: |
+          docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+
   push:
     runs-on: self-hosted
     needs: build
@@ -85,9 +88,11 @@ jobs:
     runs-on: self-hosted
     needs: deploy
     steps:
+      - name: Debug
+        run: docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{ printf "%s\t", $3 }' | xargs
       - name: Remove all related images from github-runner
         run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{ printf "%s\t", $3 }' | xargs) || true
-      # - name: Remove Dangling Docker Images
-      #   run: docker system prune -f
+      - name: Remove Dangling Docker Images
+        run: docker system prune -f
       - name: Keep 5 Releases
         run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done

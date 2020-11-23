@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 term=$1;
 
 if [ -z $1 ]
