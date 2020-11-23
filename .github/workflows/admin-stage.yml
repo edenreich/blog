@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Remove all related images from github-runner
         run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{ printf "%s\t", $3 }' | xargs) || true
-      - name: Remove Dangling Docker Images
-        run: docker system prune -f
+      # - name: Remove Dangling Docker Images
+      #   run: docker system prune -f
       - name: Keep 5 Releases
         run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh ${{ env.DOCKER_REPO }}; done
