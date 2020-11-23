@@ -13,4 +13,4 @@ fi
 echo "==> Removing ${term} images on $(hostname). Keeping 5 versions";
 
 #docker rmi -f $(docker images | grep $term | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
-sudo k3s crictl rmi --prune $(sudo k3s crictl images ls | grep $term | sort -r | tail -n +6 | awk '{ printf "%s\t", $3 }' | xargs) || true
+sudo k3s crictl rmi --prune || true
