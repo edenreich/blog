@@ -14,7 +14,7 @@ env:
   DOCKER_REPO: edenr/stage-blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
-  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3
+  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
   ARTIFACT_FILES: src/frontend/package.json ops/docker/frontend/artifacts/Dockerfile
 
 jobs:
