@@ -11,6 +11,7 @@ on:
       - "ops/kubernetes/deployments/admin/**"
 
 env:
+  DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/blog-admin
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
@@ -45,7 +46,7 @@ jobs:
       - name: Build Artifacts
         if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             --target admin-artifacts \
             -t admin-artifacts:latest \
             -f ops/docker/admin/artifacts/Dockerfile .
@@ -56,7 +57,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Docker Build
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \

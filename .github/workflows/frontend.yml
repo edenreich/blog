@@ -11,6 +11,7 @@ on:
       - "ops/kubernetes/deployments/frontend/**"
 
 env:
+  DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
@@ -45,7 +46,7 @@ jobs:
       - name: Build Artifacts
         if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             -t frontend-artifacts:latest \
             -f ops/docker/frontend/artifacts/Dockerfile .
   build:
@@ -55,7 +56,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Docker Build
         run: |
-          DOCKER_BUILDKIT=1 docker build \
+          docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
