@@ -31,6 +31,7 @@ WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=stage
 ENV NODE_ENV=production
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 COPY src/frontend .
 COPY --from=frontend-artifacts /tmp/node_modules node_modules
 COPY --from=builder /tmp/.next .next
@@ -42,6 +43,7 @@ WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=production
 ENV NODE_ENV=production
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 COPY src/frontend .
 COPY --from=frontend-artifacts /tmp/node_modules node_modules
 COPY --from=builder /tmp/.next .next
