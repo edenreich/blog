@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { picture } = req.query;
   try {
     const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/${picture}`);
-    res.status(200).json(response.data);
+    res.status(200).send(response.data);
   } catch (error) {
     console.error(error);
     res.status(404).json({ message: 'could not fetch picture.' });
