@@ -52,7 +52,7 @@ class Article extends React.Component<IProps> {
           <meta name="description" content={this.props.article.meta_description} />
           <meta property="og:site_name" content="Eden Reich" />
           <meta property="og:title" content={this.props.article.title} />
-          <meta property="og:image" content={`${publicRuntimeConfig.apis.default.url}${this.props.article.meta_thumbnail.formats.thumbnail.url}`} />
+          <meta property="og:image" content={`${publicRuntimeConfig.app.url}/api/assets${this.props.article.meta_thumbnail.formats.thumbnail.url}`} />
           <meta property="og:description" content={this.props.article.meta_description} />
         </Head>
         <section className="content__section">

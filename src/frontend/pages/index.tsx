@@ -70,7 +70,7 @@ class IndexPage extends React.Component<IProps> {
                   return (
                     <article key={key}>
                       <div className="home__article__title">
-                        <img src={`${publicRuntimeConfig.apis.default.url}${article.meta_thumbnail.formats.thumbnail?.url}`} />
+                        <img src={`${publicRuntimeConfig.app.url}/api/assets${article.meta_thumbnail.formats.thumbnail?.url}`} />
                         <h3>{article.title}</h3>
                         <span className="home__article__date"><small>{moment(article.published_at).fromNow()}</small></span>
                       </div>
