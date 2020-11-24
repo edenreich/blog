@@ -1,5 +1,5 @@
 {
     "default": {
-        "url": "https://dev-admin.eden-reich.com"
+        "url": "http://admin:3000"
     }
 }

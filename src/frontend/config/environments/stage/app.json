@@ -1,4 +1,5 @@
 {
     "env": "stage",
-    "url": "https://stage.eden-reich.com"
+    "url": "https://stage.eden-reich.com",
+    "assets_url": "https://stage-admin.eden-reich.com"
 }

@@ -9,7 +9,7 @@ spec:
   tls:
   - hosts:
     - stage.eden-reich.com
-    - admin-stage.eden-reich.com
+    - stage-admin.eden-reich.com
     secretName: eden-reich.com-tls
   rules:  
     - host: stage.eden-reich.com
@@ -19,7 +19,7 @@ spec:
           backend:
             serviceName: blog-frontend
             servicePort: 8080
-    - host: admin-stage.eden-reich.com
+    - host: stage-admin.eden-reich.com
       http:
         paths:
         - path: /

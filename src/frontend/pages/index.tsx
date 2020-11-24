@@ -8,6 +8,7 @@ import ReactMarkDown from 'react-markdown';
 
 import getConfig from 'next/config';
 import axios, { AxiosResponse } from 'axios';
+import { asset } from '@/utils/asset';
 
 import './index.scss';
 
@@ -31,7 +32,6 @@ class IndexPage extends React.Component<IProps> {
   }
 
   render(): JSX.Element {
-    const { publicRuntimeConfig } = getConfig();
     const title = 'Blog | Home Page';
     const description = 'Welcome to my blog, I\'ll be posting about web app development, native apps, DevOps and more.';
 
@@ -70,7 +70,7 @@ class IndexPage extends React.Component<IProps> {
                   return (
                     <article key={key}>
                       <div className="home__article__title">
-                        <img src={`${publicRuntimeConfig.apis.default.url}${article.meta_thumbnail.formats.thumbnail?.url}`} />
+                        <img src={`${asset(article.meta_thumbnail.formats.thumbnail?.url)}`} />
                         <h3>{article.title}</h3>
                         <span className="home__article__date"><small>{moment(article.published_at).fromNow()}</small></span>
                       </div>

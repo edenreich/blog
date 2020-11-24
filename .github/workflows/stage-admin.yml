@@ -1,11 +1,11 @@
-name: admin-stage
+name: stage-admin
 
 on:
   push:
     branches:
       - develop
     paths:
-      - ".github/workflows/admin-stage.yml"
+      - ".github/workflows/stage-admin.yml"
       - "src/admin/**"
       - "ops/docker/admin/**"
       - "ops/kubernetes/deployments/admin/**"
