@@ -1,5 +1,5 @@
 {
     "default": {
-        "url": "https://admin.eden-reich.com"
+        "url": "http://blog-admin:8080"
     }
 }
