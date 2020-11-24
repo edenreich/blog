@@ -10,6 +10,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
 import { IVisitor } from '@/interfaces/visitor';
+import { asset } from '@/utils/asset';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -52,7 +53,7 @@ class Article extends React.Component<IProps> {
           <meta name="description" content={this.props.article.meta_description} />
           <meta property="og:site_name" content="Eden Reich" />
           <meta property="og:title" content={this.props.article.title} />
-          <meta property="og:image" content={`${publicRuntimeConfig.app.url}/api/assets${this.props.article.meta_thumbnail.formats.thumbnail.url}`} />
+          <meta property="og:image" content={`${asset(this.props.article.meta_thumbnail.formats.thumbnail.url)}`} />
           <meta property="og:description" content={this.props.article.meta_description} />
         </Head>
         <section className="content__section">
