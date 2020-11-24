@@ -1,11 +1,11 @@
-name: frontend-stage
+name: stage-frontend
 
 on:
   push:
     branches:
       - develop
     paths:
-      - ".github/workflows/frontend-stage.yml"
+      - ".github/workflows/stage-frontend.yml"
       - "src/frontend/**"
       - "ops/docker/frontend/**"
       - "ops/kubernetes/deployments/frontend/**"
