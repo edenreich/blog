@@ -9,7 +9,7 @@ const { publicRuntimeConfig } = getConfig();
 
 const cors = Cors({
   methods: ['GET', 'OPTIONS', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  origin: publicRuntimeConfig.app.url,
+  origin: /http(s)?:\/\/(.+\.)?eden-reich\.com(:\d{1,5})?$/,
 });
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
