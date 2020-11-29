@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: blog-admin
+  name: blog-frontend
   namespace: blog
 spec:
   selector:
-    app: blog-admin
+    app: blog-frontend-{{VERSION}}
   ports:
   - port: 8080
     targetPort: 3000
