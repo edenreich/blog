@@ -1,22 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blog-admin
+  name: blog-admin-{{VERSION}}
   namespace: blog
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: blog-admin
+      app: blog-admin-{{VERSION}}
   strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+    type: Recreate
   template:
     metadata:
       labels:
-        app: blog-admin
+        app: blog-admin-{{VERSION}}
     spec:
       containers:
       - name: blog-admin
