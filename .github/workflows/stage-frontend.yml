@@ -107,9 +107,11 @@ jobs:
     runs-on: self-hosted
     needs: deploy
     steps:
-      - name: Remove all related images from github-runner
+      - name: Remove all related images from github-runner except latest
         run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
-      - name: Keep 5 Releases
+      - name: Keep 5 container images
         run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
+      - name: Keep 3 deployments available for rollback
+        run: kubectl delete deployments $(kubectl get deployments | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | sort -rn | tail -n+4)
