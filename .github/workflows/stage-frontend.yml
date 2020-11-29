@@ -8,7 +8,7 @@ on:
       - ".github/workflows/stage-frontend.yml"
       - "src/frontend/**"
       - "ops/docker/frontend/**"
-      - "ops/kubernetes/deployments/frontend/**"
+      - "ops/kubernetes/frontend/**"
 
 env:
   DOCKER_BUILDKIT: 1
