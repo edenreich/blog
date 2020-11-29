@@ -85,11 +85,11 @@ jobs:
         run: cat ops/kubernetes/frontend/deployment.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
-          max_count=200
+          max_count=180
           count=0
           while [ true ]; do
-            if [[ $max_count < $count ]]; then
-              echo "===> Waited too long for successfully rolled out green version, but something went wrong."
+            if [[ $count -gt $max_count ]]; then
+              echo "===> Waited for too long for a successful rolled out green version, but something went wrong. Aborting..."
               exit 1
             fi
             if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} | grep 'successfully rolled out') ]]; then
