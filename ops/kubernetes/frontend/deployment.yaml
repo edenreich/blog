@@ -1,18 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blog-frontend
+  name: blog-frontend-{{VERSION}}
   namespace: blog
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: blog-frontend
+      app: blog-frontend-{{VERSION}}
   strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+    type: Recreate
   template:
     metadata:
       labels:

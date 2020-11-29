@@ -79,11 +79,23 @@ jobs:
     needs: push
     steps:
       - uses: actions/checkout@master
-      - name: Kubernetes Apply
+      - name: Kubernetes - create a new deployment
         run: |
           kubectl config use-context stage
-          kubectl apply -f ops/kubernetes/deployments/frontend/
-          kubectl patch deployment ${{ env.DEPLOYMENT_NAME }} -p '{"spec":{"template":{"spec":{"containers":[{"name":"${{ env.DEPLOYMENT_NAME }}","image":"${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}"}]}}}}'
+          cat ops/kubernetes/frontend/deployment.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+      - name: Kubernetes - wait for new deployment to be successfully rolled out
+        run: |
+          while [ true ]; do
+            if [ kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} | grep 'successfully rolled out' ]; then
+              break
+            fi
+            sleep 1
+          done
+      - name: Kubernetes - apply horizontal pods autoscaling to new deployment
+        run: |
+          cat ops/kubernetes/frontend/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+      - name: Kubernetes - switch LB to green deployment
+          cat ops/kubernetes/frontend/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy
