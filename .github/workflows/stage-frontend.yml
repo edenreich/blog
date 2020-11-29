@@ -88,7 +88,7 @@ jobs:
           max_count=200
           count=0
           while [ true ]; do
-            if [[ $max_count <= $count ]]; then
+            if [[ $max_count < $count ]]; then
               echo "===> Waited too long for successfully rolled out green version, but something went wrong."
               exit 1
             fi
