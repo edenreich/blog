@@ -82,7 +82,7 @@ jobs:
       - name: Kubernetes - switch to production context
         run: kubectl config use-context production
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/frontend/deployment.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/frontend/deployment.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g;s/{{REPOSITORY}}/${{ env.DOCKER_REPO }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
