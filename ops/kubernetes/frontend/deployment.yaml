@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: blog-frontend
+        app: blog-frontend-{{VERSION}}
     spec:
       containers:
       - name: blog-frontend
