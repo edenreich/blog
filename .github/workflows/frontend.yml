@@ -13,6 +13,7 @@ on:
 env:
   DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/blog-frontend
+  DOCKER_IMAGE: blog-frontend
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
@@ -82,7 +83,7 @@ jobs:
       - name: Kubernetes - switch to production context
         run: kubectl config use-context production
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/frontend/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/frontend/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
