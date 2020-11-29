@@ -50,7 +50,7 @@ class IndexPage extends React.Component<IProps, IState> {
     Modal.setAppElement('#home');
   }
 
-  handleNotificationClick(event: React.MouseEvent): void {
+  openModal(event: React.MouseEvent): void {
     event.preventDefault();
 
     this.setState({ modalIsOpen: true });
@@ -134,7 +134,7 @@ class IndexPage extends React.Component<IProps, IState> {
             <div className="grid-column">
               <div className="home__notifications">
                 <Link href="/#">
-                  <a onClick={(event: React.MouseEvent) => this.handleNotificationClick(event)}>
+                  <a onClick={(event: React.MouseEvent) => this.openModal(event)}>
                     <GrNotification size="30px" />
                   </a>
                 </Link>
