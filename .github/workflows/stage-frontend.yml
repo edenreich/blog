@@ -95,7 +95,7 @@ jobs:
             if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} | grep 'successfully rolled out') ]]; then
               break
             fi
-            count=(($count+1))
+            count=$((count+1))
             sleep 1
           done
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
