@@ -96,6 +96,7 @@ jobs:
               break
             fi
             count=$((count+1))
+            echo "===> New deployment ${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} is being rollout out..."
             sleep 1
           done
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
