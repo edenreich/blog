@@ -5,7 +5,7 @@ metadata:
   namespace: blog
 spec:
   selector:
-    app: blog-frontend
+    app: blog-frontend-{{VERSION}}
   ports:
   - port: 8080
     targetPort: 3000
