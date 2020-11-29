@@ -9,17 +9,24 @@ import ReactMarkDown from 'react-markdown';
 import getConfig from 'next/config';
 import axios, { AxiosResponse } from 'axios';
 import { asset } from '@/utils/asset';
+import { GrNotification, GrClose } from 'react-icons/gr';
+import Modal from 'react-modal';
 
 import './index.scss';
+
+const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   articles?: Article[];
 }
 
-class IndexPage extends React.Component<IProps> {
+interface IState {
+  modalIsOpen: boolean;
+}
+
+class IndexPage extends React.Component<IProps, IState> {
 
   static async getInitialProps(): Promise<any> {
-    const { publicRuntimeConfig } = getConfig();
     let articles: Article[];
     try {
       const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles`);
@@ -29,6 +36,28 @@ class IndexPage extends React.Component<IProps> {
     }
 
     return { articles };
+  }
+
+  constructor(props: IProps) {
+    super(props);
+
+    this.state = {
+      modalIsOpen: false,
+    };
+  }
+
+  componentDidMount(): void {
+    Modal.setAppElement('#home');
+  }
+
+  handleNotificationClick(event: React.MouseEvent): void {
+    event.preventDefault();
+
+    this.setState({ modalIsOpen: true });
+  }
+
+  closeModal(): void {
+    this.setState({ modalIsOpen: false });
   }
 
   render(): JSX.Element {
@@ -49,6 +78,46 @@ class IndexPage extends React.Component<IProps> {
           <meta property="og:image" content="/pictures/profile_600.png" />
           <meta property="og:description" content={description} />
         </Head>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={() => this.closeModal()}
+          style={{
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)'
+            }
+          }}
+          contentLabel="Notifications"
+        >
+          <div className="modal__header">
+            <h2>Notifications</h2>
+            <Link href="/#">
+              <a
+                className="modal__close"
+                onClick={(event) => { event.preventDefault(); this.closeModal(); }}
+              >
+                <GrClose size="20px" />
+              </a>
+            </Link>
+          </div>
+          <div className="modal__content">
+            <div>
+              <p>
+                Stay up to date when a new article is being published.
+              </p>
+            </div>
+            <form action={`${publicRuntimeConfig.app.url}/api/notifications`}>
+              <br />
+              <input className="form-control" placeholder="Email..." />
+              <br />
+              <input className="form-button" type="submit" value="Save" />
+            </form>
+          </div>
+        </Modal>
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
@@ -57,12 +126,19 @@ class IndexPage extends React.Component<IProps> {
                 Welcome to my blog, I'll be posting about web app development, native apps, DevOps and more.
                 So if you are a developer or you just happened to visit this website randomly and want to bring your web experience to the next level, stay tuned ;)
               </p>
-              </div>
+            </div>
           </div>
         </section>
         <section className="content__section">
           <div className="content__wrapper grid-content-wrapper">
             <div className="grid-column">
+              <div className="home__notifications">
+                <Link href="/#">
+                  <a onClick={(event: React.MouseEvent) => this.handleNotificationClick(event)}>
+                    <GrNotification size="30px" />
+                  </a>
+                </Link>
+              </div>
               <h2>Blog Feed</h2>
               <p>Latest posted articles:</p>
               {
