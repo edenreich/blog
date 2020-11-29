@@ -89,7 +89,7 @@ jobs:
           count=0
           while [ true ]; do
             if [[ $count -gt $max_count ]]; then
-              echo "===> Waited too long for successfully rolled out green version, but something went wrong."
+              echo "===> Waited for too long for a successful rolled out green version, but something went wrong. Aborting..."
               exit 1
             fi
             if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} | grep 'successfully rolled out') ]]; then
