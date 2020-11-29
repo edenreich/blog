@@ -92,7 +92,7 @@ jobs:
               echo "===> Waited too long for successfully rolled out green version, but something went wrong."
               exit 1
             fi
-            if [[ kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} | grep 'successfully rolled out' ]]; then
+            if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} | grep 'successfully rolled out') ]]; then
               break
             fi
             count=(($count+1))
