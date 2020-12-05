@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Lifecycle callbacks for the `likes` model.
+ *  Lifecycle callbacks for the `notifications` model.
  */
 
 const { v4: uuidv4 } = require('uuid');

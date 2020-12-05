@@ -5,23 +5,30 @@ import { Article } from '@/interfaces/article';
 import Link from 'next/link';
 import moment from 'moment';
 import ReactMarkDown from 'react-markdown';
+import { GrClose } from 'react-icons/gr';
+import { IoMdNotificationsOff, IoMdNotificationsOutline } from 'react-icons/io';
+import Modal from 'react-modal';
 
 import getConfig from 'next/config';
 import axios, { AxiosResponse } from 'axios';
 import { asset } from '@/utils/asset';
-import { GrNotification, GrClose } from 'react-icons/gr';
-import Modal from 'react-modal';
+import { IVisitor } from '@/interfaces/visitor';
+import { INotification } from '@/interfaces/notification';
 
 import './index.scss';
 
 const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
+  visitor?: IVisitor;
   articles?: Article[];
 }
 
 interface IState {
   modalIsOpen: boolean;
+  email: string;
+  invalid: boolean;
+  notification: INotification | null;
 }
 
 class IndexPage extends React.Component<IProps, IState> {
@@ -43,21 +50,78 @@ class IndexPage extends React.Component<IProps, IState> {
 
     this.state = {
       modalIsOpen: false,
+      email: '',
+      invalid: false,
+      notification: null,
     };
+
+    this.closeModal = this.closeModal.bind(this);
+    this.setEmail = this.setEmail.bind(this);
+    this.submitNotificationForm = this.submitNotificationForm.bind(this);
   }
 
-  componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
     Modal.setAppElement('#home');
+    try {
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/notifications/get?session_id=${this.props.visitor.uuid}`);
+      const notification: INotification = response.data;
+      await this.setState({ notification });
+    } catch (error) {
+      console.error(error);
+      await this.setState({});
+    }
   }
 
-  openModal(event: React.MouseEvent): void {
+  async openModal(event: React.MouseEvent): Promise<void> {
     event.preventDefault();
+
+    if (this.state.notification?.is_enabled) {
+      try {
+        const notification: INotification = await axios.put(`${publicRuntimeConfig.app.url}/api/notifications/remove`, {
+          session: this.props.visitor?.uuid,
+          email: this.state.email,
+          is_enabled: false,
+        }, { headers: { 'Content-Type': 'application/json' } });
+        this.setState({ notification });
+      } catch (error) {
+        console.error(error);
+      }
+
+      return;
+    }
 
     this.setState({ modalIsOpen: true });
   }
 
-  closeModal(): void {
+  closeModal(event: React.MouseEvent): void {
+    event.preventDefault();
     this.setState({ modalIsOpen: false });
+  }
+
+  setEmail(event: React.FormEvent<HTMLInputElement>): void {
+    this.setState({ invalid: false });
+    this.setState({ email: event.currentTarget.value });
+  }
+
+  async submitNotificationForm(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(this.state.email)) {
+      this.setState({ invalid: true });
+      return;
+    }
+
+    try {
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/notifications/add`, {
+        session: this.props.visitor.uuid,
+        email: this.state.email,
+      }, { headers: { 'Content-Type': 'application/json' } });
+      const notification: INotification = response.data;
+      this.setState({ notification, modalIsOpen: false });
+    } catch (error) {
+      console.error(error);
+      this.setState({ modalIsOpen: false });
+    }
   }
 
   render(): JSX.Element {
@@ -80,7 +144,7 @@ class IndexPage extends React.Component<IProps, IState> {
         </Head>
         <Modal
           isOpen={this.state.modalIsOpen}
-          onRequestClose={() => this.closeModal()}
+          onRequestClose={this.closeModal}
           style={{
             content: {
               top: '50%',
@@ -98,7 +162,7 @@ class IndexPage extends React.Component<IProps, IState> {
             <Link href="/#">
               <a
                 className="modal__close"
-                onClick={(event) => { event.preventDefault(); this.closeModal(); }}
+                onClick={this.closeModal}
               >
                 <GrClose size="20px" />
               </a>
@@ -110,11 +174,28 @@ class IndexPage extends React.Component<IProps, IState> {
                 Stay up to date when a new article is being published.
               </p>
             </div>
-            <form action={`${publicRuntimeConfig.app.url}/api/notifications`}>
+            <form
+              id="notification-form"
+              ref="notification-form"
+              method="POST"
+              action={`${publicRuntimeConfig.app.url}/api/notifications`}
+              onSubmit={this.submitNotificationForm}
+            >
               <br />
-              <input className="form-control" placeholder="Email..." />
+              <input
+                name="email"
+                className={this.state.invalid ? 'form-control--error' : 'form-control'}
+                placeholder="Email..."
+                value={this.state.email}
+                onChange={this.setEmail}
+              />
               <br />
-              <input className="form-button" type="submit" value="Save" />
+              <input
+                className="form-button"
+                type="submit"
+                form="notification-form"
+                value="Save"
+              />
             </form>
           </div>
         </Modal>
@@ -135,7 +216,9 @@ class IndexPage extends React.Component<IProps, IState> {
               <div className="home__notifications">
                 <Link href="/#">
                   <a onClick={(event: React.MouseEvent) => this.openModal(event)}>
-                    <GrNotification size="30px" />
+                    {!this.state.notification && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
+                    {this.state.notification && !this.state.notification.is_enabled && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
+                    {this.state.notification && this.state.notification.is_enabled && <IoMdNotificationsOff title="Disable notifications" size="30px" />}
                   </a>
                 </Link>
               </div>
