@@ -10,7 +10,7 @@
     "strapi": "strapi"
   },
   "devDependencies": {},
-  "dependencies": {
+  "dependencies": { 
     "knex": "<0.20.0",
     "pg": "latest",
     "strapi": "3.3.3",

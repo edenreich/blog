@@ -17,7 +17,7 @@ env:
   DEPLOYMENT_NAME: blog-frontend
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
-  ARTIFACT_FILES: src/frontend/package.json ops/docker/frontend/artifacts/Dockerfile
+  ARTIFACT_FILES: src/frontend/package.json src/frontend/yarn.lock ops/docker/frontend/artifacts/Dockerfile
 
 jobs:
   check:
