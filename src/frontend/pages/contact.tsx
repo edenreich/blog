@@ -122,8 +122,8 @@ class ContactPage extends React.Component<IProps, IState> {
                         type="text"
                         className={
                           errors.name && touched.name
-                          ? 'contact__form-control--error'
-                          : 'contact__form-control'
+                          ? 'form-control--error'
+                          : 'form-control'
                         }
                         name="name"
                         placeholder="Your name"
@@ -137,8 +137,8 @@ class ContactPage extends React.Component<IProps, IState> {
                         type="email"
                         className={
                           errors.email && touched.email
-                          ? 'contact__form-control--error'
-                          : 'contact__form-control'
+                          ? 'form-control--error'
+                          : 'form-control'
                         }
                         name="email"
                         placeholder="Your e-mail"
@@ -150,7 +150,7 @@ class ContactPage extends React.Component<IProps, IState> {
                     <div className="contact__form-group grid-form-group-3">
                       <input
                         type="text"
-                        className="contact__form-control"
+                        className="form-control"
                         name="tel"
                         value={values.tel}
                         onChange={handleChange}
@@ -160,7 +160,7 @@ class ContactPage extends React.Component<IProps, IState> {
                     <div className="contact__form-group grid-form-group-4">
                       <textarea
                         name="message"
-                        className="contact__form-control"
+                        className="form-control"
                         rows={3}
                         value={values.message}
                         onChange={handleChange}
@@ -171,7 +171,7 @@ class ContactPage extends React.Component<IProps, IState> {
                     <div className="contact__form-group grid-form-button">
                       <button
                           type="submit"
-                          className="contact__button"
+                          className="form-button"
                           disabled={isSubmitting}
                         >
                         {isSubmitting ? 'Sending...' : 'Send'}
