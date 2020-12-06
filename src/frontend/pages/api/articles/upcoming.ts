@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await runMiddleware(req, res, cors);
 
   try {
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles?_sort=created_at:DESC&_publicationState=live`, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles?_sort=created_at:DESC&_publicationState=preview&published_at_null=true`, { headers: { 'Content-Type': 'application/json' } });
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);
