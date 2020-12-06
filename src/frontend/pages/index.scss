@@ -1,7 +1,27 @@
 
 @import '../assets/scss/breakpoints.scss';
+@import '../assets/scss/inputs.scss';
+
+.modal {
+  &__header {
+    display: flex;
+  }
+
+  &__close {
+    margin-left: auto;
+    height: 40px;
+  }
+
+  &__context {
+    margin-top: 30px;
+  }
+}
 
 .home {
+
+  &__notifications {
+    text-align: right;
+  }
 
   article {
     margin-top: 30px;
