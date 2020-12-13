@@ -1,19 +1,16 @@
 import * as React from 'react';
 import Head from 'next/head';
-
 import { Article } from '@/interfaces/article';
 import Link from 'next/link';
-import moment from 'moment';
-import ReactMarkDown from 'react-markdown';
 import { GrClose } from 'react-icons/gr';
 import { IoMdNotificationsOff, IoMdNotificationsOutline } from 'react-icons/io';
 import Modal from 'react-modal';
-
 import getConfig from 'next/config';
 import axios, { AxiosResponse } from 'axios';
-import { asset } from '@/utils/asset';
 import { IVisitor } from '@/interfaces/visitor';
 import { INotification } from '@/interfaces/notification';
+import PublishedArticles from '@/components/PublishedArticles';
+import UpcomingArticles from '@/components/UpcomingArticles';
 
 import './index.scss';
 
@@ -21,7 +18,8 @@ const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   visitor?: IVisitor;
-  articles?: Article[];
+  publishedArticles?: Article[];
+  upcomingArticles?: Article[];
 }
 
 interface IState {
@@ -34,15 +32,23 @@ interface IState {
 class IndexPage extends React.Component<IProps, IState> {
 
   static async getInitialProps(): Promise<any> {
-    let articles: Article[];
+    let publishedArticles: Article[];
     try {
       const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles`);
-      articles = response.data;
+      publishedArticles = response.data;
     } catch (error) {
-      articles = [];
+      publishedArticles = [];
     }
 
-    return { articles };
+    let upcomingArticles: Article[];
+    try {
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles/upcoming`);
+      upcomingArticles = response.data;
+    } catch (error) {
+      upcomingArticles = [];
+    }
+
+    return { publishedArticles, upcomingArticles };
   }
 
   constructor(props: IProps) {
@@ -223,28 +229,16 @@ class IndexPage extends React.Component<IProps, IState> {
                 </Link>
               </div>
               <h2>Blog Feed</h2>
-              <p>Latest posted articles:</p>
-              {
-                this.props.articles?.filter((article: Article) => article.published_at !== undefined).map((article: Article, key: number) => {
-                  return (
-                    <article key={key}>
-                      <div className="home__article__title">
-                        <img src={`${asset(article.meta_thumbnail.formats.thumbnail?.url)}`} />
-                        <h3>{article.title}</h3>
-                        <span className="home__article__date"><small>{moment(article.published_at).fromNow()}</small></span>
-                      </div>
-                      <div className="home__article__content">
-                        <ReactMarkDown source={article.content.substring(0, 300)} escapeHtml={false} />
-                      </div>
-                      <div className="home__article__text-preview">
-                        <Link href={`/${article.slug}`}>
-                          <a className="button-primary">Read more..</a>
-                        </Link>
-                      </div>
-                    </article>
-                  );
-                })
-              }
+              <p>Latest published articles:</p>
+              <PublishedArticles articles={this.props.publishedArticles} />
+            </div>
+          </div>
+        </section>
+        <section className="content__section">
+          <div className="content__wrapper grid-content-wrapper">
+            <div className="grid-column">
+              <h2>Upcoming articles</h2>
+              <UpcomingArticles articles={this.props.upcomingArticles} />
             </div>
           </div>
         </section>
