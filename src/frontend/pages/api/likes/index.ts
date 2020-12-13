@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await runMiddleware(req, res, cors);
 
   try {
-    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.default.url}/likes`, req.body);
+    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.admin.url}/likes`, req.body);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);

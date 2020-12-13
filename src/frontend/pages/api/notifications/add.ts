@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await runMiddleware(req, res, cors);
 
   try {
-    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.default.url}/notifications`, { ...req.body, is_enabled: true }, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.admin.url}/notifications`, { ...req.body, is_enabled: true }, { headers: { 'Content-Type': 'application/json' } });
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);

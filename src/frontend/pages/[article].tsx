@@ -27,7 +27,7 @@ class Article extends React.Component<IProps> {
     let article: IArticle | null;
 
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/articles/${ctx.query.article}`, { headers:  ctx?.req?.headers });
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.frontend.url}/articles/${ctx.query.article}`, { headers:  ctx?.req?.headers });
       article = response.data;
     } catch (error) {
       article = null;

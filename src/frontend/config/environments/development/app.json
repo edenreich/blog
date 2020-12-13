@@ -1,5 +1,5 @@
 {
-    "env": "development",
-    "url": "https://dev.eden-reich.com",
-    "assets_url": "https://dev-admin.eden-reich.com"
+  "env": "development",
+  "url": "https://dev.eden-reich.com",
+  "assets_url": "https://dev-admin.eden-reich.com"
 }

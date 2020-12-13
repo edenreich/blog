@@ -35,7 +35,7 @@ class Reactions extends React.Component<IProps, IState> {
       selected: null
     };
 
-    axios.get(`${publicRuntimeConfig.app.url}/api/likes/count?article=${this.props.articleId}`, { headers: { 'Content-Type': 'application/json' } }).then((response: AxiosResponse) => {
+    axios.get(`${publicRuntimeConfig.apis.frontend.url}/likes/count?article=${this.props.articleId}`, { headers: { 'Content-Type': 'application/json' } }).then((response: AxiosResponse) => {
       this.setState({
         like: response.data.like,
         love: response.data.love,
@@ -63,8 +63,8 @@ class Reactions extends React.Component<IProps, IState> {
     };
 
     try {
-      await axios.post(`${publicRuntimeConfig.app.url}/api/likes`, payload, { headers: { 'Content-Type': 'application/json' } });
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.app.url}/api/likes/count?article=${articleId}`, { headers: { 'Content-Type': 'application/json' } });
+      await axios.post(`${publicRuntimeConfig.apis.frontend.url}/likes`, payload, { headers: { 'Content-Type': 'application/json' } });
+      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.frontend.url}/likes/count?article=${articleId}`, { headers: { 'Content-Type': 'application/json' } });
       this.setState({
         like: response.data.like,
         love: response.data.love,

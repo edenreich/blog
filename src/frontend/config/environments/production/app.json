@@ -1,5 +1,5 @@
 {
-    "env": "production",
-    "url": "https://www.eden-reich.com",
-    "assets_url": "https://admin.eden-reich.com"
+  "env": "production",
+  "url": "https://www.eden-reich.com",
+  "assets_url": "https://admin.eden-reich.com"
 }

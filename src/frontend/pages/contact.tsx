@@ -96,7 +96,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   return errors;
                 }}
                 onSubmit={async (values, { resetForm, setSubmitting }) => {
-                  const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.app.url}/api/email/send`, JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
+                  const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.frontend.url}/email/send`, JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
 
                   if (response.data.success) {
                     this.setState({
@@ -116,7 +116,7 @@ class ContactPage extends React.Component<IProps, IState> {
                   handleBlur,
                   handleSubmit,
                 }) => (
-                  <form action={`${publicRuntimeConfig.app.url}/api/email/send`} method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
+                  <form action={`${publicRuntimeConfig.apis.frontend.url}/email/send`} method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
                     <div className="contact__form-group grid-form-group-1">
                       <input
                         type="text"

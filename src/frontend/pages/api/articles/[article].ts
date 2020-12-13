@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { article } = req.query;
   try {
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/articles/${article}`, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/articles/${article}`, { headers: { 'Content-Type': 'application/json' } });
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);

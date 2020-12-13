@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   let notification: INotification;
   try {
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.default.url}/notifications/${session}`, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/notifications/${session}`, { headers: { 'Content-Type': 'application/json' } });
     notification = response.data;
   } catch (error) {
     console.error(error);
@@ -27,7 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const response: AxiosResponse = await axios.put(`${publicRuntimeConfig.apis.default.url}/notifications/${notification.uuid}`, {...req.body, is_enabled: false }, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.put(`${publicRuntimeConfig.apis.admin.url}/notifications/${notification.uuid}`, {...req.body, is_enabled: false }, { headers: { 'Content-Type': 'application/json' } });
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);
