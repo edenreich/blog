@@ -44,6 +44,16 @@ services:
     networks:
       - app
 
+  api:
+    build:
+      target: development
+      context: .
+      dockerfile: ops/docker/backend/api/Dockerfile
+    volumes:
+      - ./src/backend/api:/app:rw
+    networks:
+      - app
+
   postgres:
     image: postgres
     environment:
@@ -85,6 +95,13 @@ services:
     volumes:
       - ./src/frontend:/frontend:rw
       - ./src/backend/admin:/admin:rw
+
+  composer:
+    image: composer
+    command: composer install
+    working_dir: /backend/api
+    volumes:
+     - ./src/backend/api:/backend/api:rw
 
 volumes:
   database-data:
