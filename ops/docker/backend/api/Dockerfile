@@ -10,8 +10,7 @@ RUN composer install --no-dev
 
 FROM php:8.0.0-fpm-alpine3.12 AS common
 RUN apk add --update nginx supervisor
-RUN mkdir /run/nginx && \
-    mkdir /var/log/php-fpm
+RUN mkdir /run/nginx
 COPY ops/docker/backend/api/supervisor.d /etc/supervisor.d
 COPY ops/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
