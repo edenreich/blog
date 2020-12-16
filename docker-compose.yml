@@ -50,7 +50,7 @@ services:
       context: .
       dockerfile: ops/docker/backend/api/Dockerfile
     volumes:
-      - ./src/backend/api:/app:rw
+      - ./src/backend/api:/var/www/api:rw
     networks:
       - app
 
@@ -99,9 +99,9 @@ services:
   composer:
     image: composer
     command: composer install
-    working_dir: /backend/api
+    working_dir: /var/www/api
     volumes:
-     - ./src/backend/api:/backend/api:rw
+     - ./src/backend/api:/var/www/api:rw
 
 volumes:
   database-data:
