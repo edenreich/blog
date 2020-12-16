@@ -1,11 +1,11 @@
 FROM composer AS dev-builder
 WORKDIR /app
-COPY src/api/composer.* .
+COPY src/backend/api/composer.* ./
 RUN composer install
 
 FROM composer AS builder
 WORKDIR /app
-COPY src/api/composer.* .
+COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
 FROM php:8.0.0-fpm-alpine3.12 AS common
@@ -25,6 +25,7 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     apk del .build-deps
 RUN wget https://get.symfony.com/cli/installer -O - | bash
 RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
 VOLUME [ "/var/www" ]
 
 FROM common AS test
