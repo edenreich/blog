@@ -14,3 +14,4 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = dev.eden-reich.com
 DNS.2 = dev-admin.eden-reich.com
+DNS.3 = dev-api.eden-reich.com
