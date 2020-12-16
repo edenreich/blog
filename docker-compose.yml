@@ -38,7 +38,7 @@ services:
       args:
         NODE_ENV: development
       context: .
-      dockerfile: ops/docker/admin/Dockerfile
+      dockerfile: ops/docker/backend/admin/Dockerfile
     volumes:
       - ./src/backend/admin:/app:rw
     networks:
