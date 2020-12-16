@@ -27,16 +27,16 @@ FROM common AS test
 ENV APP_ENV=test
 WORKDIR /var/www
 COPY src/api .
-COPY --from=dev-builder /app .
+COPY --from=dev-builder /app api
 
 FROM common AS stage
 ENV APP_ENV=prod
 WORKDIR /var/www
 COPY src/api .
-COPY --from=builder /app .
+COPY --from=builder /app api
 
 FROM common AS production
 ENV APP_ENV=prod
 WORKDIR /var/www
 COPY src/api .
-COPY --from=builder /app .
+COPY --from=builder /app api
