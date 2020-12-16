@@ -17,24 +17,24 @@ EXPOSE 80
 CMD [ "supervisord", "--pidfile", "/run/supervisord.pid", "-c", "/etc/supervisord.conf" ]
 
 FROM common AS development
-ENV APP_ENV=dev
 WORKDIR /var/www
+ENV APP_ENV=dev
 VOLUME [ "/var/www" ]
 
 FROM common AS test
-ENV APP_ENV=test
 WORKDIR /var/www
+ENV APP_ENV=test
 COPY src/api .
 COPY --from=dev-builder /app api
 
 FROM common AS stage
-ENV APP_ENV=prod
 WORKDIR /var/www
+ENV APP_ENV=prod
 COPY src/api .
 COPY --from=builder /app api
 
 FROM common AS production
-ENV APP_ENV=prod
 WORKDIR /var/www
+ENV APP_ENV=prod
 COPY src/api .
 COPY --from=builder /app api
