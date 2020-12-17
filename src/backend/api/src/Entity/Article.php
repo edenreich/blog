@@ -66,13 +66,6 @@ class Article
     private $publishedAt;
 
     /**
-     * @var bool|null
-     *
-     * @ORM\Column(name="published", type="boolean", nullable=true)
-     */
-    private $published;
-
-    /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
@@ -99,4 +92,158 @@ class Article
      * @ORM\Column(name="updated_by", type="integer", nullable=true)
      */
     private $updatedBy;
+
+    /**
+     * Get the value of id
+     *
+     * @return string
+     */ 
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the value of title
+     *
+     * @return string
+     */ 
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the value of title
+     *
+     * @param string  $title
+     *
+     * @return self
+     */ 
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of slug
+     *
+     * @return string
+     */ 
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set the value of slug
+     *
+     * @param string $slug
+     *
+     * @return self
+     */ 
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of metaKeywords
+     *
+     * @return string|null
+     */ 
+    public function getMetaKeywords(): ?string
+    {
+        return $this->metaKeywords;
+    }
+
+    /**
+     * Set the value of metaKeywords
+     *
+     * @param string|null $metaKeywords
+     *
+     * @return self
+     */ 
+    public function setMetaKeywords($metaKeywords): self
+    {
+        $this->metaKeywords = $metaKeywords;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of metaDescription
+     *
+     * @return string|null
+     */ 
+    public function getMetaDescription(): ?string
+    {
+        return $this->metaDescription;
+    }
+
+    /**
+     * Set the value of metaDescription
+     *
+     * @param string|null $metaDescription
+     *
+     * @return self
+     */ 
+    public function setMetaDescription($metaDescription): self
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of content
+     *
+     * @return string
+     */ 
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set the value of content
+     *
+     * @param string $content
+     *
+     * @return self
+     */ 
+    public function setContent(string $content): self
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of publishedAt
+     *
+     * @return \DateTime|null
+     */ 
+    public function getPublishedAt(): ?\DateTimeInterface
+    {
+        return $this->publishedAt;
+    }
+
+    /**
+     * Set the value of publishedAt
+     *
+     * @param \DateTime|null  $publishedAt
+     *
+     * @return self
+     */ 
+    public function setPublishedAt($publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
 }

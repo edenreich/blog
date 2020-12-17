@@ -319,6 +319,12 @@
     "symfony/polyfill-php80": {
         "version": "v1.20.0"
     },
+    "symfony/property-access": {
+        "version": "v5.2.0"
+    },
+    "symfony/property-info": {
+        "version": "v5.2.0"
+    },
     "symfony/routing": {
         "version": "5.1",
         "recipe": {
@@ -335,6 +341,9 @@
     },
     "symfony/serializer": {
         "version": "v5.2.0"
+    },
+    "symfony/serializer-pack": {
+        "version": "v1.0.4"
     },
     "symfony/service-contracts": {
         "version": "v2.2.0"
