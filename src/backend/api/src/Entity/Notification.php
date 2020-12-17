@@ -38,32 +38,18 @@ class Notification
     private $isEnabled;
 
     /**
-     * @var int|null
+     * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     * @ORM\Column(name="created_at", type="datetimetz", nullable=true)
      */
-    private $createdBy;
+    private $createdAt;
 
     /**
-     * @var int|null
+     * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="updated_by", type="integer", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetimetz", nullable=true)
      */
-    private $updatedBy;
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="created_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
-     */
-    private $createdAt = 'CURRENT_TIMESTAMP';
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="updated_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
-     */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    private $updatedAt;
 
     /**
      * @var Session
@@ -150,6 +136,54 @@ class Notification
     public function setSession(Session $session): self
     {
         $this->session = $session;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @param \DateTimeInterface|null $createdAt
+     *
+     * @return self
+     */ 
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of updatedAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set the value of updatedAt
+     *
+     * @param \DateTimeInterface|null $updatedAt
+     *
+     * @return self
+     */ 
+    public function setUpdatedAt($updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

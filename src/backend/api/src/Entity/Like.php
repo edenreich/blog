@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
  *
  * @ORM\Table(name="likes", uniqueConstraints={@ORM\UniqueConstraint(name="likes_id_unique", columns={"id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Like
 {
@@ -31,32 +32,18 @@ class Like
     private $reactionType;
 
     /**
-     * @var int|null
+     * @var \DateTime|null
      *
-     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     * @ORM\Column(name="created_at", type="datetimetz", nullable=true)
      */
-    private $createdBy;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="updated_by", type="integer", nullable=true)
-     */
-    private $updatedBy;
+    private $createdAt;
 
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="created_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="updated_at", type="datetimetz", nullable=true)
      */
-    private $createdAt = 'CURRENT_TIMESTAMP';
-
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="updated_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
-     */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    private $updatedAt;
 
     /**
      * @var Article
@@ -71,6 +58,48 @@ class Like
      * @ORM\ManyToOne(targetEntity="Session")
      */
     private $session;
+
+    /**
+     * Initialize properties.
+     * 
+     * @param array $attributes
+     */
+    public function __construct(array $properties)
+    {
+        if (isset($properties['reactionType'])) {
+            $this->setReactionType($properties['reactionType']);
+        }
+        if (isset($properties['article'])) {
+            $this->setArticle($properties['article']);
+        }
+        if (isset($properties['session'])) {
+            $this->setSession($properties['session']);
+        }
+    }
+
+    /**
+     * Gets triggered only on insert
+
+     * @ORM\PrePersist
+     * 
+     * @return void
+     */
+    public function onPrePersist(): void
+    {
+        $this->setCreatedAt(new \DateTime("now"));
+    }
+
+    /**
+     * Gets triggered every time on update
+
+     * @ORM\PreUpdate
+     * 
+     * @return void
+     */
+    public function onPreUpdate(): void
+    {
+        $this->setUpdatedAt(new \DateTime("now"));
+    }
 
     /**
      * Get the value of id
@@ -150,6 +179,54 @@ class Like
     public function setSession(Session $session): self
     {
         $this->session = $session;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @param \DateTimeInterface|null $createdAt
+     *
+     * @return self
+     */ 
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of updatedAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set the value of updatedAt
+     *
+     * @param \DateTimeInterface|null $updatedAt
+     *
+     * @return self
+     */ 
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

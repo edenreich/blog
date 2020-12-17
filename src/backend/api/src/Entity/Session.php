@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
  *
  * @ORM\Table(name="sessions", uniqueConstraints={@ORM\UniqueConstraint(name="sessions_ip_address_unique", columns={"ip_address"}), @ORM\UniqueConstraint(name="sessions_id_unique", columns={"id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Session
 {
@@ -31,39 +32,49 @@ class Session
     private $ipAddress;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
-    private $createdAt = 'CURRENT_TIMESTAMP';
+    private $createdAt;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="created_by", type="integer", nullable=true)
-     */
-    private $createdBy;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="updated_by", type="integer", nullable=true)
-     */
-    private $updatedBy;
+    private $updatedAt;
 
     /**
      * @var Like[]
      *
-     * @ORM\OneToMany(targetEntity="Like", mappedBy="session")
+     * @ORM\OneToMany(targetEntity="Like", mappedBy="session", cascade={"persist", "remove"})
      */
     private $likes;
+
+    /**
+     * Gets triggered only on insert
+
+     * @ORM\PrePersist
+     * 
+     * @return void
+     */
+    public function onPrePersist(): void
+    {
+        $this->setCreatedAt(new \DateTime("now"));
+    }
+
+    /**
+     * Gets triggered every time on update
+
+     * @ORM\PreUpdate
+     * 
+     * @return void
+     */
+    public function onPreUpdate(): void
+    {
+        $this->setUpdatedAt(new \DateTime("now"));
+    }
 
     /**
      * Get the value of id
@@ -119,6 +130,54 @@ class Session
     public function setLikes(array $likes): self
     {
         $this->likes = $likes;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @param \DateTimeInterface|null $createdAt
+     *
+     * @return self
+     */ 
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of updatedAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set the value of updatedAt
+     *
+     * @param \DateTimeInterface|null $updatedAt
+     *
+     * @return self
+     */ 
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

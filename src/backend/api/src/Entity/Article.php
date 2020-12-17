@@ -67,32 +67,18 @@ class Article
     private $publishedAt;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="created_by", type="integer", nullable=true)
-     */
-    private $createdBy;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="updated_by", type="integer", nullable=true)
-     */
-    private $updatedBy;
 
     /**
      * @var Like[]
@@ -105,8 +91,10 @@ class Article
      * Gets triggered only on insert
 
      * @ORM\PrePersist
+     * 
+     * @return void
      */
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
         $this->setCreatedAt(new \DateTime("now"));
     }
@@ -115,8 +103,10 @@ class Article
      * Gets triggered every time on update
 
      * @ORM\PreUpdate
+     * 
+     * @return void
      */
-    public function onPreUpdate()
+    public function onPreUpdate(): void
     {
         $this->setUpdatedAt(new \DateTime("now"));
     }
@@ -292,7 +282,7 @@ class Article
      *
      * @return self
      */ 
-    public function setCreatedAt($createdAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -316,9 +306,33 @@ class Article
      *
      * @return self
      */ 
-    public function setUpdatedAt($updatedAt): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of likes
+     *
+     * @return Like[]
+     */ 
+    public function getLikes(): array
+    {
+        return $this->likes;
+    }
+
+    /**
+     * Set the value of likes
+     *
+     * @param Like[] $likes
+     *
+     * @return self
+     */ 
+    public function setLikes(array $likes): self
+    {
+        $this->likes = $likes;
 
         return $this;
     }
