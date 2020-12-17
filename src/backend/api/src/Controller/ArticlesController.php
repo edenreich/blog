@@ -7,20 +7,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ArticlesController extends AbstractController
 {
     /**
      * @Route("/articles", name="articles")
      */
-    public function index(SerializerInterface $serializer): Response
+    public function index(SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
-        $article = new Article;
+        $articles = $entityManager->getRepository(Article::class)->findAll();
 
-        $article->setTitle("test");
-        $article->setContent("testing..");
-        $article->setSlug("test");
-
-        return new Response($serializer->serialize($article, 'json'));
+        return new Response($serializer->serialize($articles, 'json'));
     }
 }

@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
  * Article
  *
  * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="articles_id_unique", columns={"id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Article
@@ -304,7 +304,7 @@ class Article
      *
      * @return \DateTimeInterface|null
      */ 
-    public function getUpdatedAt(): \DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
