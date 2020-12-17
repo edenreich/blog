@@ -2,91 +2,107 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ArticleRepository::class)
+ * Articles
+ *
+ * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="articles_uuid_unique", columns={"uuid"})})
+ * @ORM\Entity
  */
 class Article
 {
     /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="articles_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @var string|null
+     *
+     * @ORM\Column(name="uuid", type="string", length=255, nullable=true)
+     */
+    private $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
     private $title;
 
     /**
-     * @ORM\Column(type="text")
+     * @var string
+     *
+     * @ORM\Column(name="slug", type="string", length=255, nullable=false)
+     */
+    private $slug;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="meta_keywords", type="string", length=255, nullable=true)
+     */
+    private $metaKeywords;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="meta_description", type="string", length=255, nullable=true)
+     */
+    private $metaDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="content", type="text", nullable=false)
      */
     private $content;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="published_at", type="datetimetz", nullable=true)
      */
-    private $created_at;
+    private $publishedAt;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @var bool|null
+     *
+     * @ORM\Column(name="published", type="boolean", nullable=true)
      */
-    private $updated_at;
+    private $published;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $createdAt = 'CURRENT_TIMESTAMP';
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $updatedAt = 'CURRENT_TIMESTAMP';
 
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     */
+    private $createdBy;
 
-        return $this;
-    }
-
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-
-    public function setContent(string $content): self
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="updated_by", type="integer", nullable=true)
+     */
+    private $updatedBy;
 }
