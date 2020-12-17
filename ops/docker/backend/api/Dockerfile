@@ -33,6 +33,7 @@ WORKDIR /var/www/api
 ENV APP_ENV=test
 COPY src/api .
 COPY --from=dev-builder /app .
+CMD [ "php", "bin/phpunit" ]
 
 FROM common AS stage
 WORKDIR /var/www/api
