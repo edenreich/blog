@@ -28,7 +28,13 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     apk del .build-deps
 RUN wget https://get.symfony.com/cli/installer -O - | bash
 RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
-COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.client_port=9000' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.log=/tmp/xdebug.log' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 VOLUME [ "/var/www" ]
 
 FROM common AS test
@@ -37,6 +43,7 @@ ENV APP_ENV=test
 COPY src/backend/api .
 COPY --from=dev-builder /app/vendor .
 COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 CMD [ "php", "bin/phpunit" ]
 
 FROM common AS stage
@@ -44,9 +51,11 @@ WORKDIR /var/www/api
 ENV APP_ENV=prod
 COPY src/backend/api .
 COPY --from=builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 FROM common AS production
 WORKDIR /var/www/api
 ENV APP_ENV=prod
 COPY src/backend/api .
 COPY --from=builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
