@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 /**
  * Like
  *
- * @ORM\Table(name="like", uniqueConstraints={@ORM\UniqueConstraint(name="likes_id_unique", columns={"id"})})
+ * @ORM\Table(name="likes", uniqueConstraints={@ORM\UniqueConstraint(name="likes_id_unique", columns={"id"})})
  * @ORM\Entity
  */
 class Like
@@ -26,7 +26,7 @@ class Like
     /**
      * @var string
      *
-     * @ORM\Column(name="reaction_type", type="string", columnDefinition="ENUM('like', 'love', 'dislike')"), nullable=false)
+     * @ORM\Column(name="reaction_type", type="string", columnDefinition="reaction"), nullable=false)
      */
     private $reactionType;
 
