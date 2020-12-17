@@ -31,18 +31,19 @@ VOLUME [ "/var/www" ]
 FROM common AS test
 WORKDIR /var/www/api
 ENV APP_ENV=test
-COPY src/api .
-COPY --from=dev-builder /app .
+COPY src/backend/api .
+COPY --from=dev-builder /app/vendor .
+COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
 CMD [ "php", "bin/phpunit" ]
 
 FROM common AS stage
 WORKDIR /var/www/api
 ENV APP_ENV=prod
-COPY src/api .
-COPY --from=builder /app .
+COPY src/backend/api .
+COPY --from=builder /app/vendor .
 
 FROM common AS production
 WORKDIR /var/www/api
 ENV APP_ENV=prod
-COPY src/api .
-COPY --from=builder /app .
+COPY src/backend/api .
+COPY --from=builder /app/vendor .
