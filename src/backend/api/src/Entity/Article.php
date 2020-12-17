@@ -3,31 +3,25 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 
 /**
  * Article
  *
- * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="articles_uuid_unique", columns={"uuid"})})
+ * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="articles_id_unique", columns={"id"})})
  * @ORM\Entity
  */
 class Article
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @var string
+     * 
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="articles_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      */
     private $id;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="uuid", type="string", length=255, nullable=true)
-     */
-    private $uuid;
 
     /**
      * @var string
