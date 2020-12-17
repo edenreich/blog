@@ -10,7 +10,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ArticlesController extends AbstractController
 {
-    #[Route('/articles', name: 'articles')]
+    /**
+     * @Route("/articles", name="articles")
+     */
     public function index(SerializerInterface $serializer): Response
     {
         $article = new Article;

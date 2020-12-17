@@ -78,15 +78,6 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
-    "laminas/laminas-code": {
-        "version": "3.5.1"
-    },
-    "laminas/laminas-eventmanager": {
-        "version": "3.3.0"
-    },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.1.1"
-    },
     "myclabs/deep-copy": {
         "version": "1.10.2"
     },
@@ -319,6 +310,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.20.0"
     },
+    "symfony/polyfill-uuid": {
+        "version": "v1.20.0"
+    },
     "symfony/property-access": {
         "version": "v5.2.0"
     },
@@ -354,6 +348,9 @@
     "symfony/string": {
         "version": "v5.2.0"
     },
+    "symfony/uid": {
+        "version": "v5.2.0"
+    },
     "symfony/var-dumper": {
         "version": "v5.2.0"
     },
@@ -366,10 +363,13 @@
     "theseer/tokenizer": {
         "version": "1.2.0"
     },
-    "webimpress/safe-writer": {
-        "version": "2.1.0"
-    },
     "webmozart/assert": {
         "version": "1.9.1"
+    },
+    "zendframework/zend-code": {
+        "version": "3.4.1"
+    },
+    "zendframework/zend-eventmanager": {
+        "version": "3.2.1"
     }
 }
