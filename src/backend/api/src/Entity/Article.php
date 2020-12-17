@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
  *
  * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="articles_id_unique", columns={"id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Article
 {
@@ -70,14 +71,14 @@ class Article
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $createdAt = 'CURRENT_TIMESTAMP';
+    private $createdAt;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    private $updatedAt;
 
     /**
      * @var int|null
@@ -99,6 +100,26 @@ class Article
      * @ORM\OneToMany(targetEntity="Like", mappedBy="article")
      */
     private $likes;
+
+    /**
+     * Gets triggered only on insert
+
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new \DateTime("now"));
+    }
+
+    /**
+     * Gets triggered every time on update
+
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new \DateTime("now"));
+    }
 
     /**
      * Get the value of id
@@ -250,6 +271,54 @@ class Article
     public function setPublishedAt(\DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @param \DateTimeInterface|null $createdAt
+     *
+     * @return self
+     */ 
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of updatedAt
+     *
+     * @return \DateTimeInterface|null
+     */ 
+    public function getUpdatedAt(): \DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set the value of updatedAt
+     *
+     * @param \DateTimeInterface|null $updatedAt
+     *
+     * @return self
+     */ 
+    public function setUpdatedAt($updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
