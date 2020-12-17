@@ -64,4 +64,62 @@ class Session
      * @ORM\OneToMany(targetEntity="Like", mappedBy="session")
      */
     private $likes;
+
+    /**
+     * Get the value of id
+     *
+     * @return string|null
+     */ 
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the value of ipAddress
+     *
+     * @return string
+     */ 
+    public function getIpAddress(): string
+    {
+        return $this->ipAddress;
+    }
+
+    /**
+     * Set the value of ipAddress
+     *
+     * @param string $ipAddress
+     *
+     * @return self
+     */ 
+    public function setIpAddress(string $ipAddress): self
+    {
+        $this->ipAddress = $ipAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of likes
+     *
+     * @return Like[]
+     */ 
+    public function getLikes(): array
+    {
+        return $this->likes;
+    }
+
+    /**
+     * Set the value of likes
+     *
+     * @param Like[] $likes
+     *
+     * @return self
+     */ 
+    public function setLikes(array $likes): self
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
 }

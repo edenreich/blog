@@ -66,9 +66,91 @@ class Notification
     private $updatedAt = 'CURRENT_TIMESTAMP';
 
     /**
-     * @var string
+     * @var Session
      *
      * @ORM\OneToOne(targetEntity="Session")
      */
     private $session;
+
+    /**
+     * Get the value of id
+     *
+     * @return string|null
+     */ 
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the value of email
+     *
+     * @return string
+     */ 
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set the value of email
+     *
+     * @param string $email
+     *
+     * @return self
+     */ 
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isEnabled
+     *
+     * @return bool
+     */ 
+    public function getIsEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    /**
+     * Set the value of isEnabled
+     *
+     * @param bool $isEnabled
+     *
+     * @return self
+     */ 
+    public function setIsEnabled(bool $isEnabled): self
+    {
+        $this->isEnabled = $isEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of session
+     *
+     * @return Session
+     */ 
+    public function getSession(): Session
+    {
+        return $this->session;
+    }
+
+    /**
+     * Set the value of session
+     *
+     * @param Session $session
+     *
+     * @return self
+     */ 
+    public function setSession(Session $session): self
+    {
+        $this->session = $session;
+
+        return $this;
+    }
 }
