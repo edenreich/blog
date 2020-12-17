@@ -24,25 +24,11 @@ class Like
     private $id;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="reaction_type", type="string", length=255, nullable=true)
-     */
-    private $reactionType;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="article", type="integer", nullable=true)
-     */
-    private $article;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="session", type="string", length=255, nullable=false)
+     * @ORM\Column(name="reaction_type", type="string", columnDefinition="ENUM('like', 'love', 'dislike')"), nullable=false)
      */
-    private $session;
+    private $reactionType;
 
     /**
      * @var int|null
@@ -71,4 +57,100 @@ class Like
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
     private $updatedAt = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var Article
+     *
+     * @ORM\ManyToOne(targetEntity="Article")
+     */
+    private $article;
+
+    /**
+     * @var Session
+     *
+     * @ORM\ManyToOne(targetEntity="Session")
+     */
+    private $session;
+
+    /**
+     * Get the value of id
+     *
+     * @return string
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the value of reactionType
+     *
+     * @return string
+     */ 
+    public function getReactionType(): string
+    {
+        return $this->reactionType;
+    }
+
+    /**
+     * Set the value of reactionType
+     *
+     * @param string $reactionType
+     *
+     * @return self
+     */ 
+    public function setReactionType($reactionType): self
+    {
+        $this->reactionType = $reactionType;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of article
+     *
+     * @return Article
+     */ 
+    public function getArticle(): Article
+    {
+        return $this->article;
+    }
+
+    /**
+     * Set the value of article
+     *
+     * @param Article $article
+     *
+     * @return self
+     */ 
+    public function setArticle(Article $article): self
+    {
+        $this->article = $article;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of session
+     *
+     * @return Session
+     */ 
+    public function getSession(): Session
+    {
+        return $this->session;
+    }
+
+    /**
+     * Set the value of session
+     *
+     * @param Session $session
+     *
+     * @return self
+     */ 
+    public function setSession(Session $session): self
+    {
+        $this->session = $session;
+
+        return $this;
+    }
 }

@@ -94,6 +94,13 @@ class Article
     private $updatedBy;
 
     /**
+     * @var Like[]
+     *
+     * @ORM\OneToMany(targetEntity="Like", mappedBy="article")
+     */
+    private $likes;
+
+    /**
      * Get the value of id
      *
      * @return string
@@ -226,7 +233,7 @@ class Article
     /**
      * Get the value of publishedAt
      *
-     * @return \DateTime|null
+     * @return \DateTimeInterface|null
      */ 
     public function getPublishedAt(): ?\DateTimeInterface
     {
@@ -236,11 +243,11 @@ class Article
     /**
      * Set the value of publishedAt
      *
-     * @param \DateTime|null  $publishedAt
+     * @param \DateTimeInterface $publishedAt
      *
      * @return self
      */ 
-    public function setPublishedAt($publishedAt): self
+    public function setPublishedAt(\DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
 

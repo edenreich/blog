@@ -26,13 +26,6 @@ class Notification
     /**
      * @var string
      *
-     * @ORM\Column(name="session", type="string", length=255, nullable=false)
-     */
-    private $session;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     private $email;
@@ -71,4 +64,11 @@ class Notification
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
     private $updatedAt = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var string
+     *
+     * @ORM\OneToOne(targetEntity="Session")
+     */
+    private $session;
 }
