@@ -9,7 +9,10 @@ COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
 FROM php:8.0.0-fpm-alpine3.12 AS common
-RUN apk add --update bash nginx supervisor
+RUN apk add --update bash nginx supervisor postgresql-dev
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+    docker-php-ext-install pdo_pgsql && \
+    apk del .build-deps
 RUN mkdir /run/nginx
 COPY ops/docker/backend/api/supervisor.d /etc/supervisor.d
 COPY ops/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
