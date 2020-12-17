@@ -77,6 +77,4 @@ class Like
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
     private $updatedAt = 'CURRENT_TIMESTAMP';
-
-
 }

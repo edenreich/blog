@@ -63,6 +63,4 @@ class Session
      * @ORM\Column(name="updated_by", type="integer", nullable=true)
      */
     private $updatedBy;
-
-
 }
