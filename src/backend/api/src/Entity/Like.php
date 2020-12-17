@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Likes
+ * Like
  *
  * @ORM\Table(name="like", uniqueConstraints={@ORM\UniqueConstraint(name="likes_uuid_unique", columns={"uuid"})})
  * @ORM\Entity
