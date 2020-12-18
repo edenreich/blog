@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Route("/articles", name="articles")
+     * @Route("/articles", name="articles.list")
      */
     public function list(SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
@@ -23,7 +23,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/articles/{id}", name="article")
+     * @Route("/articles/{id}", name="articles.find")
      */
     public function find(string $id, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
