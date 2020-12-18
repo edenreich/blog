@@ -46,6 +46,14 @@ COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 CMD [ "php", "bin/phpunit" ]
 
+FROM common AS migration-job
+WORKDIR /var/www/api
+ENV APP_ENV=prod
+COPY src/backend/api .
+COPY --from=builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+CMD [ "bin/console" "doctrine:migration:migrate" ]
+
 FROM common AS stage
 WORKDIR /var/www/api
 ENV APP_ENV=prod
