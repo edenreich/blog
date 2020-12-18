@@ -32,17 +32,17 @@ services:
     networks:
       - app
 
-  admin:
-    build:
-      target: development
-      args:
-        NODE_ENV: development
-      context: .
-      dockerfile: ops/docker/backend/admin/Dockerfile
-    volumes:
-      - ./src/backend/admin:/app:rw
-    networks:
-      - app
+  # admin:
+  #   build:
+  #     target: development
+  #     args:
+  #       NODE_ENV: development
+  #     context: .
+  #     dockerfile: ops/docker/backend/admin/Dockerfile
+  #   volumes:
+  #     - ./src/backend/admin:/app:rw
+  #   networks:
+  #     - app
 
   api:
     build:
