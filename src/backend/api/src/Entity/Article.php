@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Article
@@ -21,6 +24,7 @@ class Article
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
+     * @Groups({"admin", "frontend"})
      */
     private $id;
 
@@ -28,6 +32,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private $title;
 
@@ -35,6 +40,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=255, nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private $slug;
 
@@ -42,6 +48,7 @@ class Article
      * @var string|null
      *
      * @ORM\Column(name="meta_keywords", type="string", length=255, nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $metaKeywords;
 
@@ -49,6 +56,7 @@ class Article
      * @var string|null
      *
      * @ORM\Column(name="meta_description", type="string", length=255, nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $metaDescription;
 
@@ -56,6 +64,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="content", type="text", nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private $content;
 
@@ -63,6 +72,7 @@ class Article
      * @var \DateTime|null
      *
      * @ORM\Column(name="published_at", type="datetimetz", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $publishedAt;
 
@@ -70,6 +80,7 @@ class Article
      * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $createdAt;
 
@@ -77,15 +88,25 @@ class Article
      * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $updatedAt;
 
     /**
-     * @var Like[]
+     * @var ArrayCollection<Like[]>
      *
-     * @ORM\OneToMany(targetEntity="Like", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Like", mappedBy="article", fetch="EAGER")
+     * @Groups({"admin", "frontend"})
      */
     private $likes;
+
+    /**
+     * Initialize properties.
+     */
+    public function __construct()
+    {
+        // $this->likes = new ArrayCollection();
+    }
 
     /**
      * Gets triggered only on insert
@@ -316,9 +337,9 @@ class Article
     /**
      * Get the value of likes
      *
-     * @return Like[]
+     * @return ArrayCollection<Like[]>
      */ 
-    public function getLikes(): array
+    public function getLikes(): Collection
     {
         return $this->likes;
     }
@@ -326,13 +347,13 @@ class Article
     /**
      * Set the value of likes
      *
-     * @param Like[] $likes
+     * @param Like $likes
      *
      * @return self
      */ 
-    public function setLikes(array $likes): self
+    public function addLike($like): self
     {
-        $this->likes = $likes;
+        $this->likes->add($like);
 
         return $this;
     }

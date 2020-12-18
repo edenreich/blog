@@ -18,6 +18,6 @@ class ArticlesController extends AbstractController
     {
         $articles = $entityManager->getRepository(Article::class)->findAll();
 
-        return new Response($serializer->serialize($articles, 'json'));
+        return new Response($serializer->serialize($articles, 'json', ['groups' => ['admin', 'frontend']]));
     }
 }

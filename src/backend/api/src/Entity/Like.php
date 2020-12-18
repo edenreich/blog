@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Like
  *
  * @ORM\Table(name="likes", uniqueConstraints={@ORM\UniqueConstraint(name="likes_id_unique", columns={"id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\LikeRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Like
@@ -21,6 +22,7 @@ class Like
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
+     * @Groups({"admin", "frontend"})
      */
     private $id;
 
@@ -28,6 +30,7 @@ class Like
      * @var string
      *
      * @ORM\Column(name="reaction_type", type="string", columnDefinition="reaction"), nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private $reactionType;
 
@@ -35,6 +38,7 @@ class Like
      * @var \DateTime|null
      *
      * @ORM\Column(name="created_at", type="datetimetz", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $createdAt;
 
@@ -42,20 +46,21 @@ class Like
      * @var \DateTime|null
      *
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $updatedAt;
 
     /**
      * @var Article
      *
-     * @ORM\ManyToOne(targetEntity="Article")
+     * @ORM\ManyToOne(targetEntity="Article", fetch="LAZY")
      */
     private $article;
 
     /**
      * @var Session
      *
-     * @ORM\ManyToOne(targetEntity="Session")
+     * @ORM\ManyToOne(targetEntity="Session", fetch="LAZY")
      */
     private $session;
 

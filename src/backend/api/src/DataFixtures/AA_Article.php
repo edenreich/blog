@@ -12,7 +12,7 @@ class AA_Article extends Fixture
     {
         $faker = Factory::create();
 
-        foreach (range(0, 10) as $key) {
+        foreach (range(1, 10) as $key) {
             $article = new \App\Entity\Article();
             $article->setTitle($faker->text(20));
             $article->setContent($faker->randomHtml());
