@@ -9,7 +9,7 @@ class ArticleTest extends TestCase
 {
     public function testCanFetchAllArticles()
     {
-        $client =  new Client(['base_uri' => 'http://127.0.0.1']);
+        $client = new Client(['base_uri' => 'http://127.0.0.1']);
         
         $response = $client->get('/articles');
 
