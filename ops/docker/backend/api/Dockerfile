@@ -37,6 +37,14 @@ RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/
     echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 VOLUME [ "/var/www" ]
 
+FROM common AS lint
+WORKDIR /var/www/api
+ENV APP_ENV=dev
+COPY src/backend/api .
+COPY --from=dev-builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+CMD [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --config=/var/www/api/.php_cs.dist --verbose -- src tests migrations" ]
+
 FROM common AS test
 WORKDIR /var/www/api
 ENV APP_ENV=test

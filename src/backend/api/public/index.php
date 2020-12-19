@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-if ($_SERVER['HTTP_USER_AGENT'] === 'GuzzleHttp/7') {
+if ('GuzzleHttp/7' === $_SERVER['HTTP_USER_AGENT']) {
     (new Dotenv())->bootEnv(dirname(__DIR__).'/.env.test.local');
 } else {
     (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
