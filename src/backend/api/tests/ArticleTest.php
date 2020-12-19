@@ -74,7 +74,7 @@ class ArticleTest extends KernelTestCase
             $this->assertNotEquals(200, $response->getStatusCode());
         } catch (ClientException $exception) {
             $this->assertEquals(404, $exception->getResponse()->getStatusCode());
-            $this->assertEquals('could not find article with id nonexistingarticle', json_decode($exception->getResponse()->getBody())->message);
+            $this->assertEquals('could not find article with slug or id nonexistingarticle', json_decode($exception->getResponse()->getBody())->message);
         }
     }
 
@@ -98,5 +98,23 @@ class ArticleTest extends KernelTestCase
         $this->assertEquals($articles[0]->getId(), $articlesResponse[0]->id);
         $this->assertEquals($articles[1]->getId(), $articlesResponse[1]->id);
         $this->assertEquals($articles[3]->getId(), $articlesResponse[3]->id);
+    }
+
+    public function testCanFetchASingleArticleBySlug()
+    {
+        /** @var EntityManager */
+        $em = self::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        /** @var Article */
+        $article = $em->getRepository(Article::class)->findAll()[0];
+        $title = $article->getId();
+
+        $response = $this->client->get(sprintf('/articles/%s', $article->getSlug()));
+
+        $article = json_decode($response->getBody());
+        $this->assertEquals($title, $article->id);
     }
 }

@@ -28,13 +28,17 @@ class ArticlesController extends AbstractController
     public function find(string $id, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
         try {
-            $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
+            $article = $entityManager->getRepository(Article::class)->findOneBy(['slug' => $id]);
 
             if (!$article) {
-                throw new \Exception(sprintf('could not find article with id %s', $id));
+                $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
+
+                if (!$article) {
+                    throw new \Exception(sprintf('could not find article with slug or id %s', $id));
+                }
             }
         } catch (\Exception $exception) {
-            return new JsonResponse(['message' => sprintf('could not find article with id %s', $id)], 404);
+            return new JsonResponse(['message' => sprintf('could not find article with slug or id %s', $id)], 404);
         }
 
         return new Response($serializer->serialize($article, 'json', ['groups' => ['admin', 'frontend']]));
