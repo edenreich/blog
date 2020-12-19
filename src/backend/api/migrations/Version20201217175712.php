@@ -14,7 +14,7 @@ final class Version20201217175712 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return '';
+        return 'Use uuid and attach necessary relations.';
     }
 
     public function up(Schema $schema) : void

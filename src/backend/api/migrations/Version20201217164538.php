@@ -14,7 +14,7 @@ final class Version20201217164538 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return '';
+        return 'Initial import of database from strapi backend.';
     }
 
     public function up(Schema $schema) : void
@@ -26,7 +26,7 @@ final class Version20201217164538 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX articles_id_unique ON articles (id)');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TYPE reaction AS ENUM(\'like\', \'love\', \'dislike\'); CREATE TABLE likes (id UUID NOT NULL, reaction_type reaction, created_by INT DEFAULT NULL, updated_by INT DEFAULT NULL, created_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, article INT DEFAULT NULL, session VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE likes (id UUID NOT NULL, reaction_type VARCHAR(10), created_by INT DEFAULT NULL, updated_by INT DEFAULT NULL, created_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, article INT DEFAULT NULL, session VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX likes_id_unique ON likes (id)');
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 

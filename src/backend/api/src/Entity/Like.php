@@ -29,7 +29,7 @@ class Like
     /**
      * @var string
      *
-     * @ORM\Column(name="reaction_type", type="string"), nullable=false)
+     * @ORM\Column(name="reaction_type", type="string", length=10), nullable=false)
      * @Groups({"admin", "frontend"})
      */
     private $reactionType;
