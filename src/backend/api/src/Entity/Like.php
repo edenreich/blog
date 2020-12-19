@@ -29,7 +29,7 @@ class Like
     /**
      * @var string
      *
-     * @ORM\Column(name="reaction_type", type="string", columnDefinition="reaction"), nullable=false)
+     * @ORM\Column(name="reaction_type", type="string"), nullable=false)
      * @Groups({"admin", "frontend"})
      */
     private $reactionType;
@@ -72,6 +72,7 @@ class Like
     public function __construct(array $properties)
     {
         if (isset($properties['reactionType'])) {
+            $this->validateReactionType($properties['reactionType']);
             $this->setReactionType($properties['reactionType']);
         }
         if (isset($properties['article'])) {
@@ -133,8 +134,9 @@ class Like
      *
      * @return self
      */ 
-    public function setReactionType($reactionType): self
+    public function setReactionType(string $reactionType): self
     {
+        $this->validateReactionType($reactionType);
         $this->reactionType = $reactionType;
 
         return $this;
@@ -234,5 +236,20 @@ class Like
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * Validation for reaction type.
+     * 
+     * @param string $reactionType
+     * 
+     * @return void
+     */
+    private function validateReactionType(string $reactionType): void
+    {
+        $availableReactionTypes = ['like', 'love', 'dislike']; 
+        if (! isset($availableReactionTypes[$reactionType])) {
+            throw new \LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $reactionType, implode(', ', $availableReactionTypes)));
+        }
     }
 }
