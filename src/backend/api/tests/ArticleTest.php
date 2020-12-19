@@ -4,25 +4,23 @@ namespace App\Tests;
 
 use App\Entity\Article;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ArticleTest extends KernelTestCase
 {
     private const BASE_URI = 'http://127.0.0.1';
-    
+
     /**
-     * Store the guzzle http client
-     * 
+     * Store the guzzle http client.
+     *
      * @var Client
      */
     private $client;
 
     /**
-     * Setup a client
-     * 
-     * @return void
+     * Setup a client.
      */
     protected function setUp(): void
     {
@@ -31,9 +29,7 @@ class ArticleTest extends KernelTestCase
     }
 
     /**
-     * Unset the client
-     * 
-     * @return void
+     * Unset the client.
      */
     protected function tearDown(): void
     {
@@ -88,7 +84,7 @@ class ArticleTest extends KernelTestCase
 
         /** @var Article[] */
         $articles = $em->getRepository(Article::class)->findAll();
-        usort($articles, function(Article $first, Article $second) {
+        usort($articles, function (Article $first, Article $second) {
             return $first->getCreatedAt() < $second->getCreatedAt();
         });
 
