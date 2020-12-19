@@ -53,14 +53,14 @@ class Like
     /**
      * @var Article
      *
-     * @ORM\ManyToOne(targetEntity="Article", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="likes", fetch="LAZY")
      */
     private $article;
 
     /**
      * @var Session
      *
-     * @ORM\ManyToOne(targetEntity="Session", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="Session", inversedBy="likes", fetch="LAZY")
      */
     private $session;
 
