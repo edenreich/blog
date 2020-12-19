@@ -51,7 +51,7 @@ ENV APP_ENV=dev
 COPY src/backend/api .
 COPY --from=dev-builder /app/vendor .
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-CMD [ "/bin/sh", "-c", "vendor/bin/phpstan analyse src tests migrations" ]
+CMD [ "/bin/sh", "-c", "vendor/bin/phpstan analyse src tests" ]
 
 FROM common AS migrate
 WORKDIR /var/www/api
