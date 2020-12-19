@@ -10,11 +10,40 @@ use GuzzleHttp\Exception\ClientException;
 
 class ArticleTest extends KernelTestCase
 {
+    private const BASE_URI = 'http://127.0.0.1';
+    
+    /**
+     * Store the guzzle http client.
+     * 
+     * @var Client
+     */
+    private $client;
+
+    /**
+     * Setup a client.
+     * 
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::tearDown();
+        $this->client = new Client(['base_uri' => self::BASE_URI]);
+    }
+
+    /**
+     * Unset the client.
+     * 
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unset($this->client);
+    }
+
     public function testCanFetchAllArticles()
     {
-        $client = new Client(['base_uri' => 'http://127.0.0.1']);
-        
-        $response = $client->get('/articles');
+        $response = $this->client->get('/articles');
 
         $articles = json_decode($response->getBody());
         $this->assertCount(10, $articles);
@@ -22,8 +51,6 @@ class ArticleTest extends KernelTestCase
 
     public function testCanFetchSingleArticle()
     {
-        $client = new Client(['base_uri' => 'http://127.0.0.1']);
-        
         /** @var EntityManager */
         $em = self::bootKernel()
             ->getContainer()
@@ -34,7 +61,7 @@ class ArticleTest extends KernelTestCase
         $article = $em->getRepository(Article::class)->findAll()[0];
         $title = $article->getTitle();
 
-        $response = $client->get(sprintf('/articles/%s', $article->getId()));
+        $response = $this->client->get(sprintf('/articles/%s', $article->getId()));
 
         $article = json_decode($response->getBody());
         $this->assertEquals($title, $article->title);
@@ -42,10 +69,8 @@ class ArticleTest extends KernelTestCase
 
     public function testGetting404EmptyResponseWhenNoArticleFound()
     {
-        $client = new Client(['base_uri' => 'http://127.0.0.1']);
-
         try {
-            $response = $client->get('/articles/nonexistingarticle');
+            $response = $this->client->get('/articles/nonexistingarticle');
             $this->assertNotEquals(200, $response->getStatusCode());
         } catch (ClientException $exception) {
             $this->assertEquals(404, $exception->getResponse()->getStatusCode());
