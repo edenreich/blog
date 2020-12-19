@@ -77,4 +77,9 @@ class ArticleTest extends KernelTestCase
             $this->assertEquals('could not find article with id nonexistingarticle', json_decode($exception->getResponse()->getBody())->message);
         }
     }
+
+    public function testFetchArticlesInDescendingOrderByDefault()
+    {
+        throw new \Exception('pending implemention');
+    }
 }
