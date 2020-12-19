@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Article
+ * Article.
  *
  * @ORM\Table(name="articles", uniqueConstraints={@ORM\UniqueConstraint(name="articles_id_unique", columns={"id"})})
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -19,7 +19,7 @@ class Article
 {
     /**
      * @var string
-     * 
+     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -109,58 +109,48 @@ class Article
     }
 
     /**
-     * Gets triggered only on insert
-
+     * Gets triggered only on insert.
+     *
      * @ORM\PrePersist
-     * 
-     * @return void
      */
     public function onPrePersist(): void
     {
         if (is_null($this->createdAt)) {
-            $this->setCreatedAt(new \DateTime("now"));
+            $this->setCreatedAt(new \DateTime('now'));
         }
     }
 
     /**
-     * Gets triggered every time on update
-
+     * Gets triggered every time on update.
+     *
      * @ORM\PreUpdate
-     * 
-     * @return void
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime("now"));
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      *
      * @return string
-     */ 
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
-     * Get the value of title
-     *
-     * @return string
-     */ 
+     * Get the value of title.
+     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * Set the value of title
-     *
-     * @param string  $title
-     *
-     * @return self
-     */ 
+     * Set the value of title.
+     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -169,22 +159,16 @@ class Article
     }
 
     /**
-     * Get the value of slug
-     *
-     * @return string
-     */ 
+     * Get the value of slug.
+     */
     public function getSlug(): string
     {
         return $this->slug;
     }
 
     /**
-     * Set the value of slug
-     *
-     * @param string $slug
-     *
-     * @return self
-     */ 
+     * Set the value of slug.
+     */
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
@@ -193,22 +177,18 @@ class Article
     }
 
     /**
-     * Get the value of metaKeywords
-     *
-     * @return string|null
-     */ 
+     * Get the value of metaKeywords.
+     */
     public function getMetaKeywords(): ?string
     {
         return $this->metaKeywords;
     }
 
     /**
-     * Set the value of metaKeywords
+     * Set the value of metaKeywords.
      *
      * @param string|null $metaKeywords
-     *
-     * @return self
-     */ 
+     */
     public function setMetaKeywords($metaKeywords): self
     {
         $this->metaKeywords = $metaKeywords;
@@ -217,22 +197,18 @@ class Article
     }
 
     /**
-     * Get the value of metaDescription
-     *
-     * @return string|null
-     */ 
+     * Get the value of metaDescription.
+     */
     public function getMetaDescription(): ?string
     {
         return $this->metaDescription;
     }
 
     /**
-     * Set the value of metaDescription
+     * Set the value of metaDescription.
      *
      * @param string|null $metaDescription
-     *
-     * @return self
-     */ 
+     */
     public function setMetaDescription($metaDescription): self
     {
         $this->metaDescription = $metaDescription;
@@ -241,22 +217,16 @@ class Article
     }
 
     /**
-     * Get the value of content
-     *
-     * @return string
-     */ 
+     * Get the value of content.
+     */
     public function getContent(): string
     {
         return $this->content;
     }
 
     /**
-     * Set the value of content
-     *
-     * @param string $content
-     *
-     * @return self
-     */ 
+     * Set the value of content.
+     */
     public function setContent(string $content): self
     {
         $this->content = $content;
@@ -265,22 +235,16 @@ class Article
     }
 
     /**
-     * Get the value of publishedAt
-     *
-     * @return \DateTimeInterface|null
-     */ 
+     * Get the value of publishedAt.
+     */
     public function getPublishedAt(): ?\DateTimeInterface
     {
         return $this->publishedAt;
     }
 
     /**
-     * Set the value of publishedAt
-     *
-     * @param \DateTimeInterface $publishedAt
-     *
-     * @return self
-     */ 
+     * Set the value of publishedAt.
+     */
     public function setPublishedAt(\DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
@@ -289,22 +253,20 @@ class Article
     }
 
     /**
-     * Get the value of createdAt
+     * Get the value of createdAt.
      *
      * @return \DateTimeInterface|null
-     */ 
+     */
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * Set the value of createdAt
+     * Set the value of createdAt.
      *
      * @param \DateTimeInterface|null $createdAt
-     *
-     * @return self
-     */ 
+     */
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
@@ -313,22 +275,16 @@ class Article
     }
 
     /**
-     * Get the value of updatedAt
-     *
-     * @return \DateTimeInterface|null
-     */ 
+     * Get the value of updatedAt.
+     */
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * Set the value of updatedAt
-     *
-     * @param \DateTimeInterface|null $updatedAt
-     *
-     * @return self
-     */ 
+     * Set the value of updatedAt.
+     */
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
@@ -337,22 +293,20 @@ class Article
     }
 
     /**
-     * Get the value of likes
+     * Get the value of likes.
      *
      * @return ArrayCollection<Like[]>
-     */ 
+     */
     public function getLikes(): Collection
     {
         return $this->likes;
     }
 
     /**
-     * Set the value of likes
+     * Set the value of likes.
      *
      * @param Like $likes
-     *
-     * @return self
-     */ 
+     */
     public function addLike($like): self
     {
         $this->likes->add($like);

@@ -7,7 +7,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Like
+ * Like.
  *
  * @ORM\Table(name="likes", uniqueConstraints={@ORM\UniqueConstraint(name="likes_id_unique", columns={"id"})})
  * @ORM\Entity(repositoryClass="App\Repository\LikeRepository")
@@ -17,7 +17,7 @@ class Like
 {
     /**
      * @var string
-     * 
+     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -66,7 +66,7 @@ class Like
 
     /**
      * Initialize properties.
-     * 
+     *
      * @param array $attributes
      */
     public function __construct(array $properties)
@@ -84,56 +84,46 @@ class Like
     }
 
     /**
-     * Gets triggered only on insert
-
+     * Gets triggered only on insert.
+     *
      * @ORM\PrePersist
-     * 
-     * @return void
      */
     public function onPrePersist(): void
     {
-        $this->setCreatedAt(new \DateTime("now"));
+        $this->setCreatedAt(new \DateTime('now'));
     }
 
     /**
-     * Gets triggered every time on update
-
+     * Gets triggered every time on update.
+     *
      * @ORM\PreUpdate
-     * 
-     * @return void
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime("now"));
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      *
      * @return string
-     */ 
+     */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * Get the value of reactionType
-     *
-     * @return string
-     */ 
+     * Get the value of reactionType.
+     */
     public function getReactionType(): string
     {
         return $this->reactionType;
     }
 
     /**
-     * Set the value of reactionType
-     *
-     * @param string $reactionType
-     *
-     * @return self
-     */ 
+     * Set the value of reactionType.
+     */
     public function setReactionType(string $reactionType): self
     {
         $this->validateReactionType($reactionType);
@@ -143,22 +133,16 @@ class Like
     }
 
     /**
-     * Get the value of article
-     *
-     * @return Article
-     */ 
+     * Get the value of article.
+     */
     public function getArticle(): Article
     {
         return $this->article;
     }
 
     /**
-     * Set the value of article
-     *
-     * @param Article $article
-     *
-     * @return self
-     */ 
+     * Set the value of article.
+     */
     public function setArticle(Article $article): self
     {
         $this->article = $article;
@@ -167,22 +151,16 @@ class Like
     }
 
     /**
-     * Get the value of session
-     *
-     * @return Session
-     */ 
+     * Get the value of session.
+     */
     public function getSession(): Session
     {
         return $this->session;
     }
 
     /**
-     * Set the value of session
-     *
-     * @param Session $session
-     *
-     * @return self
-     */ 
+     * Set the value of session.
+     */
     public function setSession(Session $session): self
     {
         $this->session = $session;
@@ -191,22 +169,20 @@ class Like
     }
 
     /**
-     * Get the value of createdAt
+     * Get the value of createdAt.
      *
      * @return \DateTimeInterface|null
-     */ 
+     */
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * Set the value of createdAt
+     * Set the value of createdAt.
      *
      * @param \DateTimeInterface|null $createdAt
-     *
-     * @return self
-     */ 
+     */
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
@@ -215,22 +191,16 @@ class Like
     }
 
     /**
-     * Get the value of updatedAt
-     *
-     * @return \DateTimeInterface|null
-     */ 
+     * Get the value of updatedAt.
+     */
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * Set the value of updatedAt
-     *
-     * @param \DateTimeInterface|null $updatedAt
-     *
-     * @return self
-     */ 
+     * Set the value of updatedAt.
+     */
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
@@ -240,15 +210,11 @@ class Like
 
     /**
      * Validation for reaction type.
-     * 
-     * @param string $reactionType
-     * 
-     * @return void
      */
     private function validateReactionType(string $reactionType): void
     {
-        $availableReactionTypes = ['like' => 'like', 'love' => 'love', 'dislike' => 'dislike']; 
-        if (! isset($availableReactionTypes[$reactionType])) {
+        $availableReactionTypes = ['like' => 'like', 'love' => 'love', 'dislike' => 'dislike'];
+        if (!isset($availableReactionTypes[$reactionType])) {
             throw new \LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $reactionType, implode(', ', $availableReactionTypes)));
         }
     }

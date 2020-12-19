@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 
 /**
- * Notification
+ * Notification.
  *
  * @ORM\Table(name="notifications", uniqueConstraints={@ORM\UniqueConstraint(name="notifications_session_unique", columns={"session_id"}), @ORM\UniqueConstraint(name="notifications_email_unique", columns={"email"}), @ORM\UniqueConstraint(name="notifications_id_unique", columns={"id"})})
  * @ORM\Entity
@@ -15,7 +15,7 @@ class Notification
 {
     /**
      * @var string
-     * 
+     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -59,32 +59,24 @@ class Notification
     private $session;
 
     /**
-     * Get the value of id
-     *
-     * @return string|null
-     */ 
+     * Get the value of id.
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
-     * Get the value of email
-     *
-     * @return string
-     */ 
+     * Get the value of email.
+     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
-     * Set the value of email
-     *
-     * @param string $email
-     *
-     * @return self
-     */ 
+     * Set the value of email.
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -93,22 +85,16 @@ class Notification
     }
 
     /**
-     * Get the value of isEnabled
-     *
-     * @return bool
-     */ 
+     * Get the value of isEnabled.
+     */
     public function getIsEnabled(): bool
     {
         return $this->isEnabled;
     }
 
     /**
-     * Set the value of isEnabled
-     *
-     * @param bool $isEnabled
-     *
-     * @return self
-     */ 
+     * Set the value of isEnabled.
+     */
     public function setIsEnabled(bool $isEnabled): self
     {
         $this->isEnabled = $isEnabled;
@@ -117,22 +103,16 @@ class Notification
     }
 
     /**
-     * Get the value of session
-     *
-     * @return Session
-     */ 
+     * Get the value of session.
+     */
     public function getSession(): Session
     {
         return $this->session;
     }
 
     /**
-     * Set the value of session
-     *
-     * @param Session $session
-     *
-     * @return self
-     */ 
+     * Set the value of session.
+     */
     public function setSession(Session $session): self
     {
         $this->session = $session;
@@ -141,22 +121,20 @@ class Notification
     }
 
     /**
-     * Get the value of createdAt
+     * Get the value of createdAt.
      *
      * @return \DateTimeInterface|null
-     */ 
+     */
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * Set the value of createdAt
+     * Set the value of createdAt.
      *
      * @param \DateTimeInterface|null $createdAt
-     *
-     * @return self
-     */ 
+     */
     public function setCreatedAt($createdAt): self
     {
         $this->createdAt = $createdAt;
@@ -165,22 +143,18 @@ class Notification
     }
 
     /**
-     * Get the value of updatedAt
-     *
-     * @return \DateTimeInterface|null
-     */ 
+     * Get the value of updatedAt.
+     */
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * Set the value of updatedAt
+     * Set the value of updatedAt.
      *
      * @param \DateTimeInterface|null $updatedAt
-     *
-     * @return self
-     */ 
+     */
     public function setUpdatedAt($updatedAt): self
     {
         $this->updatedAt = $updatedAt;

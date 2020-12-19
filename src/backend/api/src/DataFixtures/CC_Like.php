@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
 
 class CC_Like extends Fixture
 {
@@ -15,8 +14,8 @@ class CC_Like extends Fixture
         $reactions = ['like', 'love', 'dislike'];
 
         foreach ($articles as $article) {
-            $like = new \App\Entity\Like(['reactionType' => $reactions[mt_rand(0,2)], 'article' => $article, 'session' => $sessions[mt_rand(0,9)]]);
-    
+            $like = new \App\Entity\Like(['reactionType' => $reactions[mt_rand(0, 2)], 'article' => $article, 'session' => $sessions[mt_rand(0, 9)]]);
+
             $manager->persist($like);
         }
 

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 
 /**
- * Session
+ * Session.
  *
  * @ORM\Table(name="sessions", uniqueConstraints={@ORM\UniqueConstraint(name="sessions_ip_address_unique", columns={"ip_address"}), @ORM\UniqueConstraint(name="sessions_id_unique", columns={"id"})})
  * @ORM\Entity
@@ -16,7 +16,7 @@ class Session
 {
     /**
      * @var string
-     * 
+     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -53,56 +53,44 @@ class Session
     private $likes;
 
     /**
-     * Gets triggered only on insert
-
+     * Gets triggered only on insert.
+     *
      * @ORM\PrePersist
-     * 
-     * @return void
      */
     public function onPrePersist(): void
     {
-        $this->setCreatedAt(new \DateTime("now"));
+        $this->setCreatedAt(new \DateTime('now'));
     }
 
     /**
-     * Gets triggered every time on update
-
+     * Gets triggered every time on update.
+     *
      * @ORM\PreUpdate
-     * 
-     * @return void
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime("now"));
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 
     /**
-     * Get the value of id
-     *
-     * @return string|null
-     */ 
+     * Get the value of id.
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
     /**
-     * Get the value of ipAddress
-     *
-     * @return string
-     */ 
+     * Get the value of ipAddress.
+     */
     public function getIpAddress(): string
     {
         return $this->ipAddress;
     }
 
     /**
-     * Set the value of ipAddress
-     *
-     * @param string $ipAddress
-     *
-     * @return self
-     */ 
+     * Set the value of ipAddress.
+     */
     public function setIpAddress(string $ipAddress): self
     {
         $this->ipAddress = $ipAddress;
@@ -111,22 +99,20 @@ class Session
     }
 
     /**
-     * Get the value of likes
+     * Get the value of likes.
      *
      * @return Like[]
-     */ 
+     */
     public function getLikes(): array
     {
         return $this->likes;
     }
 
     /**
-     * Set the value of likes
+     * Set the value of likes.
      *
      * @param Like[] $likes
-     *
-     * @return self
-     */ 
+     */
     public function setLikes(array $likes): self
     {
         $this->likes = $likes;
@@ -135,22 +121,20 @@ class Session
     }
 
     /**
-     * Get the value of createdAt
+     * Get the value of createdAt.
      *
      * @return \DateTimeInterface|null
-     */ 
+     */
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * Set the value of createdAt
+     * Set the value of createdAt.
      *
      * @param \DateTimeInterface|null $createdAt
-     *
-     * @return self
-     */ 
+     */
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
@@ -159,22 +143,16 @@ class Session
     }
 
     /**
-     * Get the value of updatedAt
-     *
-     * @return \DateTimeInterface|null
-     */ 
+     * Get the value of updatedAt.
+     */
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * Set the value of updatedAt
-     *
-     * @param \DateTimeInterface|null $updatedAt
-     *
-     * @return self
-     */ 
+     * Set the value of updatedAt.
+     */
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;

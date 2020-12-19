@@ -15,7 +15,7 @@ class BB_Session extends Fixture
         foreach (range(0, 10) as $key) {
             $session = new \App\Entity\Session();
             $session->setIpAddress($faker->ipv4());
-    
+
             $manager->persist($session);
         }
 
