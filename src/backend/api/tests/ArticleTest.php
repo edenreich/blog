@@ -80,6 +80,23 @@ class ArticleTest extends KernelTestCase
 
     public function testFetchArticlesInDescendingOrderByDefault()
     {
-        throw new \Exception('pending implemention');
+        /** @var EntityManager */
+        $em = self::bootKernel()
+        ->getContainer()
+        ->get('doctrine')
+        ->getManager();
+
+        /** @var Article[] */
+        $articles = $em->getRepository(Article::class)->findAll();
+        usort($articles, function(Article $first, Article $second) {
+            return $first->getCreatedAt() < $second->getCreatedAt();
+        });
+
+        /** @var Article[] */
+        $articlesResponse = json_decode($this->client->get('/articles')->getBody());
+
+        $this->assertEquals($articles[0]->getId(), $articlesResponse[0]->id);
+        $this->assertEquals($articles[1]->getId(), $articlesResponse[1]->id);
+        $this->assertEquals($articles[3]->getId(), $articlesResponse[3]->id);
     }
 }

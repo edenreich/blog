@@ -79,7 +79,7 @@ class Article
     /**
      * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      * @Groups({"admin", "frontend"})
      */
     private $createdAt;
@@ -117,7 +117,9 @@ class Article
      */
     public function onPrePersist(): void
     {
-        $this->setCreatedAt(new \DateTime("now"));
+        if (is_null($this->createdAt)) {
+            $this->setCreatedAt(new \DateTime("now"));
+        }
     }
 
     /**

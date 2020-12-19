@@ -17,6 +17,7 @@ class AA_Article extends Fixture
             $article->setTitle($faker->text(20));
             $article->setContent($faker->randomHtml());
             $article->setSlug($faker->slug(3));
+            $article->setCreatedAt($faker->dateTimeThisMonth());
             $article->setMetaKeywords(sprintf("%s, %s, %s", $faker->word(), $faker->word(), $faker->word()));
             $article->setMetaDescription($faker->text(50));
     
