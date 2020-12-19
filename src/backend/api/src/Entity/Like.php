@@ -247,7 +247,7 @@ class Like
      */
     private function validateReactionType(string $reactionType): void
     {
-        $availableReactionTypes = ['like', 'love', 'dislike']; 
+        $availableReactionTypes = ['like' => 'like', 'love' => 'love', 'dislike' => 'dislike']; 
         if (! isset($availableReactionTypes[$reactionType])) {
             throw new \LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $reactionType, implode(', ', $availableReactionTypes)));
         }
