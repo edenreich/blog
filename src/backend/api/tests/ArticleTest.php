@@ -43,12 +43,6 @@ class ArticleTest extends KernelTestCase
     public function testGetting404EmptyResponseWhenNoArticleFound()
     {
         $client = new Client(['base_uri' => 'http://127.0.0.1']);
-        
-        /** @var EntityManager */
-        $em = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
 
         try {
             $response = $client->get('/articles/nonexistingarticle');
