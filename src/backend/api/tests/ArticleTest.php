@@ -13,14 +13,14 @@ class ArticleTest extends KernelTestCase
     private const BASE_URI = 'http://127.0.0.1';
     
     /**
-     * Store the guzzle http client.
+     * Store the guzzle http client
      * 
      * @var Client
      */
     private $client;
 
     /**
-     * Setup a client.
+     * Setup a client
      * 
      * @return void
      */
@@ -31,7 +31,7 @@ class ArticleTest extends KernelTestCase
     }
 
     /**
-     * Unset the client.
+     * Unset the client
      * 
      * @return void
      */
