@@ -21,6 +21,8 @@ class ArticleTest extends KernelTestCase
 
     /**
      * Setup a client.
+     * 
+     * @return void
      */
     protected function setUp(): void
     {
@@ -30,6 +32,8 @@ class ArticleTest extends KernelTestCase
 
     /**
      * Unset the client.
+     * 
+     * @return void
      */
     protected function tearDown(): void
     {
@@ -37,7 +41,7 @@ class ArticleTest extends KernelTestCase
         unset($this->client);
     }
 
-    public function testCanFetchAllArticles()
+    public function testCanFetchAllArticles(): void
     {
         $response = $this->client->get('/articles');
 
@@ -45,7 +49,7 @@ class ArticleTest extends KernelTestCase
         $this->assertCount(10, $articles);
     }
 
-    public function testCanFetchSingleArticle()
+    public function testCanFetchSingleArticle(): void
     {
         /** @var EntityManager */
         $em = self::bootKernel()
@@ -63,7 +67,7 @@ class ArticleTest extends KernelTestCase
         $this->assertEquals($title, $article->title);
     }
 
-    public function testGetting404EmptyResponseWhenNoArticleFound()
+    public function testGetting404EmptyResponseWhenNoArticleFound(): void
     {
         try {
             $response = $this->client->get('/articles/nonexistingarticle');
@@ -74,7 +78,7 @@ class ArticleTest extends KernelTestCase
         }
     }
 
-    public function testFetchArticlesInDescendingOrderByDefault()
+    public function testFetchArticlesInDescendingOrderByDefault(): void
     {
         /** @var EntityManager */
         $em = self::bootKernel()
@@ -96,7 +100,7 @@ class ArticleTest extends KernelTestCase
         $this->assertEquals($articles[3]->getId(), $articlesResponse[3]->id);
     }
 
-    public function testCanFetchASingleArticleBySlug()
+    public function testCanFetchASingleArticleBySlug(): void
     {
         /** @var EntityManager */
         $em = self::bootKernel()
