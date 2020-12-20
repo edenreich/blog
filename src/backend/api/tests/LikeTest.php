@@ -2,10 +2,7 @@
 
 namespace App\Tests;
 
-use App\Entity\Like;
-use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class LikeTest extends KernelTestCase
@@ -21,8 +18,6 @@ class LikeTest extends KernelTestCase
 
     /**
      * Setup a client.
-     * 
-     * @return void
      */
     protected function setUp(): void
     {
@@ -32,8 +27,6 @@ class LikeTest extends KernelTestCase
 
     /**
      * Unset the client.
-     * 
-     * @return void
      */
     protected function tearDown(): void
     {

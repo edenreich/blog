@@ -13,17 +13,17 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Route("/articles", name="articles.list")
+     * @Route("/articles", methods={"GET", "OPTIONS"}, name="articles.list")
      */
     public function list(SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
         $articles = $entityManager->getRepository(Article::class)->findAll();
 
-        return new Response($serializer->serialize($articles, 'json', ['groups' => ['admin', 'frontend']]));
+        return new Response($serializer->serialize($articles, 'json', ['groups' => ['admin', 'frontend']]), 200, ['content-type' => 'application/json']);
     }
 
     /**
-     * @Route("/articles/{id}", name="articles.find")
+     * @Route("/articles/{id}", methods={"GET", "OPTIONS"}, name="articles.find")
      */
     public function find(string $id, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
@@ -41,6 +41,6 @@ class ArticlesController extends AbstractController
             return new JsonResponse(['message' => sprintf('could not find article with slug or id %s', $id)], 404);
         }
 
-        return new Response($serializer->serialize($article, 'json', ['groups' => ['admin', 'frontend']]));
+        return new Response($serializer->serialize($article, 'json', ['groups' => ['admin', 'frontend']]), 200, ['content-type' => 'application/json']);
     }
 }

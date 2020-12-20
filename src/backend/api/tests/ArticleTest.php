@@ -21,8 +21,6 @@ class ArticleTest extends KernelTestCase
 
     /**
      * Setup a client.
-     * 
-     * @return void
      */
     protected function setUp(): void
     {
@@ -32,8 +30,6 @@ class ArticleTest extends KernelTestCase
 
     /**
      * Unset the client.
-     * 
-     * @return void
      */
     protected function tearDown(): void
     {
