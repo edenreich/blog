@@ -171,7 +171,7 @@ class ReactionTest extends KernelTestCase
         $article = $articles[mt_rand(0, 9)];
 
         // dislike the article
-        $response = $this->client->post('/reactions', [
+        $this->client->post('/reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
@@ -180,14 +180,13 @@ class ReactionTest extends KernelTestCase
         ]);
 
         // changed my mind like the article
-        $response = $this->client->post('/reactions', [
+        $this->client->post('/reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
                 'type' => 'like',
             ],
         ]);
-        // $reactionResponse = json_decode($response->getBody());
 
         /** @var \App\Repository\ReactionRepository */
         $reactionRepository = $em->getRepository(Reaction::class);
@@ -195,5 +194,10 @@ class ReactionTest extends KernelTestCase
 
         $this->assertCount(1, $reactions);
         $this->assertEquals('like', $reactions[0]->getType());
+    }
+
+    public function testCanFetchCountOfAllReactionsForASpecificArticle(): void
+    {
+
     }
 }
