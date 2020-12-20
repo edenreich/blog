@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class SessionController extends AbstractController
+class SessionsController extends AbstractController
 {
     /**
      * Find or create a new session.

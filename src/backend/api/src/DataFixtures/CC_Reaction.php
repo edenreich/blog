@@ -5,7 +5,7 @@ namespace App\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class CC_Like extends Fixture
+class CC_Reaction extends Fixture
 {
     public function load(ObjectManager $manager)
     {
@@ -14,9 +14,9 @@ class CC_Like extends Fixture
         $reactions = ['like', 'love', 'dislike'];
 
         foreach ($articles as $article) {
-            $like = new \App\Entity\Like(['reactionType' => $reactions[mt_rand(0, 2)], 'article' => $article, 'session' => $sessions[mt_rand(0, 9)]]);
+            $reaction = new \App\Entity\Reaction(['type' => $reactions[mt_rand(0, 2)], 'article' => $article, 'session' => $sessions[mt_rand(0, 9)]]);
 
-            $manager->persist($like);
+            $manager->persist($reaction);
         }
 
         $manager->flush();

@@ -7,13 +7,13 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Like.
+ * Reaction.
  *
- * @ORM\Table(name="likes", uniqueConstraints={@ORM\UniqueConstraint(name="likes_id_unique", columns={"id"})})
- * @ORM\Entity(repositoryClass="App\Repository\LikeRepository")
+ * @ORM\Table(name="reactions", uniqueConstraints={@ORM\UniqueConstraint(name="reactions_id_unique", columns={"id"})})
+ * @ORM\Entity(repositoryClass="App\Repository\ReactionRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Like
+class Reaction
 {
     /**
      * @var string
@@ -29,10 +29,10 @@ class Like
     /**
      * @var string
      *
-     * @ORM\Column(name="reaction_type", type="string", length=10), nullable=false)
+     * @ORM\Column(name="type", type="string", length=10), nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $reactionType;
+    private $type;
 
     /**
      * @var \DateTime|null
@@ -53,14 +53,14 @@ class Like
     /**
      * @var Article
      *
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="likes", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="reactions", fetch="LAZY")
      */
     private $article;
 
     /**
      * @var Session
      *
-     * @ORM\ManyToOne(targetEntity="Session", inversedBy="likes", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="Session", inversedBy="reactions", fetch="LAZY")
      */
     private $session;
 
@@ -71,9 +71,9 @@ class Like
      */
     public function __construct(array $properties)
     {
-        if (isset($properties['reactionType'])) {
-            $this->validateReactionType($properties['reactionType']);
-            $this->setReactionType($properties['reactionType']);
+        if (isset($properties['type'])) {
+            $this->validateType($properties['type']);
+            $this->setType($properties['type']);
         }
         if (isset($properties['article'])) {
             $this->setArticle($properties['article']);
@@ -114,20 +114,20 @@ class Like
     }
 
     /**
-     * Get the value of reactionType.
+     * Get the value of type.
      */
-    public function getReactionType(): string
+    public function getType(): string
     {
-        return $this->reactionType;
+        return $this->type;
     }
 
     /**
-     * Set the value of reactionType.
+     * Set the value of type.
      */
-    public function setReactionType(string $reactionType): self
+    public function setType(string $type): self
     {
-        $this->validateReactionType($reactionType);
-        $this->reactionType = $reactionType;
+        $this->validateType($type);
+        $this->type = $type;
 
         return $this;
     }
@@ -211,11 +211,11 @@ class Like
     /**
      * Validation for reaction type.
      */
-    private function validateReactionType(string $reactionType): void
+    private function validateType(string $type): void
     {
         $availableReactionTypes = ['like' => 'like', 'love' => 'love', 'dislike' => 'dislike'];
-        if (!isset($availableReactionTypes[$reactionType])) {
-            throw new \LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $reactionType, implode(', ', $availableReactionTypes)));
+        if (!isset($availableReactionTypes[$type])) {
+            throw new \LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $type, implode(', ', $availableReactionTypes)));
         }
     }
 }

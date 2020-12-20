@@ -51,11 +51,11 @@ class Session
     private $updatedAt;
 
     /**
-     * @var Like[]
+     * @var Reaction[]
      *
-     * @ORM\OneToMany(targetEntity="Like", mappedBy="session", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="session", cascade={"persist", "remove"})
      */
-    private $likes;
+    private $reactions;
 
     /**
      * Gets triggered only on insert.
@@ -104,23 +104,23 @@ class Session
     }
 
     /**
-     * Get the value of likes.
+     * Get the value of reactions.
      *
-     * @return Like[]
+     * @return Reaction[]
      */
-    public function getLikes(): array
+    public function getReactions(): array
     {
-        return $this->likes;
+        return $this->reactions;
     }
 
     /**
-     * Set the value of likes.
+     * Set the value of reactions.
      *
-     * @param Like[] $likes
+     * @param Reaction[] $reactions
      */
-    public function setLikes(array $likes): self
+    public function setReactions(array $reactions): self
     {
-        $this->likes = $likes;
+        $this->reactions = $reactions;
 
         return $this;
     }

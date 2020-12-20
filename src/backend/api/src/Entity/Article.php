@@ -93,19 +93,19 @@ class Article
     private $updatedAt;
 
     /**
-     * @var ArrayCollection<Like[]>
+     * @var ArrayCollection<Reaction[]>
      *
-     * @ORM\OneToMany(targetEntity="Like", mappedBy="article", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="article", fetch="EAGER")
      * @Groups({"admin", "frontend"})
      */
-    private $likes;
+    private $reactions;
 
     /**
      * Initialize properties.
      */
     public function __construct()
     {
-        // $this->likes = new ArrayCollection();
+        $this->reactions = new ArrayCollection();
     }
 
     /**
@@ -293,23 +293,23 @@ class Article
     }
 
     /**
-     * Get the value of likes.
+     * Get the value of reactions.
      *
-     * @return ArrayCollection<Like[]>
+     * @return ArrayCollection<Reaction[]>
      */
-    public function getLikes(): Collection
+    public function getReactions(): Collection
     {
-        return $this->likes;
+        return $this->reactions;
     }
 
     /**
-     * Set the value of likes.
+     * Set the value of reactions.
      *
-     * @param Like $likes
+     * @param Reaction $reaction
      */
-    public function addLike($like): self
+    public function addReaction(Reaction $reaction): self
     {
-        $this->likes->add($like);
+        $this->reactions->add($reaction);
 
         return $this;
     }
