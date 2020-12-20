@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * Reaction.
  *
- * @ORM\Table(name="reactions", uniqueConstraints={@ORM\UniqueConstraint(name="reactions_id_unique", columns={"id"})})
+ * @ORM\Table(name="reactions", uniqueConstraints={@ORM\UniqueConstraint(name="reactions_articles_sessions_id_unique", columns={"id", "article_id", "session_id"})})
  * @ORM\Entity(repositoryClass="App\Repository\ReactionRepository")
  * @ORM\HasLifecycleCallbacks
  */

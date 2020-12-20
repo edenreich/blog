@@ -40,6 +40,7 @@ class ReactionTest extends KernelTestCase
 
     public function testCanLikeArticle(): void
     {
+        /** @var \Doctrine\ORM\EntityManager */
         $em = static::bootKernel()
             ->getContainer()
             ->get('doctrine')
@@ -48,45 +49,151 @@ class ReactionTest extends KernelTestCase
         /** @var \App\Repository\SessionRepository */
         $sessionRepository = $em->getRepository(Session::class);
         $sessions = $sessionRepository->findAll();
-        $session = $sessions[mt_rand(0, 10)];
+        $session = $sessions[mt_rand(0, 9)];
 
         /** @var \App\Repository\ArticleRepository */
         $articleRepository = $em->getRepository(Article::class);
         $articles = $articleRepository->findAll();
-        $article = $articles[mt_rand(0, 10)];
+        $article = $articles[mt_rand(0, 9)];
 
         $response = $this->client->post('/reactions', [
-            RequestOptions::FORM_PARAMS => [
+            RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
                 'type' => 'like',
             ],
-            RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json'
-            ]
         ]);
-        $reaction = json_decode($response->getBody());
+        $reactionResponse = json_decode($response->getBody());
 
         /** @var \App\Repository\ReactionRepository */
         $reactionRepository = $em->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
 
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertEquals($reaction->getId(), $reaction->id);
+        $this->assertEquals($reaction->getId(), $reactionResponse->id);
+        $this->assertEquals('like', $reaction->getType());
+        $this->assertEquals('like', $reactionResponse->type);
+        $this->assertEquals($reaction->getType(), $reactionResponse->type);
     }
 
     public function testCanLoveArticle(): void
     {
-        throw new \Exception('pending implemention');
+        /** @var \Doctrine\ORM\EntityManager */
+        $em = static::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        /** @var \App\Repository\SessionRepository */
+        $sessionRepository = $em->getRepository(Session::class);
+        $sessions = $sessionRepository->findAll();
+        $session = $sessions[mt_rand(0, 9)];
+
+        /** @var \App\Repository\ArticleRepository */
+        $articleRepository = $em->getRepository(Article::class);
+        $articles = $articleRepository->findAll();
+        $article = $articles[mt_rand(0, 9)];
+
+        $response = $this->client->post('/reactions', [
+            RequestOptions::JSON => [
+                'session' => $session->getId(),
+                'article' => $article->getId(),
+                'type' => 'love',
+            ],
+        ]);
+        $reactionResponse = json_decode($response->getBody());
+
+        /** @var \App\Repository\ReactionRepository */
+        $reactionRepository = $em->getRepository(Reaction::class);
+        $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals($reaction->getId(), $reactionResponse->id);
+        $this->assertEquals('love', $reaction->getType());
+        $this->assertEquals('love', $reactionResponse->type);
+        $this->assertEquals($reaction->getType(), $reactionResponse->type);
     }
 
     public function testCanDislikeArticle(): void
     {
-        throw new \Exception('pending implemention');
+        /** @var \Doctrine\ORM\EntityManager */
+        $em = static::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        /** @var \App\Repository\SessionRepository */
+        $sessionRepository = $em->getRepository(Session::class);
+        $sessions = $sessionRepository->findAll();
+        $session = $sessions[mt_rand(0, 9)];
+
+        /** @var \App\Repository\ArticleRepository */
+        $articleRepository = $em->getRepository(Article::class);
+        $articles = $articleRepository->findAll();
+        $article = $articles[mt_rand(0, 9)];
+
+        $response = $this->client->post('/reactions', [
+            RequestOptions::JSON => [
+                'session' => $session->getId(),
+                'article' => $article->getId(),
+                'type' => 'dislike',
+            ],
+        ]);
+        $reactionResponse = json_decode($response->getBody());
+
+        /** @var \App\Repository\ReactionRepository */
+        $reactionRepository = $em->getRepository(Reaction::class);
+        $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals($reaction->getId(), $reactionResponse->id);
+        $this->assertEquals('dislike', $reaction->getType());
+        $this->assertEquals('dislike', $reactionResponse->type);
+        $this->assertEquals($reaction->getType(), $reactionResponse->type);
     }
 
-    public function testIfCanChangeReaction(): void
+    public function testCanChangeReactionToArticle(): void
     {
-        throw new \Exception('pending implemention');
+        /** @var \Doctrine\ORM\EntityManager */
+        $em = static::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        /** @var \App\Repository\SessionRepository */
+        $sessionRepository = $em->getRepository(Session::class);
+        $sessions = $sessionRepository->findAll();
+        $session = $sessions[mt_rand(0, 9)];
+
+        /** @var \App\Repository\ArticleRepository */
+        $articleRepository = $em->getRepository(Article::class);
+        $articles = $articleRepository->findAll();
+        $article = $articles[mt_rand(0, 9)];
+
+        // dislike the article
+        $response = $this->client->post('/reactions', [
+            RequestOptions::JSON => [
+                'session' => $session->getId(),
+                'article' => $article->getId(),
+                'type' => 'dislike',
+            ],
+        ]);
+
+        // changed my mind like the article
+        $response = $this->client->post('/reactions', [
+            RequestOptions::JSON => [
+                'session' => $session->getId(),
+                'article' => $article->getId(),
+                'type' => 'like',
+            ],
+        ]);
+        // $reactionResponse = json_decode($response->getBody());
+
+        /** @var \App\Repository\ReactionRepository */
+        $reactionRepository = $em->getRepository(Reaction::class);
+        $reactions = $reactionRepository->findBy(['session' => $session, 'article' => $article]);
+
+        $this->assertCount(1, $reactions);
+        $this->assertEquals('like', $reactions[0]->getType());
     }
 }

@@ -19,32 +19,31 @@ class ReactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Reaction::class);
     }
 
-    // /**
-    //  * @return Reaction[] Returns an array of Reaction objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Store a reaction.
+     */
+    public function store(array $data): Reaction
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $article = $this->_em->getRepository(\App\Entity\Article::class)->findOneBy(['id' => $data['article']]);
+        $session = $this->_em->getRepository(\App\Entity\Session::class)->findOneBy(['id' => $data['session']]);
 
-    /*
-    public function findOneBySomeField($value): ?Reaction
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if (! $article || ! $session) {
+            throw new \Exception(sprintf('Article id %s or session id %s does not exist', $data['article'], $data['session']));
+        }
+
+        $reaction = $this->findOneBy(['session' => $session, 'article' => $article]);
+        $data['article'] = $article;
+        $data['session'] = $session;
+
+        if ($reaction) {
+            $reaction->setType($data['type']);
+        } else {
+            $reaction = new Reaction($data);
+            $this->_em->persist($reaction);
+        }
+        
+        $this->_em->flush();
+
+        return $reaction;
     }
-    */
 }
