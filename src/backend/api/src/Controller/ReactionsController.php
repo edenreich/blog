@@ -31,7 +31,7 @@ class ReactionsController extends AbstractController
     /**
      * @Route("/reactions/count", methods={"GET", "OPTIONS"}, name="reactions.count")
      */
-    public function count(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
+    public function count(Request $request, EntityManagerInterface $entityManager): Response
     {
         $articleId = $request->query->get('article');
 
