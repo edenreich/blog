@@ -5,6 +5,6 @@ RUN apt-get update && \
 FROM builder AS admin-artifacts
 WORKDIR /tmp
 ENV NODE_ENV=production
-COPY src/admin/yarn.lock .
-COPY src/admin/package.json .
+COPY src/backend/admin/yarn.lock .
+COPY src/backend/admin/package.json .
 RUN yarn upgrade && yarn --network-timeout 1000000

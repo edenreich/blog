@@ -6,8 +6,8 @@ on:
       - master 
     paths:
       - ".github/workflows/admin.yml"
-      - "src/admin/**"
-      - "ops/docker/admin/**"
+      - "src/backend/admin/**"
+      - "ops/docker/backend/admin/**"
       - "ops/kubernetes/admin/**"
 
 env:
@@ -17,7 +17,7 @@ env:
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
-  ARTIFACT_FILES: src/admin/package.json src/admin/yarn.lock ops/docker/admin/artifacts/Dockerfile
+  ARTIFACT_FILES: src/backend/admin/package.json src/backend/admin/yarn.lock ops/docker/backend/admin/artifacts/Dockerfile
 
 jobs:
   check:
@@ -50,7 +50,7 @@ jobs:
           docker build \
             --target admin-artifacts \
             -t admin-artifacts:latest \
-            -f ops/docker/admin/artifacts/Dockerfile .
+            -f ops/docker/backend/admin/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
     needs: build-artifacts
@@ -62,7 +62,7 @@ jobs:
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f ops/docker/admin/Dockerfile .
+            -f ops/docker/backend/admin/Dockerfile .
       - name: Docker Tag Image
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
