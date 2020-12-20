@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reaction;
+use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,5 +26,32 @@ class ReactionsController extends AbstractController
         $reaction = $reactionsRepository->store($data);
 
         return new Response($serializer->serialize($reaction, 'json', ['groups' => ['admin', 'frontend']]), 201, ['content-type' => 'application/json']);
+    }
+
+    /**
+     * @Route("/reactions/count", methods={"GET", "OPTIONS"}, name="reactions.count")
+     */
+    public function count(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
+    {
+        $articleId = $request->query->get('article');
+
+        /** @var \App\Repository\ArticleRepository */
+        $articlesRepository = $entityManager->getRepository(Article::class);
+        $article = $articlesRepository->findOneBy(['id' => $articleId]);
+        
+        if (! $articleId) {
+            return new JsonResponse(['message' => sprintf('Could not find article id %s', $articleId)], 404); 
+        }
+
+        $count = [
+            'like' => 0,
+            'love' => 0,
+            'dislike' => 0,
+        ];
+        $article->getReactions()->forAll(function(int $index, Reaction $reaction) use (&$count) {
+            $count[$reaction->getType()]++;
+        });
+
+        return new JsonResponse($count, 200);
     }
 }

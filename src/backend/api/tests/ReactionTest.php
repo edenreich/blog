@@ -198,6 +198,33 @@ class ReactionTest extends KernelTestCase
 
     public function testCanFetchCountOfAllReactionsForASpecificArticle(): void
     {
+        /** @var \Doctrine\ORM\EntityManager */
+        $em = static::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
 
+        /** @var \App\Repository\ArticleRepository */
+        $articleRepository = $em->getRepository(Article::class);
+        $articles = $articleRepository->findAll();
+        $article = $articles[mt_rand(0, 9)];
+
+        $response = $this->client->get('/reactions/count?article='.$article->getId(), [
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        $reactions = json_decode($response->getBody(), true);
+
+        $expectedCount = [
+            'like' => 0,
+            'love' => 0,
+            'dislike' => 0,
+        ];
+        $article->getReactions()->forAll(function (int $index, Reaction $reaction) use (&$expectedCount) {
+            ++$expectedCount[$reaction->getType()];
+        });
+
+        $this->assertEquals($expectedCount, $reactions);
     }
 }
