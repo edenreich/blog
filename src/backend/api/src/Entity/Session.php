@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Session.
  *
  * @ORM\Table(name="sessions", uniqueConstraints={@ORM\UniqueConstraint(name="sessions_ip_address_unique", columns={"ip_address"}), @ORM\UniqueConstraint(name="sessions_id_unique", columns={"id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\SessionRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Session
@@ -21,6 +22,7 @@ class Session
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
+     * @Groups({"admin", "frontend"})
      */
     private $id;
 
@@ -28,13 +30,15 @@ class Session
      * @var string
      *
      * @ORM\Column(name="ip_address", type="string", length=255, nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private $ipAddress;
 
     /**
      * @var \DateTimeInterface|null
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private $createdAt;
 
@@ -42,6 +46,7 @@ class Session
      * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private $updatedAt;
 

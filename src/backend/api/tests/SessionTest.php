@@ -21,8 +21,6 @@ class SessionTest extends KernelTestCase
 
     /**
      * Setup a client.
-     * 
-     * @return void
      */
     protected function setUp(): void
     {
@@ -32,8 +30,6 @@ class SessionTest extends KernelTestCase
 
     /**
      * Unset the client.
-     * 
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -43,11 +39,49 @@ class SessionTest extends KernelTestCase
 
     public function testCanCreateAClientSession(): void
     {
-        throw new \Exception('pending implemention');
+        /** @var EntityManager */
+        $em = self::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        /** @var Session */
+        $session = $em->getRepository(Session::class)->findAll()[0];
+
+        $response = $this->client->post('/sessions?ip_address='.$session->getIpAddress());
+        $sessionResponse = json_decode($response->getBody());
+
+        $this->assertEquals($session->getId(), $sessionResponse->id);
+        $this->assertEquals(201, $response->getStatusCode());
     }
 
     public function testCanRetrieveTheCurrentSession(): void
     {
-        throw new \Exception('pending implemention');
+        /** @var EntityManager */
+        $em = self::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        /** @var Session */
+        $session = $em->getRepository(Session::class)->findAll()[0];
+
+        $response = $this->client->get('/sessions?ip_address='.$session->getIpAddress());
+        $sessionResponse = json_decode($response->getBody());
+
+        $this->assertEquals($session->getId(), $sessionResponse->id);
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testGetting404IfSessionDoesNotExist(): void
+    {
+        try {
+            $response = $this->client->get('/sessions?ip_address=400.00.00.1111');
+            $this->assertNotEquals(200, $response->getStatusCode());
+        } catch (ClientException $exception) {
+            $response = $exception->getResponse();
+            $this->assertEquals(404, $response->getStatusCode());
+            $this->assertEquals('Could not find session for ip 400.00.00.1111', json_decode($response->getBody())->message);
+        }
     }
 }
