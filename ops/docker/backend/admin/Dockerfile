@@ -11,7 +11,7 @@ RUN composer install --no-dev
 FROM php:7.4-fpm-alpine AS common
 RUN apk add --update bash nginx supervisor postgresql-dev
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
-    docker-php-ext-install pdo_pgsql && \
+    docker-php-ext-install pdo_pgsql intl && \
     apk del .build-deps
 RUN mkdir /run/nginx
 COPY ops/docker/backend/admin/supervisor.d /etc/supervisor.d

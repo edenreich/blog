@@ -41,6 +41,8 @@ services:
       dockerfile: ops/docker/backend/admin/Dockerfile
     volumes:
       - ./src/backend/admin:/var/www/admin:rw
+    extra_hosts:
+      - host.docker.internal:172.18.0.1
     networks:
       - app
 
