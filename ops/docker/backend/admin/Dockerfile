@@ -1,53 +1,85 @@
-FROM node:14-buster-slim AS builder
-WORKDIR /tmp
-RUN apt-get update && \
-    apt-get install -y build-essential python
-
-FROM builder AS stage-builder
-WORKDIR /tmp
-ENV NODE_ENV=stage
-COPY src/backend/admin/yarn.lock .
-COPY src/backend/admin/package.json .
-COPY src/backend/admin/config/env/stage ./config/env/stage
-COPY --from=admin-artifacts /tmp/node_modules node_modules
-RUN yarn build
-
-FROM builder AS production-builder
-WORKDIR /tmp
-ENV NODE_ENV=production
-COPY src/backend/admin/yarn.lock .
-COPY src/backend/admin/package.json .
-COPY src/backend/admin/config/env/production ./config/env/production
-COPY --from=admin-artifacts /tmp/node_modules node_modules
-RUN yarn build
-
-FROM node:14-buster-slim AS development
+FROM composer AS dev-builder
 WORKDIR /app
-ENV NODE_ENV=development
-ENV HOST='0.0.0.0'
-ENV PORT=3000
-VOLUME [ "/app" ]
-EXPOSE 3000
-CMD [ "yarn", "develop" ]
+COPY src/backend/admin/composer.* ./
+RUN composer install
 
-FROM node:14-buster-slim AS stage
+FROM composer AS builder
 WORKDIR /app
-ENV NODE_ENV=stage
-ENV HOST='0.0.0.0'
-ENV PORT=3000
+COPY src/backend/admin/composer.* ./
+RUN composer install --no-dev
+
+FROM php:7.2.25-fpm-alpine AS common
+RUN apk add --update bash nginx supervisor postgresql-dev
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+    docker-php-ext-install pdo_pgsql && \
+    apk del .build-deps
+RUN mkdir /run/nginx
+COPY ops/docker/backend/admin/supervisor.d /etc/supervisor.d
+COPY ops/docker/backend/admin/nginx/default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD [ "supervisord", "--pidfile", "/run/supervisord.pid", "-c", "/etc/supervisord.conf" ]
+
+FROM common AS development
+WORKDIR /var/www/admin
+ENV APP_ENV=dev
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
+    apk del .build-deps
+RUN wget https://get.symfony.com/cli/installer -O - | bash
+RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.client_port=9000' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.log=/tmp/xdebug.log' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+VOLUME [ "/var/www" ]
+
+FROM common AS lint
+WORKDIR /var/www/admin
+ENV APP_ENV=dev
 COPY src/backend/admin .
-COPY --from=admin-artifacts /tmp/node_modules node_modules
-COPY --from=stage-builder /tmp/build build
-EXPOSE 3000
-CMD [ "yarn", "start" ]
+COPY --from=dev-builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+CMD [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose -- src tests migrations" ]
 
-FROM node:14-buster-slim AS production
-WORKDIR /app
-ENV NODE_ENV=production
-ENV HOST='0.0.0.0'
-ENV PORT=3000
+FROM common AS analyse
+WORKDIR /var/www/admin
+ENV APP_ENV=dev
 COPY src/backend/admin .
-COPY --from=admin-artifacts /tmp/node_modules node_modules
-COPY --from=production-builder /tmp/build build
-EXPOSE 3000
-CMD [ "yarn", "start" ]
+COPY --from=dev-builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+CMD [ "/bin/sh", "-c", "vendor/bin/phpstan analyse src tests" ]
+
+FROM common AS migrate
+WORKDIR /var/www/admin
+ENV APP_ENV=prod
+COPY src/backend/admin .
+COPY --from=builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+CMD [ "bin/console" "doctrine:migration:migrate" ]
+
+FROM common AS test
+WORKDIR /var/www/admin
+ENV APP_ENV=test
+COPY src/backend/admin .
+COPY --from=dev-builder /app/vendor .
+COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+CMD [ "php", "bin/phpunit" ]
+
+FROM common AS stage
+WORKDIR /var/www/admin
+ENV APP_ENV=prod
+COPY src/backend/admin .
+COPY --from=builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+
+FROM common AS production
+WORKDIR /var/www/admin
+ENV APP_ENV=prod
+COPY src/backend/admin .
+COPY --from=builder /app/vendor .
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
