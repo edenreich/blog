@@ -32,17 +32,17 @@ services:
     networks:
       - app
 
-  # admin:
-  #   build:
-  #     target: development
-  #     args:
-  #       NODE_ENV: development
-  #     context: .
-  #     dockerfile: ops/docker/backend/admin/Dockerfile
-  #   volumes:
-  #     - ./src/backend/admin:/app:rw
-  #   networks:
-  #     - app
+  admin:
+    build:
+      target: development
+      args:
+        NODE_ENV: development
+      context: .
+      dockerfile: ops/docker/backend/admin/Dockerfile
+    volumes:
+      - ./src/backend/admin:/var/www/admin:rw
+    networks:
+      - app
 
   api:
     build:
@@ -88,15 +88,9 @@ services:
           apt-get install -y build-essential python;
           yarn upgrade && yarn;
         fi
-        if [ ! -d /admin/node_modules ]; then 
-          apt-get update apt-get install -y build-essential python;
-          cd /admin;
-          yarn upgrade && yarn;
-        fi
     working_dir: /frontend
     volumes:
       - ./src/frontend:/frontend:rw
-      - ./src/backend/admin:/admin:rw
 
   composer:
     image: composer
