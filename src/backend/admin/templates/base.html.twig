@@ -35,7 +35,6 @@
     </div>
     <!-- preloader area end -->
     {% block body %}{% endblock %}
-    {% block javascripts %}{% endblock %}
     <!-- jquery latest version -->
     <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
     <!-- bootstrap 4 js -->
@@ -45,6 +44,8 @@
     <script src="assets/js/metisMenu.min.js"></script>
     <script src="assets/js/jquery.slimscroll.min.js"></script>
     <script src="assets/js/jquery.slicknav.min.js"></script>
+
+    {% block javascripts %}{% endblock %}
     
     <!-- others plugins -->
     <script src="assets/js/plugins.js"></script>
