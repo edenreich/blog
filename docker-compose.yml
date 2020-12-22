@@ -69,7 +69,6 @@ services:
     networks:
       - app
     volumes:
-      - ./src/backend/admin/database:/docker-entrypoint-initdb.d
       - database-data:/var/lib/postgresql/data
 
   openssl:
