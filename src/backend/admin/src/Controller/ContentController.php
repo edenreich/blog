@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ContentController extends AbstractController
+class ContentController extends CategoriesAwareController
 {
     /**
-     * @Route("/content", name="content")
+     * @Route("/content", name="categories_content")
      */
     public function index(): Response
     {
-        return $this->render('content/index.html.twig');
+        return $this->render('content/index.html.twig', [
+            'categories' => $this->categories,
+        ]);
     }
 }

@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DashboardController extends AbstractController
+class DashboardController extends CategoriesAwareController
 {
     /**
      * @Route("/admin", name="admin")
@@ -18,10 +17,12 @@ class DashboardController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard", name="dashboard")
+     * @Route("/dashboard", name="categories_dashboard")
      */
     public function dashboard(): Response
     {
-        return $this->render('dashboard/index.html.twig');
+        return $this->render('dashboard/index.html.twig', [
+            'categories' => $this->categories,
+        ]);
     }
 }
