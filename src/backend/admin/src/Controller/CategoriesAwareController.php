@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
 
 abstract class CategoriesAwareController extends AbstractController
 {
@@ -12,7 +12,7 @@ abstract class CategoriesAwareController extends AbstractController
      * @var array
      */
     protected $categories;
-    
+
     /**
      * @var Request
      */
@@ -20,9 +20,6 @@ abstract class CategoriesAwareController extends AbstractController
 
     /**
      * Initialize request and categories array.
-     * 
-     * @param RouterInterface $router
-     * @param RequestStack $requestStack
      */
     public function __construct(RequestStack $requestStack, RouterInterface $router)
     {
