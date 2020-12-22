@@ -8,18 +8,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ContentController extends CategoriesAwareController
+class ContentController extends NavigationAwareController
 {
     /**
-     * @Route("/content", methods={"GET"}, name="categories_content")
+     * @Route("/content", methods={"GET"}, name="navigation_parent_content")
      */
     public function index(): RedirectResponse
     {
-        return $this->redirectToRoute('list_content');
+        return $this->redirectToRoute('navigation_sub_content_list');
     }
 
     /**
-     * @Route("/content/list", methods={"GET"}, name="list_content")
+     * @Route("/content/list", methods={"GET"}, name="navigation_sub_content_list")
      */
     public function list(): Response
     {
@@ -46,6 +46,14 @@ class ContentController extends CategoriesAwareController
     }
 
     /**
+     * @Route("/content/create", methods={"GET"}, name="navigation_sub_content_create")
+     */
+    public function create(): Response
+    {
+        return $this->render('content/create.html.twig');
+    }
+
+    /**
      * @Route("/content/{id}/edit", methods={"GET"}, name="content_edit")
      */
     public function edit(string $id): Response
@@ -56,10 +64,10 @@ class ContentController extends CategoriesAwareController
     }
 
     /**
-     * @Route("/content/create", methods={"GET"}, name="content_create")
+     * @Route("/content/{id}/delete", methods={"GET"}, name="content_delete")
      */
-    public function create(): Response
+    public function delete(): Response
     {
-        return $this->render('content/create.html.twig');
+        return $this->redirectToRoute('navigation_content_list');
     }
 }

@@ -54,12 +54,21 @@
                     <nav>
                         <ul class="metismenu" id="menu">
                             <li class="active">
-                                <a href="javascript:void(0)" aria-expanded="true"><i class="ti-dashboard"></i><span>Categories</span></a>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="ti-dashboard"></i><span>Navigation</span></a>
                                 <ul class="collapse">
-                                    {% for category in categories %}
-                                    <li class="{{ category.active ? 'active' : '' }}">
-                                        <a href="{{ category.path }}">{{ category.name }}</a>
-                                    </li>
+                                    {% for name, category in navigation %}
+                                        <li class="{{ category.active ? 'active' : '' }}">
+                                            <a href="{{ category.path }}">{{ category.name }}</a>
+                                        </li>
+                                        {% if category.sub is defined %}
+                                        <ul>
+                                            {% for name, sub in category.sub %}
+                                            <li class="{{ sub.active ? 'active' : '' }}">
+                                                <a href="{{ sub.path }}">{{ sub.name }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
