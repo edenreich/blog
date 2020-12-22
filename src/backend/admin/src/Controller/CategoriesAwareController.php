@@ -24,16 +24,17 @@ abstract class CategoriesAwareController extends AbstractController
     public function __construct(RequestStack $requestStack, RouterInterface $router)
     {
         $this->request = $requestStack->getCurrentRequest();
-        $this->categories = [];
+        $categories = [];
         foreach ($router->getRouteCollection()->getIterator() as $routeName => $route) {
             if (preg_match('/^categories_(.*)/', $routeName, $matches)) {
                 $isCurrent = $this->request->get('_route') === $routeName ? true : false;
-                $this->categories[] = [
+                $categories[] = [
                     'active' => $isCurrent,
                     'path' => $route->getPath(),
                     'name' => ucfirst($matches[1]),
                 ];
             }
         }
+        $this->categories = array_reverse($categories);
     }
 }
