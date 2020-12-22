@@ -1,0 +1,26 @@
+{% extends 'admin.layout.twig' %}
+{% block title %}Admin - Content Edit{% endblock %}
+{% block body %}
+<!-- header area start -->
+{% include 'includes/header.html.twig' %}
+<!-- header area end -->
+<!-- page title area start -->
+{% include 'includes/title.html.twig' with {'breadcrumbs': [{'name':'Content','link':'/content'},{'name':'Edit','link':'/content/edit'}]} %}
+<!-- page title area end -->
+<div class="main-content-inner">
+    <div class="row">
+        <!-- Primary table start -->
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title">Edit</h4>
+                    <div class="content-edit-form">
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Primary table end -->
+    </div>
+</div>
+{% endblock %}

@@ -9,20 +9,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends CategoriesAwareController
 {
     /**
-     * @Route("/admin", name="admin")
+     * @Route("/admin", methods={"GET"}, name="admin")
      */
     public function admin(): RedirectResponse
     {
-        return $this->redirectToRoute('dashboard');
+        return $this->redirectToRoute('categories_dashboard');
     }
 
     /**
-     * @Route("/dashboard", name="categories_dashboard")
+     * @Route("/dashboard", methods={"GET"}, name="categories_dashboard")
      */
-    public function dashboard(): Response
+    public function dashboard(): RedirectResponse
     {
-        return $this->render('dashboard/index.html.twig', [
-            'categories' => $this->categories,
-        ]);
+        return $this->redirectToRoute('dashboard_list');
+    }
+
+    /**
+     * @Route("/dashboard/list", methods={"GET"}, name="dashboard_list")
+     */
+    public function list(): Response
+    {
+        return $this->render('dashboard/index.html.twig');
     }
 }
