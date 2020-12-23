@@ -2,7 +2,10 @@
 
 namespace App\Dto;
 
-class Article
+use DateTime;
+use JsonSerializable;
+
+class Article implements JsonSerializable
 {
     /**
      * @var string
@@ -48,6 +51,32 @@ class Article
      * @var \DateTimeInterface|null
      */
     private $updatedAt;
+
+    /**
+     * Marshal raw object response.
+     */
+    public function __construct($properties)
+    {
+        foreach ($properties as $property => $value) {
+            $setter = sprintf('set%s', ucfirst(str_replace('_', '', ucwords($property, '_'))));
+            if (method_exists($this, $setter)) {
+                if ($setter === 'setUpdatedAt' || $setter === 'setCreatedAt' || $setter === 'setPublishedAt') {
+                    $value = new DateTime($value);
+                }
+                $this->{$setter}($value);
+            }
+        }
+    }
+
+    /**
+     * Set the value of id.
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * Get the value of id.
@@ -199,5 +228,23 @@ class Article
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * Convertion of the object to json.
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'slug' => $this->getSlug(),
+            'meta_keywords' => $this->getMetaKeywords(),
+            'meta_description' => $this->getMetaDescription(),
+            'content' => $this->getContent(),
+            'published_at' => $this->getPublishedAt()->format('Y-m-d H:i:s'),
+            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
+        ];
     }
 }
