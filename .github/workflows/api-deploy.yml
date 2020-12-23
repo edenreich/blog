@@ -1,15 +1,15 @@
 name: Deploy API to production
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
-  paths:
-    - ".github/workflows/api.yml"
-    - "src/backend/api/**"
-    - "ops/docker/backend/api/**"
-    - "ops/kubernetes/backend/api/**"
+    paths:
+      - ".github/workflows/api.yml"
+      - "src/backend/api/**"
+      - "ops/docker/backend/api/**"
+      - "ops/kubernetes/backend/api/**"
+  workflow_dispatch:
 
 env:
   DOCKER_BUILDKIT: 1
