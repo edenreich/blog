@@ -53,7 +53,7 @@ class Article implements JsonSerializable
     private $updatedAt;
 
     /**
-     * Marshal raw object response.
+     * Unmarshal raw object response.
      */
     public function __construct($properties)
     {
@@ -231,7 +231,7 @@ class Article implements JsonSerializable
     }
 
     /**
-     * Convertion of the object to json.
+     * Marshall dto to json format.
      */
     public function jsonSerialize(): array
     {
