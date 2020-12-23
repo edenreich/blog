@@ -7,6 +7,7 @@ metadata:
     app: api
     version: "{{VERSION}}"
 spec:
+  ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
@@ -29,7 +30,7 @@ spec:
       restartPolicy: Never
       imagePullSecrets:
       - name: regcred
-  backoffLimit: 4
+  backoffLimit: 3
 ---
 apiVersion: batch/v1
 kind: Job
@@ -40,6 +41,7 @@ metadata:
     app: api
     version: "{{VERSION}}"
 spec:
+  ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
@@ -62,7 +64,7 @@ spec:
       restartPolicy: Never
       imagePullSecrets:
       - name: regcred
-  backoffLimit: 4
+  backoffLimit: 3
 ---
 apiVersion: batch/v1
 kind: Job
@@ -73,6 +75,7 @@ metadata:
     app: api
     version: "{{VERSION}}"
 spec:
+  ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
@@ -95,4 +98,4 @@ spec:
       restartPolicy: Never
       imagePullSecrets:
       - name: regcred
-  backoffLimit: 4
+  backoffLimit: 3
