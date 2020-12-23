@@ -89,5 +89,5 @@ jobs:
         run: docker system prune -f
       - name: Keep 5 container images
         run: for server in $(echo ${{ env.STAGE_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
-      - name: Keep 3 deployments available for rollback
-        run: kubectl delete deployments $(kubectl get deployments | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | sort -rn | tail -n+4) || true
+      - name: Keep 2 deployments available for rollback
+        run: kubectl delete deployments $(kubectl get deployments | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | sort -rn | tail -n+3) || true
