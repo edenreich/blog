@@ -28,8 +28,8 @@ class ContentController extends NavigationAwareController
             $client = new Client(['base_uri' => 'https://admin.eden-reich.com']);
             $response = $client->get('/articles');
             $responseArticles = json_decode($response->getBody(), true);
-            $articles = array_map(function ($object) {
-                return new Article($object);
+            $articles = array_map(function ($responseArticle) {
+                return new Article($responseArticle);
             }, $responseArticles);
 
             return new JsonResponse($articles);
@@ -51,8 +51,13 @@ class ContentController extends NavigationAwareController
      */
     public function edit(string $id): Response
     {
+        // $client = new Client(['base_uri' => 'https://admin.eden-reich.com']);
+        // $response = $client->get('/articles/' . $id);
+        // $responseArticle = json_decode($response->getBody(), true);
+        // $article = new Article($responseArticle);
+        $article['id'] = $id;
         return $this->render('content/edit.html.twig', [
-            'id' => $id,
+            'article' => $article,
         ]);
     }
 
@@ -62,5 +67,13 @@ class ContentController extends NavigationAwareController
     public function delete(): Response
     {
         return $this->redirectToRoute('navigation_content_list');
+    }
+
+    /**
+     * @Route("/content/{id}/edit", methods={"POST"}, name="content_edit_submit")
+     */
+    public function editSubmit(string $id): RedirectResponse
+    {
+        return $this->redirectToRoute('content_edit');
     }
 }
