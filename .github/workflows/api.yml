@@ -75,7 +75,7 @@ jobs:
           cat ops/kubernetes/backend/api/jobs/run_tests.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
   migrations:
     runs-on: self-hosted
-    needs: push
+    needs: test
     steps:
       - name: Run database migrations
         run: |
