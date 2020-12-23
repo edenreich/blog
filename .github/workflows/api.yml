@@ -16,7 +16,7 @@ env:
   DOCKER_IMAGE: blog-api
   STAGE_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
   DEPLOYMENT_NAME: api
-  DEPLOYMENT_VERSION: ${{ github.sha }}
+  DEPLOYMENT_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
 
 jobs:
   build:
