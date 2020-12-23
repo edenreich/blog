@@ -1,56 +1,24 @@
-name: stage-admin
+name: Build API and deploy to stage
 
 on:
   push:
     branches:
       - develop
     paths:
-      - ".github/workflows/stage-admin.yml"
-      - "src/backend/admin/**"
-      - "ops/docker/backend/admin/**"
-      - "ops/kubernetes/backend/admin/**"
+      - ".github/workflows/api.yml"
+      - "src/backend/api/**"
+      - "ops/docker/backend/api/**"
+      - "ops/kubernetes/backend/api/**"
 
 env:
   DOCKER_BUILDKIT: 1
-  DOCKER_REPO: edenr/stage-blog-admin
-  DOCKER_IMAGE: stage-blog-admin
-  DEPLOYMENT_NAME: blog-admin
-  DEPLOYMENT_VERSION: ${{ github.run_number }}
-  SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
-  ARTIFACT_FILES: src/backend/admin/package.json src/backend/admin/yarn.lock ops/docker/backend/admin/artifacts/Dockerfile
+  DOCKER_REPO: edenr/blog-api
+  DOCKER_IMAGE: blog-api
+  STAGE_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
+  DEPLOYMENT_NAME: api
+  DEPLOYMENT_VERSION: ${{ github.sha }}
 
 jobs:
-  check:
-    outputs:
-      run_job: ${{ steps.check_files.outputs.run_job }}
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@master
-        with:
-          fetch-depth: 2
-      - name: Check if relevant artifact files have been changed
-        id: check_files
-        run: |
-          for file in $(echo ${{ env.ARTIFACT_FILES }} | xargs); do
-            if [ $(git diff --name-only HEAD^ HEAD | grep $file) ]; then 
-              echo "::set-output name=run_job::true"
-              break
-            else
-              echo "::set-output name=run_job::false"
-            fi
-          done
-  build-artifacts:
-    runs-on: self-hosted
-    needs: check
-    steps:
-      - uses: actions/checkout@master
-      - name: Build Artifacts
-        if: ${{ needs.check.outputs.run_job == 'true' }}
-        run: |
-          docker build \
-            --target admin-artifacts \
-            -t admin-artifacts:latest \
-            -f ops/docker/backend/admin/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
     needs: build-artifacts
@@ -59,10 +27,10 @@ jobs:
       - name: Docker Build
         run: |
           docker build \
-            --target stage \
+            --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f ops/docker/backend/admin/Dockerfile .
+            -f ops/docker/backend/api/Dockerfile .
       - name: Docker Tag Image
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
@@ -84,7 +52,7 @@ jobs:
       - name: Kubernetes - switch to stage context
         run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/backend/admin/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/api/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
@@ -102,9 +70,9 @@ jobs:
             sleep 1
           done
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
-        run: cat ops/kubernetes/backend/admin/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/api/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
-        run: cat ops/kubernetes/backend/admin/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/api/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy
@@ -114,6 +82,6 @@ jobs:
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 5 container images
-        run: for server in $(echo ${{ env.SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
+        run: for server in $(echo ${{ env.STAGE_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
       - name: Keep 3 deployments available for rollback
         run: kubectl delete deployments $(kubectl get deployments | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | sort -rn | tail -n+4) || true
