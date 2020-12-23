@@ -1,0 +1,98 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-database-migration
+  namespace: blog
+  labels:
+    app: api
+    version: "{{VERSION}}"
+spec:
+  template:
+    spec:
+      containers:
+      - name: api-database-migration
+        image: edenr/{{REPOSITORY}}:{{VERSION}}
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: database_url
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        command: [ "bin/console", "doctrine:migration:migrate", "--no-interaction" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 4
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-test-database-migration
+  namespace: blog
+  labels:
+    app: api
+    version: "{{VERSION}}"
+spec:
+  template:
+    spec:
+      containers:
+      - name: api-test-database-migration
+        image: edenr/{{REPOSITORY}}:{{VERSION}}
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: test_database_url
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        command: [ "bin/console", "doctrine:migration:migrate", "--no-interaction" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 4
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-test-database-seed
+  namespace: blog
+  labels:
+    app: api
+    version: "{{VERSION}}"
+spec:
+  template:
+    spec:
+      containers:
+      - name: api-test-database-seed
+        image: edenr/{{REPOSITORY}}:{{VERSION}}
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: test_database_url
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        command: [ "bin/console", "doctrine:fixtures:load", "--no-interaction" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 4

@@ -47,9 +47,9 @@ jobs:
     runs-on: self-hosted
     needs: push
     steps:
-      - name: Run database migrations
+      - name: Run database migrations and test fixtures
         run: |
-          cat ops/kubernetes/backend/api/job.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
   deploy:
     runs-on: self-hosted
     needs: migrations
