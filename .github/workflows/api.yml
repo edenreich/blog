@@ -50,7 +50,7 @@ jobs:
       - name: Run database migrations
         run: |
           cat ops/kubernetes/backend/api/migration_jobs.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
-      - name: Run database migrations
+      - name: Run test database seeds
         run: |
           cat ops/kubernetes/backend/api/seed_job.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
   deploy:
