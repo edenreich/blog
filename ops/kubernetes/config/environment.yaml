@@ -7,3 +7,4 @@ metadata:
     app: blog-environment
 data:
   app_env: XXX
+  database_url: XXX

@@ -23,6 +23,12 @@ spec:
       containers:
       - name: api
         image: edenr/{{REPOSITORY}}:latest
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: database_url
         resources:
           requests:
             cpu: "200m"
