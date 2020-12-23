@@ -27,4 +27,6 @@ spec:
             memory: "499Mi"
         command: [ "bin/console", "doctrine:migration:migrate", "--no-interaction" ]
       restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
   backoffLimit: 4
