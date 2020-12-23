@@ -8,7 +8,7 @@ WORKDIR /app
 COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
-FROM php:7.2.25-fpm-alpine AS common
+FROM php:7.4-fpm-alpine AS common
 RUN apk add --update bash nginx supervisor postgresql-dev
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install pdo_pgsql && \
