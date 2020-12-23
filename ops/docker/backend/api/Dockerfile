@@ -55,15 +55,6 @@ COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 CMD [ "/bin/sh", "-c", "vendor/bin/phpstan analyse src tests" ]
 
-FROM common AS migrate
-WORKDIR /var/www/api
-ENV APP_ENV=prod
-RUN chown -R www-data:www-data /var/www/api
-COPY --chown=www-data:www-data src/backend/api .
-COPY --chown=www-data:www-data --from=builder /app/vendor vendor
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-CMD [ "bin/console" "doctrine:migration:migrate" ]
-
 FROM common AS test
 WORKDIR /var/www/api
 ENV APP_ENV=test
@@ -73,14 +64,6 @@ COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
 COPY --chown=www-data:www-data --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 CMD [ "php", "bin/phpunit" ]
-
-FROM common AS stage
-WORKDIR /var/www/api
-ENV APP_ENV=prod
-RUN chown -R www-data:www-data /var/www/api
-COPY --chown=www-data:www-data src/backend/api .
-COPY --chown=www-data:www-data --from=builder /app/vendor vendor
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 FROM common AS production
 WORKDIR /var/www/api
