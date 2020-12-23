@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+  paths:
+    - ".github/workflows/api.yml"
+    - "src/backend/api/**"
+    - "ops/docker/backend/api/**"
+    - "ops/kubernetes/backend/api/**"
 
 env:
   DOCKER_BUILDKIT: 1
