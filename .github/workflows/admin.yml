@@ -8,7 +8,7 @@ on:
       - ".github/workflows/admin.yml"
       - "src/backend/admin/**"
       - "ops/docker/backend/admin/**"
-      - "ops/kubernetes/admin/**"
+      - "ops/kubernetes/backend/admin/**"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -84,7 +84,7 @@ jobs:
       - name: Kubernetes - switch to production context
         run: kubectl config use-context production
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/admin/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/admin/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
@@ -102,9 +102,9 @@ jobs:
             sleep 1
           done
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
-        run: cat ops/kubernetes/admin/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/admin/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
-        run: cat ops/kubernetes/admin/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/admin/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy
