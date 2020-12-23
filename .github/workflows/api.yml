@@ -23,16 +23,24 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
-      - name: Docker Build
+      - name: Docker build container image
         run: |
           docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
             -f ops/docker/backend/api/Dockerfile .
-      - name: Docker Tag Image
+      - name: Docker build test container image
+        run: |
+          docker build \
+            --target test \
+            --cache-from ${{ env.DOCKER_REPO }}-test:latest \
+            -t ${{ env.DOCKER_REPO }}-test:latest \
+            -f ops/docker/backend/api/Dockerfile .
+      - name: Docker Tag Images
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+          docker tag ${{ env.DOCKER_REPO }}-test:latest ${{ env.DOCKER_REPO }}-test:${{ env.DEPLOYMENT_VERSION }}
   push:
     runs-on: self-hosted
     needs: build
@@ -42,17 +50,36 @@ jobs:
       - name: Docker Push
         run: |
           docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+          docker push ${{ env.DOCKER_REPO }}-test:${{ env.DEPLOYMENT_VERSION }}
           docker push ${{ env.DOCKER_REPO }}:latest
+          docker push ${{ env.DOCKER_REPO }}-test:latest
+  analyse:
+    runs-on: self-hosted
+    needs: push
+    steps:
+      - name: Run static analysis
+        run: |
+          cat ops/kubernetes/backend/api/jobs/analyse.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+  test:
+    runs-on: self-hosted
+    needs: analyse
+    steps:
+      - name: Run database migrations
+        run: |
+          cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+      - name: Load fixture database seeds
+        run: |
+          cat ops/kubernetes/backend/api/jobs/seed.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+      - name: Run integration tests
+        run: |
+          cat ops/kubernetes/backend/api/jobs/run_tests.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
   migrations:
     runs-on: self-hosted
     needs: push
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/migration_jobs.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
-      - name: Run test database seeds
-        run: |
-          cat ops/kubernetes/backend/api/seed_job.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
   deploy:
     runs-on: self-hosted
     needs: migrations
