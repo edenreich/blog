@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api
+  name: api-database-migration
   namespace: blog
   labels:
     app: api
