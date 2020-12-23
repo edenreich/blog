@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-integration-tests
+  name: api-code-analysis
   namespace: blog
   labels:
     app: api
@@ -11,7 +11,7 @@ spec:
   template:
     spec:
       containers:
-      - name: api-integration-tests
+      - name: api-code-analysis
         image: edenr/{{REPOSITORY}}:{{VERSION}}
         env:
         - name: DATABASE_URL
