@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
+use App\Dto\Article;
+use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use GuzzleHttp\Client;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Dto\Article;
 
 class ContentController extends NavigationAwareController
 {
@@ -28,9 +28,10 @@ class ContentController extends NavigationAwareController
             $client = new Client(['base_uri' => 'https://admin.eden-reich.com']);
             $response = $client->get('/articles');
             $responseArticles = json_decode($response->getBody(), true);
-            $articles = array_map(function($object) {
+            $articles = array_map(function ($object) {
                 return new Article($object);
             }, $responseArticles);
+
             return new JsonResponse($articles);
         }
 

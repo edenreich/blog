@@ -60,7 +60,7 @@ class Article implements JsonSerializable
         foreach ($properties as $property => $value) {
             $setter = sprintf('set%s', ucfirst(str_replace('_', '', ucwords($property, '_'))));
             if (method_exists($this, $setter)) {
-                if ($setter === 'setUpdatedAt' || $setter === 'setCreatedAt' || $setter === 'setPublishedAt') {
+                if ('setUpdatedAt' === $setter || 'setCreatedAt' === $setter || 'setPublishedAt' === $setter) {
                     $value = new DateTime($value);
                 }
                 $this->{$setter}($value);

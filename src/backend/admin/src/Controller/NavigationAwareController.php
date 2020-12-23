@@ -42,7 +42,7 @@ abstract class NavigationAwareController extends AbstractController
                     'name' => ucfirst($categoryName),
                     'parent_id' => null,
                 ];
-            } else if (preg_match(sprintf('/^navigation_sub_%s_(.*)/', $categoryName), $routeName, $matches)) {
+            } elseif (preg_match(sprintf('/^navigation_sub_%s_(.*)/', $categoryName), $routeName, $matches)) {
                 $subCategoryName = $matches[1];
                 $isCurrentSubCat = $requestedRouteName === $routeName ? true : false;
                 $navigation[$categoryName]['sub'][] = [
@@ -56,7 +56,7 @@ abstract class NavigationAwareController extends AbstractController
                 $parentId = null;
                 $categoryName = '';
             }
-            $id++;
+            ++$id;
         }
         $this->navigation = array_reverse($navigation);
     }
