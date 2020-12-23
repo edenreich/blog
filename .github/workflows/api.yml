@@ -43,6 +43,12 @@ jobs:
         run: |
           docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
           docker push ${{ env.DOCKER_REPO }}:latest
+  migrations:
+    runs-on: self-hosted
+    needs: push
+    steps:
+      - name: Run database migrations
+        run: cat ops/kubernetes/backend/api/job.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
   deploy:
     runs-on: self-hosted
     needs: push
