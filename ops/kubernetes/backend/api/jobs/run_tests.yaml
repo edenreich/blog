@@ -19,6 +19,8 @@ spec:
             configMapKeyRef:
               name: blog-environment
               key: test_database_url
+        - name: APP_DEBUG
+          value: "1"
         resources:
           requests:
             cpu: "200m"
