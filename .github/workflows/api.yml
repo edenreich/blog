@@ -60,8 +60,9 @@ jobs:
       - name: Run static analysis
         run: |
           cat ops/kubernetes/backend/api/jobs/analyse.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-code-analysis
           kubectl logs --follow job/api-code-analysis &
-          kubectl wait --for=condition=complete --timeout=86400s job/api-code-analysis
+          kubectl wait --for=condition=complete --timeout=180s job/api-code-analysis
   test:
     runs-on: self-hosted
     needs: analyse
@@ -75,8 +76,9 @@ jobs:
       - name: Run integration tests
         run: |
           cat ops/kubernetes/backend/api/jobs/run_tests.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-integration-tests
           kubectl logs --follow job/api-integration-tests &
-          kubectl wait --for=condition=complete --timeout=86400s job/api-integration-tests
+          kubectl wait --for=condition=complete --timeout=180s job/api-integration-tests
   migrations:
     runs-on: self-hosted
     needs: test
