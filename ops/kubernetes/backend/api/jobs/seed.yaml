@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-test-database-seed
+  name: api-test-database-seed-{{VERSION}}
   namespace: blog
   labels:
     app: api

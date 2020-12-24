@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-test-database-migration
+  name: api-test-database-migration-{{VERSION}}
   namespace: blog
   labels:
     app: api
