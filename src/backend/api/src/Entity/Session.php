@@ -47,19 +47,24 @@ class Session
     private DateTimeInterface $createdAt;
 
     /**
-     * @var Reaction[]
+     * @var Collection|Reaction[]
      *
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="session", cascade={"persist", "remove"})
      */
     private Collection $reactions;
 
     /**
+     * @ORM\OneToOne(targetEntity="Notification", mappedBy="session", cascade={"persist", "remove"})
+     */
+    private ?Notification $notification = null;
+
+    /**
      * Initialize properties.
      */
     public function __construct()
     {
-        $this->reactions = new ArrayCollection();
         $this->createdAt = new DateTime();
+        $this->reactions = new ArrayCollection();
     }
 
     /**
@@ -69,7 +74,7 @@ class Session
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new DateTime('now'));
+        $this->updatedAt = new DateTime();
     }
 
     /**
@@ -94,28 +99,6 @@ class Session
     public function setIpAddress(string $ipAddress): self
     {
         $this->ipAddress = $ipAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of reactions.
-     *
-     * @return Reaction[]
-     */
-    public function getReactions(): Collection
-    {
-        return $this->reactions;
-    }
-
-    /**
-     * Set the value of reactions.
-     *
-     * @param Reaction[] $reactions
-     */
-    public function setReactions(array $reactions): self
-    {
-        $this->reactions = $reactions;
 
         return $this;
     }
@@ -152,6 +135,60 @@ class Session
     public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Add a reaction.
+     */
+    public function addReaction(Reaction $reaction): self
+    {
+        if (!$this->reactions->contains($reaction)) {
+            $this->reactions[] = $reaction;
+            $reaction->setSession($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove a reaction.
+     */
+    public function removeReaction(Reaction $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getSession() === $this) {
+                $reaction->setSession(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Reaction[]
+     */
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
+
+    /**
+     * Get the value of Notification.
+     */
+    public function getNotification(): ?Notification
+    {
+        return $this->notification;
+    }
+
+    /**
+     * Set the value of notification.
+     */
+    public function setNotification(?Notification $notification): self
+    {
+        $this->notification = $notification;
 
         return $this;
     }

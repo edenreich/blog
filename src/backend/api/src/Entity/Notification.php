@@ -45,9 +45,10 @@ class Notification
     private DateTimeInterface $createdAt;
 
     /**
-     * @ORM\OneToOne(targetEntity="Session")
+     * @ORM\OneToOne(targetEntity="Session", inversedBy="notification")
+     * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
      */
-    private Session $session;
+    private ?Session $session = null;
 
     /**
      * Initialize properties.
@@ -55,7 +56,6 @@ class Notification
     public function __construct()
     {
         $this->createdAt = new DateTime();
-        $this->session = new Session();
     }
 
     /**
@@ -113,24 +113,6 @@ class Notification
     }
 
     /**
-     * Get the value of session.
-     */
-    public function getSession(): Session
-    {
-        return $this->session;
-    }
-
-    /**
-     * Set the value of session.
-     */
-    public function setSession(Session $session): self
-    {
-        $this->session = $session;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updatedAt.
      */
     public function getUpdatedAt(): ?DateTimeInterface
@@ -162,6 +144,24 @@ class Notification
     public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of session.
+     */
+    public function getSession(): Session
+    {
+        return $this->session;
+    }
+
+    /**
+     * Set the value of session.
+     */
+    public function setSession(Session $session): self
+    {
+        $this->session = $session;
 
         return $this;
     }

@@ -76,8 +76,13 @@ class NotificationTest extends KernelTestCase
         $this->assertEquals(true, $notifications[0]->getIsEnabled());
     }
 
-    // public function testCanDisableNotificationForTheCurrentSession(): void
-    // {
-    //     throw new \Exception('pending implemention');
-    // }
+    public function testCanDisableNotificationForTheCurrentSession(): void
+    {
+        /** @var Session */
+        $session = $this->entityManager->getRepository(Session::class)->findAll()[mt_rand(0,9)];
+        
+        $session->getNotification();
+        
+        $this->entityManager->flush();
+    }
 }

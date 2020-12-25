@@ -123,7 +123,7 @@ class Reaction
     /**
      * Set the value of article.
      */
-    public function setArticle(Article $article): self
+    public function setArticle(?Article $article): self
     {
         $this->article = $article;
 
@@ -141,7 +141,7 @@ class Reaction
     /**
      * Set the value of session.
      */
-    public function setSession(Session $session): self
+    public function setSession(?Session $session): self
     {
         $this->session = $session;
 

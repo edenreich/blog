@@ -77,7 +77,7 @@ class Article
     private DateTimeInterface $createdAt;
 
     /**
-     * @var Collection<Reaction[]>
+     * @var Collection|Reaction[]
      *
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="article", fetch="EAGER")
      * @Groups({"admin", "frontend"})
@@ -258,7 +258,7 @@ class Article
     /**
      * Get the value of reactions.
      *
-     * @return ArrayCollection<Reaction[]>
+     * @return Collection|Reaction[]
      */
     public function getReactions(): Collection
     {
@@ -271,6 +271,18 @@ class Article
     public function addReaction(Reaction $reaction): self
     {
         $this->reactions->add($reaction);
+
+        return $this;
+    }
+
+    public function removeReaction(Reaction $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getArticle() === $this) {
+                $reaction->setArticle(null);
+            }
+        }
 
         return $this;
     }
