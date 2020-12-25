@@ -63,10 +63,9 @@ COPY --chown=www-data:www-data src/backend/api .
 COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
 COPY --chown=www-data:www-data --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-RUN chown -R www-data:www-data /var/www/api
-RUN supervisord --pidfile /run/supervisord.pid -c /etc/supervisord.conf &
+RUN chown -R www-data:www-data /var/www/api /etc/supervisord.conf /etc/supervisor.d
 USER www-data
-CMD [ "bin/phpunit" ]
+CMD [ "/bin/sh", "-c", "supervisord --pidfile /run/supervisord.pid -c /etc/supervisord.conf & bin/phpunit" ]
 
 FROM common AS production
 WORKDIR /var/www/api
