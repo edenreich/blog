@@ -36,7 +36,9 @@ class ReactionTest extends KernelTestCase
             ->get('doctrine')
             ->getManager();
 
-        $this->entityManager->beginTransaction();
+        $connection = $this->entityManager->getConnection();
+        $platform   = $connection->getDatabasePlatform();
+        $connection->executeStatement($platform->getTruncateTableSQL('reactions', true));
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
@@ -47,7 +49,6 @@ class ReactionTest extends KernelTestCase
     {
         parent::tearDown();
 
-        $this->entityManager->rollback();
         unset($this->client);
         unset($this->entityManager);
     }
