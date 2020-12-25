@@ -59,11 +59,11 @@ CMD [ "/bin/sh", "-c", "vendor/bin/phpstan analyse src tests" ]
 FROM common AS test
 WORKDIR /var/www/api
 ENV APP_ENV=test
-RUN chown -R www-data:www-data /var/www/api
 COPY --chown=www-data:www-data src/backend/api .
 COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
 COPY --chown=www-data:www-data --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+RUN mkdir -p /var/www/api/var/cache/test && chown -R www-data:www-data /var/www/api
 CMD [ "php", "bin/phpunit" ]
 
 FROM common AS production
