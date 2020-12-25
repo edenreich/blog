@@ -5,10 +5,10 @@ namespace App\Tests;
 use App\Entity\Article;
 use App\Entity\Reaction;
 use App\Entity\Session;
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Doctrine\ORM\EntityManager;
 
 class ReactionTest extends KernelTestCase
 {
