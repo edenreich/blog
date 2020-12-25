@@ -16,6 +16,7 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
 RUN mkdir /run/nginx
 COPY ops/docker/backend/api/supervisor.d /etc/supervisor.d
 COPY ops/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf
 EXPOSE 80
 CMD [ "supervisord", "--pidfile", "/run/supervisord.pid", "-c", "/etc/supervisord.conf" ]
 
