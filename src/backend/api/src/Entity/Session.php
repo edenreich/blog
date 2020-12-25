@@ -50,11 +50,13 @@ class Session
      * @var Collection|Reaction[]
      *
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="session", cascade={"persist", "remove"})
+     * @Groups({"admin", "frontend"})
      */
     private Collection $reactions;
 
     /**
      * @ORM\OneToOne(targetEntity="Notification", mappedBy="session", cascade={"persist", "remove"})
+     * @Groups({"admin", "frontend"})
      */
     private ?Notification $notification = null;
 
@@ -189,6 +191,7 @@ class Session
     public function setNotification(?Notification $notification): self
     {
         $this->notification = $notification;
+        $notification->setSession($this);
 
         return $this;
     }

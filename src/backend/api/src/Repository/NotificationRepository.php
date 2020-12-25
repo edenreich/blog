@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Notification;
 use App\Entity\Session;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,33 +23,69 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Store or update a notification.
+     * Store a notification, default to enabled.
      */
     public function store(array $body): Notification
     {
-        /** @var Session */
-        $session = $this->getEntityManager()->getRepository(Session::class)->findOneBy(['id' => $body['session']]);
-
-        if (!$session) {
-            throw new \Exception(sprintf('Session id %s does not exist', $body['session']));
-        }
-
-        $notification = $this->findOneBy(['email' => $body['email']]);
-
-        if (!$notification) {
-            $notification = new Notification();
+        try {
+            /** 
+             * @var Notification|null
+             * @throws NoResultException 
+             **/
+            $notification = $this->getEntityManager()
+                ->createQueryBuilder('n')
+                ->select('n')
+                ->from(Notification::class, 'n')
+                ->setParameter('session', $body['session'])
+                ->setParameter('email', $body['email'])
+                ->where('n.session = :session')
+                ->orWhere('n.email = :email')
+                ->getQuery()
+                ->getSingleResult();
+            $notification->setIsEnabled(true);
+        } catch (NoResultException $exception) {
+            $session = $this->getEntityManager()->getRepository(Session::class)->findOneBy(['id' => $body['session']]);
+            $notification = new Notification;
             $notification->setEmail($body['email']);
             $notification->setSession($session);
-            $notification->setIsEnabled($body['is_enabled']);
-
+            $notification->setIsEnabled(true);
             $this->getEntityManager()->persist($notification);
-        } else {
-            $notification->setSession($session);
-            $notification->setIsEnabled($body['is_enabled']);
+        } finally {
+            $this->getEntityManager()->flush();
+            return $notification;
         }
+    }
 
-        $this->getEntityManager()->flush();
+    /**
+     * Update a notification.
+     */
+    public function update(string $id, array $body): ?Notification
+    {
+        $session = $this->getEntityManager()->getRepository(Session::class)->findOneBy(['id' => $body['session']]);
 
-        return $notification;
+        try {
+            /** 
+             * @var Notification|null
+             * @throws NoResultException 
+             **/
+            $notification = $this->getEntityManager()
+                ->createQueryBuilder('n')
+                ->select('n')
+                ->from(Notification::class, 'n')
+                ->setParameter('id', $id)
+                ->setParameter('session', $body['session'] ?? 'none')
+                ->setParameter('email', $body['email'] ?? 'none')
+                ->where('n.id = :id')
+                ->orWhere('n.session = :session')
+                ->orWhere('n.email = :email')
+                ->getQuery()
+                ->getSingleResult();
+            $notification->setIsEnabled($body['is_enabled']);
+            $notification->setSession($session);
+            $this->getEntityManager()->flush();
+            return $notification;
+        } catch (NoResultException $exception) {
+            return null;
+        }
     }
 }

@@ -7,6 +7,7 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * Reaction.
@@ -46,11 +47,13 @@ class Reaction
 
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="reactions", fetch="LAZY")
+     * @Ignore()
      */
     private Article $article;
 
     /**
      * @ORM\ManyToOne(targetEntity="Session", inversedBy="reactions", fetch="LAZY")
+     * @Ignore()
      */
     private Session $session;
 

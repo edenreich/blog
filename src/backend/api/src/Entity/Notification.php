@@ -6,6 +6,8 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * Notification.
@@ -21,32 +23,39 @@ class Notification
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
+     * @Groups({"admin", "frontend"})
      */
     private ?string $id = null;
 
     /**
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private string $email = '';
 
     /**
      * @ORM\Column(name="is_enabled", type="boolean", nullable=false)
+     * @Groups({"admin", "frontend"})
      */
-    private bool $isEnabled = true;
+    private bool $isEnabled;
 
     /**
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true)
+     * @Groups({"admin", "frontend"})
      */
     private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @ORM\Column(name="created_at", type="datetimetz", nullable=false)
+     * @Groups({"admin", "frontend"})
      */
     private DateTimeInterface $createdAt;
 
     /**
-     * @ORM\OneToOne(targetEntity="Session", inversedBy="notification")
+     * @ORM\OneToOne(targetEntity="Session")
      * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
+     * @Groups({"admin", "frontend"})
+     * @Ignore()
      */
     private ?Session $session = null;
 
@@ -65,7 +74,7 @@ class Notification
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new DateTime('now'));
+        $this->updatedAt= new DateTime();
     }
 
     /**
