@@ -16,23 +16,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Reaction
 {
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * @Groups({"admin", "frontend"})
      */
-    private $id;
+    private ?string $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="type", type="string", length=10), nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $type;
+    private string $type;
 
     /**
      * @var \DateTime|null

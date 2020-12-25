@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 
@@ -9,54 +11,51 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
  * Notification.
  *
  * @ORM\Table(name="notifications", uniqueConstraints={@ORM\UniqueConstraint(name="notifications_session_unique", columns={"session_id"}), @ORM\UniqueConstraint(name="notifications_email_unique", columns={"email"}), @ORM\UniqueConstraint(name="notifications_id_unique", columns={"id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\NotificationRepository")
  */
 class Notification
 {
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      */
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
-    private $email;
+    private string $email = '';
 
     /**
-     * @var bool
-     *
      * @ORM\Column(name="is_enabled", type="boolean", nullable=false)
      */
-    private $isEnabled;
+    private bool $isEnabled = true;
 
     /**
-     * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(name="created_at", type="datetimetz", nullable=true)
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTimeInterface|null
-     *
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true)
      */
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @var Session
-     *
+     * @ORM\Column(name="created_at", type="datetimetz")
+     */
+    private DateTimeInterface $createdAt;
+
+    /**
      * @ORM\OneToOne(targetEntity="Session")
      */
-    private $session;
+    private Session $session;
+
+    /**
+     * Initialize properties.
+     */
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+        $this->session = new Session();
+    }
 
     /**
      * Get the value of id.

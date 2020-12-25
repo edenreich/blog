@@ -2,8 +2,11 @@
 
 namespace App\Tests;
 
+use App\Entity\Session;
+use App\Entity\Notification;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class NotificationTest extends KernelTestCase
@@ -31,6 +34,11 @@ class NotificationTest extends KernelTestCase
             ->getContainer()
             ->get('doctrine')
             ->getManager();
+
+        $connection = $this->entityManager->getConnection();
+        $platform = $connection->getDatabasePlatform();
+        $connection->executeStatement($platform->getTruncateTableSQL('notifications', true));
+
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
@@ -46,11 +54,30 @@ class NotificationTest extends KernelTestCase
 
     public function testCanRegisterForNotifications(): void
     {
-        throw new \Exception('pending implemention');
+        /** @var Session */
+        $session = $this->entityManager->getRepository(Session::class)->findAll()[mt_rand(0,9)];
+        $emails = ['test@gmail.com', 'test2@gmail.com', 'test3@gmail.com'];
+        $email = $emails[mt_rand(0,2)];
+
+        $this->client->post('/notifications', [
+            RequestOptions::JSON => [
+                'is_enabled' => true,
+                'session' => $session->getId(),
+                'email' => $email,
+            ]
+        ]);
+
+        /** @var Notification[] */
+        $notifications = $this->entityManager
+            ->getRepository(Notification::class)
+            ->findAll();
+
+        $this->assertCount(1, $notifications);
+        $this->assertEquals(true, $notifications[0]->getIsEnabled());
     }
 
-    public function testCanDisableNotificationForTheCurrentSession(): void
-    {
-        throw new \Exception('pending implemention');
-    }
+    // public function testCanDisableNotificationForTheCurrentSession(): void
+    // {
+    //     throw new \Exception('pending implemention');
+    // }
 }

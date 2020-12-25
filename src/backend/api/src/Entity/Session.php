@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -55,7 +57,12 @@ class Session
      *
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="session", cascade={"persist", "remove"})
      */
-    private $reactions;
+    private Collection $reactions;
+
+    public function __construct()
+    {
+        $this->reactions = new ArrayCollection();
+    }
 
     /**
      * Gets triggered only on insert.
@@ -108,7 +115,7 @@ class Session
      *
      * @return Reaction[]
      */
-    public function getReactions(): array
+    public function getReactions(): Collection
     {
         return $this->reactions;
     }
