@@ -41,6 +41,7 @@ class NotificationTest extends KernelTestCase
     {
         parent::tearDown();
         unset($this->client);
+        unset($this->entityManager);
     }
 
     public function testCanRegisterForNotifications(): void

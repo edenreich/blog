@@ -43,6 +43,7 @@ class SessionTest extends KernelTestCase
     {
         parent::tearDown();
         unset($this->client);
+        unset($this->entityManager);
     }
 
     public function testCanCreateAClientSession(): void
