@@ -47,7 +47,7 @@ class ReactionTest extends KernelTestCase
     {
         parent::tearDown();
 
-        $this->entityManager->beginTransaction();
+        $this->entityManager->rollback();
         unset($this->client);
         unset($this->entityManager);
     }
