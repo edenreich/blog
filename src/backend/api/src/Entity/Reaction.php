@@ -85,7 +85,7 @@ class Reaction
      */
     public function onPreUpdate(): void
     {
-        $this->updateAt = new DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**
