@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Reaction;
 use App\Entity\Article;
+use App\Entity\Reaction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -38,9 +38,9 @@ class ReactionsController extends AbstractController
         /** @var \App\Repository\ArticleRepository */
         $articlesRepository = $entityManager->getRepository(Article::class);
         $article = $articlesRepository->findOneBy(['id' => $articleId]);
-        
-        if (! $articleId) {
-            return new JsonResponse(['message' => sprintf('Could not find article id %s', $articleId)], 404); 
+
+        if (!$articleId) {
+            return new JsonResponse(['message' => sprintf('Could not find article id %s', $articleId)], 404);
         }
 
         $count = [
@@ -48,8 +48,8 @@ class ReactionsController extends AbstractController
             'love' => 0,
             'dislike' => 0,
         ];
-        $article->getReactions()->forAll(function(int $index, Reaction $reaction) use (&$count) {
-            $count[$reaction->getType()]++;
+        $article->getReactions()->forAll(function (int $index, Reaction $reaction) use (&$count) {
+            ++$count[$reaction->getType()];
         });
 
         return new JsonResponse($count, 200);

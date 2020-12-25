@@ -5,6 +5,7 @@ namespace App\Tests;
 use App\Entity\Article;
 use App\Entity\Reaction;
 use App\Entity\Session;
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -15,44 +16,53 @@ class ReactionTest extends KernelTestCase
 
     /**
      * Store the guzzle http client.
-     *
-     * @var Client
      */
-    private $client;
+    private Client $client;
 
     /**
-     * Setup a client.
+     * Store the entity manager.
+     */
+    private EntityManager $entityManager;
+
+    /**
+     * Truncate reactions table and setup a client and entity manager.
      */
     protected function setUp(): void
     {
-        parent::tearDown();
-        $this->client = new Client(['base_uri' => self::BASE_URI]);
-    }
+        parent::setUp();
 
-    /**
-     * Unset the client.
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        unset($this->client);
-    }
-
-    public function testCanLikeArticle(): void
-    {
-        /** @var \Doctrine\ORM\EntityManager */
-        $em = static::bootKernel()
+        $this->entityManager = static::bootKernel()
             ->getContainer()
             ->get('doctrine')
             ->getManager();
 
+        $connection = $this->entityManager->getConnection();
+        $platform = $connection->getDatabasePlatform();
+        $connection->executeStatement($platform->getTruncateTableSQL('reactions', true));
+
+        $this->client = new Client(['base_uri' => self::BASE_URI]);
+    }
+
+    /**
+     * Unset the client and the entity manager.
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($this->client);
+        unset($this->entityManager);
+    }
+
+    public function testCanLikeArticle(): void
+    {
         /** @var \App\Repository\SessionRepository */
-        $sessionRepository = $em->getRepository(Session::class);
+        $sessionRepository = $this->entityManager->getRepository(Session::class);
         $sessions = $sessionRepository->findAll();
         $session = $sessions[mt_rand(0, 9)];
 
         /** @var \App\Repository\ArticleRepository */
-        $articleRepository = $em->getRepository(Article::class);
+        $articleRepository = $this->entityManager->getRepository(Article::class);
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
@@ -66,7 +76,7 @@ class ReactionTest extends KernelTestCase
         $reactionResponse = json_decode($response->getBody());
 
         /** @var \App\Repository\ReactionRepository */
-        $reactionRepository = $em->getRepository(Reaction::class);
+        $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
 
         $this->assertEquals(201, $response->getStatusCode());
@@ -78,19 +88,13 @@ class ReactionTest extends KernelTestCase
 
     public function testCanLoveArticle(): void
     {
-        /** @var \Doctrine\ORM\EntityManager */
-        $em = static::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var \App\Repository\SessionRepository */
-        $sessionRepository = $em->getRepository(Session::class);
+        $sessionRepository = $this->entityManager->getRepository(Session::class);
         $sessions = $sessionRepository->findAll();
         $session = $sessions[mt_rand(0, 9)];
 
         /** @var \App\Repository\ArticleRepository */
-        $articleRepository = $em->getRepository(Article::class);
+        $articleRepository = $this->entityManager->getRepository(Article::class);
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
@@ -104,7 +108,7 @@ class ReactionTest extends KernelTestCase
         $reactionResponse = json_decode($response->getBody());
 
         /** @var \App\Repository\ReactionRepository */
-        $reactionRepository = $em->getRepository(Reaction::class);
+        $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
 
         $this->assertEquals(201, $response->getStatusCode());
@@ -116,19 +120,13 @@ class ReactionTest extends KernelTestCase
 
     public function testCanDislikeArticle(): void
     {
-        /** @var \Doctrine\ORM\EntityManager */
-        $em = static::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var \App\Repository\SessionRepository */
-        $sessionRepository = $em->getRepository(Session::class);
+        $sessionRepository = $this->entityManager->getRepository(Session::class);
         $sessions = $sessionRepository->findAll();
         $session = $sessions[mt_rand(0, 9)];
 
         /** @var \App\Repository\ArticleRepository */
-        $articleRepository = $em->getRepository(Article::class);
+        $articleRepository = $this->entityManager->getRepository(Article::class);
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
@@ -142,7 +140,7 @@ class ReactionTest extends KernelTestCase
         $reactionResponse = json_decode($response->getBody());
 
         /** @var \App\Repository\ReactionRepository */
-        $reactionRepository = $em->getRepository(Reaction::class);
+        $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
 
         $this->assertEquals(201, $response->getStatusCode());
@@ -154,19 +152,13 @@ class ReactionTest extends KernelTestCase
 
     public function testCanChangeReactionToArticle(): void
     {
-        /** @var \Doctrine\ORM\EntityManager */
-        $em = static::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var \App\Repository\SessionRepository */
-        $sessionRepository = $em->getRepository(Session::class);
+        $sessionRepository = $this->entityManager->getRepository(Session::class);
         $sessions = $sessionRepository->findAll();
         $session = $sessions[mt_rand(0, 9)];
 
         /** @var \App\Repository\ArticleRepository */
-        $articleRepository = $em->getRepository(Article::class);
+        $articleRepository = $this->entityManager->getRepository(Article::class);
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
@@ -189,7 +181,7 @@ class ReactionTest extends KernelTestCase
         ]);
 
         /** @var \App\Repository\ReactionRepository */
-        $reactionRepository = $em->getRepository(Reaction::class);
+        $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reactions = $reactionRepository->findBy(['session' => $session, 'article' => $article]);
 
         $this->assertCount(1, $reactions);
@@ -198,14 +190,8 @@ class ReactionTest extends KernelTestCase
 
     public function testCanFetchCountOfAllReactionsForASpecificArticle(): void
     {
-        /** @var \Doctrine\ORM\EntityManager */
-        $em = static::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var \App\Repository\ArticleRepository */
-        $articleRepository = $em->getRepository(Article::class);
+        $articleRepository = $this->entityManager->getRepository(Article::class);
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 

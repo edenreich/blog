@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -16,55 +20,53 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Session
 {
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * @Groups({"admin", "frontend"})
      */
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="ip_address", type="string", length=255, nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $ipAddress;
+    private string $ipAddress = '';
 
     /**
-     * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     * @Groups({"admin", "frontend"})
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTimeInterface|null
-     *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @var Reaction[]
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @Groups({"admin", "frontend"})
+     */
+    private DateTimeInterface $createdAt;
+
+    /**
+     * @var Collection|Reaction[]
      *
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="session", cascade={"persist", "remove"})
+     * @Groups({"admin", "frontend"})
      */
-    private $reactions;
+    private Collection $reactions;
 
     /**
-     * Gets triggered only on insert.
-     *
-     * @ORM\PrePersist
+     * @ORM\OneToOne(targetEntity="Notification", mappedBy="session", cascade={"persist", "remove"})
+     * @Groups({"admin", "frontend"})
      */
-    public function onPrePersist(): void
+    private ?Notification $notification = null;
+
+    /**
+     * Initialize properties.
+     */
+    public function __construct()
     {
-        $this->setCreatedAt(new \DateTime('now'));
+        $this->createdAt = new DateTime();
+        $this->reactions = new ArrayCollection();
     }
 
     /**
@@ -74,7 +76,7 @@ class Session
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->updatedAt = new DateTime();
     }
 
     /**
@@ -104,53 +106,9 @@ class Session
     }
 
     /**
-     * Get the value of reactions.
-     *
-     * @return Reaction[]
-     */
-    public function getReactions(): array
-    {
-        return $this->reactions;
-    }
-
-    /**
-     * Set the value of reactions.
-     *
-     * @param Reaction[] $reactions
-     */
-    public function setReactions(array $reactions): self
-    {
-        $this->reactions = $reactions;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of createdAt.
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of createdAt.
-     *
-     * @param \DateTimeInterface|null $createdAt
-     */
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -158,9 +116,82 @@ class Session
     /**
      * Set the value of updatedAt.
      */
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt.
+     */
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt.
+     */
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Add a reaction.
+     */
+    public function addReaction(Reaction $reaction): self
+    {
+        if (!$this->reactions->contains($reaction)) {
+            $this->reactions[] = $reaction;
+            $reaction->setSession($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove a reaction.
+     */
+    public function removeReaction(Reaction $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getSession() === $this) {
+                $reaction->setSession(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Reaction[]
+     */
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
+
+    /**
+     * Get the value of Notification.
+     */
+    public function getNotification(): ?Notification
+    {
+        return $this->notification;
+    }
+
+    /**
+     * Set the value of notification.
+     */
+    public function setNotification(?Notification $notification): self
+    {
+        $this->notification = $notification;
+        $notification->setSession($this);
 
         return $this;
     }
