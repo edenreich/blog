@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
  *
  * @ORM\Table(name="notifications", uniqueConstraints={@ORM\UniqueConstraint(name="notifications_session_unique", columns={"session_id"}), @ORM\UniqueConstraint(name="notifications_email_unique", columns={"email"}), @ORM\UniqueConstraint(name="notifications_id_unique", columns={"id"})})
  * @ORM\Entity(repositoryClass="App\Repository\NotificationRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Notification
 {
@@ -39,7 +40,7 @@ class Notification
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @ORM\Column(name="created_at", type="datetimetz")
+     * @ORM\Column(name="created_at", type="datetimetz", nullable=false)
      */
     private DateTimeInterface $createdAt;
 
@@ -55,6 +56,16 @@ class Notification
     {
         $this->createdAt = new DateTime();
         $this->session = new Session();
+    }
+
+    /**
+     * Gets triggered every time on update.
+     *
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate(): void
+    {
+        $this->setUpdatedAt(new DateTime('now'));
     }
 
     /**
@@ -120,43 +131,37 @@ class Notification
     }
 
     /**
-     * Get the value of createdAt.
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of createdAt.
-     *
-     * @param \DateTimeInterface|null $createdAt
-     */
-    public function setCreatedAt($createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
      * Set the value of updatedAt.
-     *
-     * @param \DateTimeInterface|null $updatedAt
      */
-    public function setUpdatedAt($updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt.
+     */
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt.
+     */
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

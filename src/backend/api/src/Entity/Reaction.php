@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,71 +24,55 @@ class Reaction
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * @Groups({"admin", "frontend"})
      */
-    private ?string $id;
+    private ?string $id = null;
 
     /**
      * @ORM\Column(name="type", type="string", length=10), nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private string $type;
+    private string $type = 'like';
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="created_at", type="datetimetz", nullable=true)
-     * @Groups({"admin", "frontend"})
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="updated_at", type="datetimetz", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @var Article
-     *
+     * @ORM\Column(name="created_at", type="datetimetz", nullable=false)
+     * @Groups({"admin", "frontend"})
+     */
+    private DateTimeInterface $createdAt;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="reactions", fetch="LAZY")
      */
-    private $article;
+    private Article $article;
 
     /**
-     * @var Session
-     *
      * @ORM\ManyToOne(targetEntity="Session", inversedBy="reactions", fetch="LAZY")
      */
-    private $session;
+    private Session $session;
 
     /**
      * Initialize properties.
-     *
-     * @param array $attributes
      */
     public function __construct(array $properties)
     {
+        $this->article = new Article();
+        $this->session = new Session();
+        $this->createdAt = new DateTime();
+
         if (isset($properties['type'])) {
             $this->validateType($properties['type']);
-            $this->setType($properties['type']);
+            $this->type = $properties['type'];
         }
         if (isset($properties['article'])) {
-            $this->setArticle($properties['article']);
+            $this->article = $properties['article'];
         }
         if (isset($properties['session'])) {
-            $this->setSession($properties['session']);
+            $this->session = $properties['session'];
         }
-    }
-
-    /**
-     * Gets triggered only on insert.
-     *
-     * @ORM\PrePersist
-     */
-    public function onPrePersist(): void
-    {
-        $this->setCreatedAt(new \DateTime('now'));
     }
 
     /**
@@ -96,15 +82,13 @@ class Reaction
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->updateAt = new DateTime();
     }
 
     /**
      * Get the value of id.
-     *
-     * @return string
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -165,31 +149,9 @@ class Reaction
     }
 
     /**
-     * Get the value of createdAt.
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of createdAt.
-     *
-     * @param \DateTimeInterface|null $createdAt
-     */
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -197,9 +159,27 @@ class Reaction
     /**
      * Set the value of updatedAt.
      */
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt.
+     */
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt.
+     */
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -18,39 +20,31 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Session
 {
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * @Groups({"admin", "frontend"})
      */
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="ip_address", type="string", length=255, nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $ipAddress;
+    private string $ipAddress = '';
 
     /**
-     * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     * @Groups({"admin", "frontend"})
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTimeInterface|null
-     *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @Groups({"admin", "frontend"})
+     */
+    private DateTimeInterface $createdAt;
 
     /**
      * @var Reaction[]
@@ -59,19 +53,13 @@ class Session
      */
     private Collection $reactions;
 
+    /**
+     * Initialize properties.
+     */
     public function __construct()
     {
         $this->reactions = new ArrayCollection();
-    }
-
-    /**
-     * Gets triggered only on insert.
-     *
-     * @ORM\PrePersist
-     */
-    public function onPrePersist(): void
-    {
-        $this->setCreatedAt(new \DateTime('now'));
+        $this->createdAt = new DateTime();
     }
 
     /**
@@ -81,7 +69,7 @@ class Session
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->setUpdatedAt(new DateTime('now'));
     }
 
     /**
@@ -133,31 +121,9 @@ class Session
     }
 
     /**
-     * Get the value of createdAt.
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of createdAt.
-     *
-     * @param \DateTimeInterface|null $createdAt
-     */
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -165,9 +131,27 @@ class Session
     /**
      * Set the value of updatedAt.
      */
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt.
+     */
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt.
+     */
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -28,14 +28,14 @@ class NotificationRepository extends ServiceEntityRepository
     {
         /** @var Session */
         $session = $this->getEntityManager()->getRepository(Session::class)->findOneBy(['id' => $body['session']]);
-        
-        if (! $session) {
+
+        if (!$session) {
             throw new \Exception(sprintf('Session id %s does not exist', $body['session']));
         }
 
         $notification = $this->findOneBy(['email' => $body['email']]);
 
-        if (! $notification) {
+        if (!$notification) {
             $notification = new Notification();
             $notification->setEmail($body['email']);
             $notification->setSession($session);
