@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -11,17 +12,25 @@ class NotificationTest extends KernelTestCase
 
     /**
      * Store the guzzle http client.
-     *
-     * @var Client
      */
-    private $client;
+    private Client $client;
 
     /**
-     * Setup a client.
+     * Store the entity manager.
+     */
+    private EntityManager $entityManager;
+
+    /**
+     * Setup a client and entity manager.
      */
     protected function setUp(): void
     {
-        parent::tearDown();
+        parent::setUp();
+
+        $this->entityManager = static::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 

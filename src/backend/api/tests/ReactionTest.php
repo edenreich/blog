@@ -25,11 +25,11 @@ class ReactionTest extends KernelTestCase
     private EntityManager $entityManager;
 
     /**
-     * Setup a client.
+     * Truncate reactions table and setup a client and entity manager.
      */
     protected function setUp(): void
     {
-        parent::tearDown();
+        parent::setUp();
 
         $this->entityManager = static::bootKernel()
             ->getContainer()
@@ -39,6 +39,7 @@ class ReactionTest extends KernelTestCase
         $connection = $this->entityManager->getConnection();
         $platform   = $connection->getDatabasePlatform();
         $connection->executeStatement($platform->getTruncateTableSQL('reactions', true));
+
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
