@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-integration-tests
+  name: api-integration-tests-{{VERSION}}
   namespace: blog
   labels:
     app: api
