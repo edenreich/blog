@@ -37,14 +37,14 @@ class ReactionTest extends KernelTestCase
             ->getManager();
 
         $connection = $this->entityManager->getConnection();
-        $platform   = $connection->getDatabasePlatform();
+        $platform = $connection->getDatabasePlatform();
         $connection->executeStatement($platform->getTruncateTableSQL('reactions', true));
 
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
     /**
-     * Unset the client.
+     * Unset the client and the entity manager.
      */
     protected function tearDown(): void
     {

@@ -37,7 +37,7 @@ class SessionTest extends KernelTestCase
     }
 
     /**
-     * Unset the client.
+     * Unset the client and the entity manager.
      */
     protected function tearDown(): void
     {
