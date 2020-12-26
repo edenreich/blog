@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: Run static analysis
         run: |
-          cat ops/kubernetes/backend/api/jobs/analyse.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g'); sed -e 's/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g' -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/analyse.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g') sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
           kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
           kubectl logs --follow job/api-code-analysis-${{ env.DEPLOYMENT_VERSION }} &
           kubectl wait --for=condition=complete --timeout=180s job/api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
@@ -69,13 +69,13 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/tests/migrations.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g'); sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/tests/migrations.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g') sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
       - name: Load fixture database seeds
         run: |
-          cat ops/kubernetes/backend/api/jobs/tests/seed.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g'); sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/tests/seed.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g') sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
       - name: Run integration tests
         run: |
-          cat ops/kubernetes/backend/api/jobs/tests/run.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g'); sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/tests/run.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO_DEV }} | sed -e 's/\//\\\//g') sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
           kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
           kubectl logs --follow job/api-integration-tests-${{ env.DEPLOYMENT_VERSION }} &
           kubectl wait --for=condition=complete --timeout=180s job/api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
@@ -85,7 +85,7 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/migrations.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO }} | sed -e 's/\//\\\//g'); sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/migrations.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO }} | sed -e 's/\//\\\//g') sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
           kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-database-migration-${{ env.DEPLOYMENT_VERSION }}
           kubectl logs --follow jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }} &
           kubectl wait --for=condition=complete --timeout=180s jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }}
@@ -97,7 +97,7 @@ jobs:
       - name: Kubernetes - switch to stage context
         run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/backend/api/deployment.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO }} | sed -e 's/\//\\\//g'); sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/api/deployment.yaml | ESCAPED_REPO=$(echo ${{ env.DOCKER_REPO }} | sed -e 's/\//\\\//g') sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/$ESCAPED_REPO/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
