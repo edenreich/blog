@@ -69,10 +69,10 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/test_migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
       - name: Load fixture database seeds
         run: |
-          cat ops/kubernetes/backend/api/jobs/seed.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/test_seed.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
       - name: Run integration tests
         run: |
           cat ops/kubernetes/backend/api/jobs/run_tests.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
