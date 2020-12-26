@@ -14,7 +14,8 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install pdo_pgsql && \
     apk del .build-deps
 RUN mkdir /run/nginx
-COPY ops/docker/backend/api/supervisor.d /etc/supervisor.d
+COPY ops/docker/backend/api/supervisor.d/programs /etc/supervisor.d
+COPY ops/docker/backend/api/supervisor.d/supervisord.conf /etc/supervisord.conf
 COPY ops/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ops/docker/backend/api/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf
@@ -64,9 +65,10 @@ COPY --chown=www-data:www-data src/backend/api .
 COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
 COPY --chown=www-data:www-data --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-RUN chown -R www-data:www-data /var/www/api /etc/supervisord.conf /etc/supervisor.d /var/log /var/lib/nginx /run/nginx
+RUN chown www-data:www-data /var/www/api /etc/supervisord.conf /etc/supervisor.d
+RUN chown -R www-data:www-data /run /var/lib/nginx /var/log
 USER www-data
-CMD [ "/bin/sh", "-c", "supervisord --pidfile /run/supervisord.pid -c /etc/supervisord.conf & bin/phpunit" ]
+CMD [ "/bin/sh", "-c", "supervisord -c /etc/supervisord.conf & bin/phpunit" ]
 
 FROM common AS production
 WORKDIR /var/www/api
