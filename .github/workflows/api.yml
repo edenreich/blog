@@ -128,4 +128,4 @@ jobs:
       - name: Keep 2 deployments available for rollback
         run: kubectl delete deployments $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
       - name: Remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep api | grep 1/1 | awk '{ print $1 }' | xargs) || true
+        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
