@@ -86,6 +86,9 @@ jobs:
       - name: Run database migrations
         run: |
           cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+          kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-database-migration-${{ env.DEPLOYMENT_VERSION }}
+          kubectl logs --follow jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }} &
+          kubectl wait --for=condition=complete --timeout=180s jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }}
   deploy:
     runs-on: self-hosted
     needs: migrations
