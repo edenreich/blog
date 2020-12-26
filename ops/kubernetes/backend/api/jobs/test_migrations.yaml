@@ -5,14 +5,14 @@ metadata:
   namespace: blog
   labels:
     app: api
-    version: "{{VERSION}}"
+    version: '{{VERSION}}'
 spec:
   ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
       - name: api-test-database-migration
-        image: edenr/{{REPOSITORY}}:{{VERSION}}
+        image: '{{REPOSITORY}}:{{VERSION}}'
         env:
         - name: DATABASE_URL
           valueFrom:
@@ -30,4 +30,4 @@ spec:
       restartPolicy: Never
       imagePullSecrets:
       - name: regcred
-  backoffLimit: 3
+  backoffLimit: 1

@@ -13,7 +13,7 @@ on:
 env:
   DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/blog-api
-  DOCKER_IMAGE: blog-api
+  DOCKER_REPO_DEV: edenr/blog-api-devtools
   STAGE_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node6
   DEPLOYMENT_NAME: api
   DEPLOYMENT_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
@@ -33,14 +33,14 @@ jobs:
       - name: Docker build test container image
         run: |
           docker build \
-            --target test \
-            --cache-from ${{ env.DOCKER_REPO }}-test:latest \
-            -t ${{ env.DOCKER_REPO }}-test:latest \
+            --target src-with-devtools \
+            --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
+            -t ${{ env.DOCKER_REPO_DEV }}:latest \
             -f ops/docker/backend/api/Dockerfile .
       - name: Docker Tag Images
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker tag ${{ env.DOCKER_REPO }}-test:latest ${{ env.DOCKER_REPO }}-test:${{ env.DEPLOYMENT_VERSION }}
+          docker tag ${{ env.DOCKER_REPO_DEV }}:latest ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
   push:
     runs-on: self-hosted
     needs: build
@@ -50,16 +50,16 @@ jobs:
       - name: Docker Push
         run: |
           docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker push ${{ env.DOCKER_REPO }}-test:${{ env.DEPLOYMENT_VERSION }}
+          docker push ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
           docker push ${{ env.DOCKER_REPO }}:latest
-          docker push ${{ env.DOCKER_REPO }}-test:latest
+          docker push ${{ env.DOCKER_REPO_DEV }}:latest
   analyse:
     runs-on: self-hosted
     needs: push
     steps:
       - name: Run static analysis
         run: |
-          cat ops/kubernetes/backend/api/jobs/analyse.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/analyse.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV }}/g" | kubectl apply -f -
           kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
           kubectl logs --follow job/api-code-analysis-${{ env.DEPLOYMENT_VERSION }} &
           kubectl wait --for=condition=complete --timeout=180s job/api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
@@ -69,13 +69,13 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/test_migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/test_migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV }}/g" | kubectl apply -f -
       - name: Load fixture database seeds
         run: |
-          cat ops/kubernetes/backend/api/jobs/test_seed.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/test_seed.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV }}/g" | kubectl apply -f -
       - name: Run integration tests
         run: |
-          cat ops/kubernetes/backend/api/jobs/run_tests.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}-test/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/run_tests.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV }}/g" | kubectl apply -f -
           kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
           kubectl logs --follow job/api-integration-tests-${{ env.DEPLOYMENT_VERSION }} &
           kubectl wait --for=condition=complete --timeout=180s job/api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
@@ -85,7 +85,7 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO }}/g" | kubectl apply -f -
           kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-database-migration-${{ env.DEPLOYMENT_VERSION }}
           kubectl logs --follow jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }} &
           kubectl wait --for=condition=complete --timeout=180s jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }}
@@ -97,7 +97,7 @@ jobs:
       - name: Kubernetes - switch to stage context
         run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/backend/api/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+        run: cat ops/kubernetes/backend/api/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180

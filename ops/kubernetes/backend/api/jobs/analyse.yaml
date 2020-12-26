@@ -5,20 +5,14 @@ metadata:
   namespace: blog
   labels:
     app: api
-    version: "{{VERSION}}"
+    version: '{{VERSION}}'
 spec:
   ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
       - name: api-code-analysis
-        image: edenr/{{REPOSITORY}}:{{VERSION}}
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: blog-environment
-              key: test_database_url
+        image: '{{REPOSITORY}}:{{VERSION}}'
         resources:
           requests:
             cpu: "200m"
