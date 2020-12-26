@@ -47,18 +47,10 @@ VOLUME [ "/var/www/api" ]
 FROM common AS src
 COPY --chown=www-data:www-data src/backend/api .
 
-# FROM src AS lint
-# ENV APP_ENV=dev
-# COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
-# RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-# CMD [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose -- src tests migrations" ]
-
-FROM src AS test
-ENV APP_ENV=test
+FROM src AS src-with-devtools
 COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
 COPY --chown=www-data:www-data --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-CMD [ "/bin/sh", "-c", "supervisord -c /etc/supervisord.conf & bin/phpunit" ]
 
 FROM src AS production
 ENV APP_ENV=prod
