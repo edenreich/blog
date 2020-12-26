@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class NotificationTest extends KernelTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1';
+    private const BASE_URI = 'http://127.0.0.1:8080';
 
     /**
      * Store the guzzle http client.

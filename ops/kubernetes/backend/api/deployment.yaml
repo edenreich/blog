@@ -37,14 +37,14 @@ spec:
             cpu: "200m"
             memory: "499Mi"
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         readinessProbe:
           httpGet:
-            port: 80
+            port: 8080
             path: /healthcheck
         livenessProbe:
           httpGet:
-            port: 80
+            port: 8080
             path: /healthcheck
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
