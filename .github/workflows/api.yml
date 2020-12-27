@@ -79,7 +79,7 @@ jobs:
           ./ops/kubernetes/utils/wait_for_job.sh api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
   test:
     runs-on: self-hosted
-    needs: analyse
+    needs: [lint, analyse]
     steps:
       - name: Run database migrations
         run: |
