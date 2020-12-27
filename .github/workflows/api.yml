@@ -12,10 +12,8 @@ on:
 
 env:
   DOCKER_BUILDKIT: 1
-  DOCKER_REPO: edenr/blog-api
-  DOCKER_REPO_ESCAPED: edenr\/blog-api 
+  DOCKER_REPO: edenr/blog-api 
   DOCKER_REPO_DEV: edenr/blog-api-devtools
-  DOCKER_REPO_DEV_ESCAPED: edenr\/blog-api-devtools
   STAGE_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node6
   DEPLOYMENT_NAME: api
   DEPLOYMENT_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
