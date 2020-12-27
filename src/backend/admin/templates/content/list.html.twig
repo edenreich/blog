@@ -1,0 +1,83 @@
+{% extends 'admin.layout.twig' %}
+{% block title %}Admin - Content{% endblock %}
+{% block body %}
+<!-- header area start -->
+{% include 'includes/header.html.twig' %}
+<!-- header area end -->
+<!-- page title area start -->
+{% include 'includes/title.html.twig' with {'breadcrumbs': [{'name':'Content','link':'/content'},{'name':'List','link':'/content/list'}]} %}
+<!-- page title area end -->
+<div class="main-content-inner">
+    <div class="row">
+        <!-- Primary table start -->
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title">Articles</h4>
+                    <div class="data-tables datatable-primary">
+                        <table id="dataTable" class="text-center">
+                            <thead class="text-capitalize">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Title</th>
+                                    <th>Slug</th>
+                                    <th>Meta Keywords</th>
+                                    <th>Meta Description</th>
+                                    <th>Published At</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Rendered data -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Primary table end -->
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+    $(document).ready(function () {
+        var table = $('#dataTable').DataTable({
+            {# data: articlesResponse, #}
+            responsive: true,
+            ajax: {
+                url: '/content/list',
+                type: 'GET',
+                dataSrc: "",
+            },
+            columnDefs: [{
+                targets: -1,
+                data: null,
+                defaultContent: ""
+            }],
+            columns: [
+                { data: "id" },
+                { data: "title" },
+                { data: "slug" },
+                { data: "meta_keywords" },
+                { data: "meta_description" },
+                { data: "published_at" },
+                { data: "created_at" },
+                { data: "updated_at" },
+                { 
+                    data: "buttons",
+                    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).html(`<div style="display:flex"><a href="/content/${oData.id}/edit" style="flex-grow:1"><i class="ti-pencil"></i></a><a href="/content/${oData.id}/delete" style="flex-grow:1"><i class="ti-trash"></i></a></div>`);
+                    },
+                    width: '40px'
+                },
+            ],
+            error: function(err) {
+                console.error(err);
+            }
+        });
+    });
+</script>
+{% endblock %}
