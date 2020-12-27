@@ -62,9 +62,7 @@ jobs:
       - name: Run static analysis
         run: |
           cat ops/kubernetes/backend/api/jobs/analyse.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | kubectl apply -f -
-          kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
-          kubectl logs --follow job/api-code-analysis-${{ env.DEPLOYMENT_VERSION }} &
-          kubectl wait --for=condition=complete --timeout=180s job/api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
+          ./ops/kubernetes/utils/wait_for_job.sh api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
   test:
     runs-on: self-hosted
     needs: analyse
@@ -78,9 +76,7 @@ jobs:
       - name: Run integration tests
         run: |
           cat ops/kubernetes/backend/api/jobs/tests/run.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | kubectl apply -f -
-          kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
-          kubectl logs --follow job/api-integration-tests-${{ env.DEPLOYMENT_VERSION }} &
-          kubectl wait --for=condition=complete --timeout=180s job/api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
+          ./ops/kubernetes/utils/wait_for_job.sh api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
   migrations:
     runs-on: self-hosted
     needs: test
@@ -88,9 +84,7 @@ jobs:
       - name: Run database migrations
         run: |
           cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_ESCAPED }}/g" | kubectl apply -f -
-          kubectl wait --for=condition=ContainersReady --timeout=60s pod --selector job-name=api-database-migration-${{ env.DEPLOYMENT_VERSION }}
-          kubectl logs --follow jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }} &
-          kubectl wait --for=condition=complete --timeout=180s jobs/api-database-migration-${{ env.DEPLOYMENT_VERSION }}
+          ./ops/kubernetes/utils/wait_for_job.sh api-database-migration-${{ env.DEPLOYMENT_VERSION }}
   deploy:
     runs-on: self-hosted
     needs: migrations
