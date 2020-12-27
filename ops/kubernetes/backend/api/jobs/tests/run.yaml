@@ -19,7 +19,7 @@ spec:
         - name: JWT_PASSPHRASE
           valueFrom:
             secretKeyRef:
-              name: blog
+              name: api
               key: jwt_passphrase
         - name: DATABASE_URL
           valueFrom:
