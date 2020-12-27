@@ -143,11 +143,12 @@ jobs:
             $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
-      - name: Keep 5 container images
-        run: for server in $(echo ${{ env.STAGE_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
       - name: Keep 2 deployments available for rollback
         run: |
           kubectl delete deployments \
             $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
+      - name: Remove all dangling images from kubernetes worker nodes
+        run: |
+          for server in $(echo ${{ env.STAGE_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
       - name: Remove completed jobs
         run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
