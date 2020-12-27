@@ -76,12 +76,14 @@ jobs:
             sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
                 -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | \
             kubectl apply -f -
+          ./ops/kubernetes/utils/wait_for_job.sh api-test-database-migration-${{ env.DEPLOYMENT_VERSION }}
       - name: Load fixture database seeds
         run: |
           cat ops/kubernetes/backend/api/jobs/tests/seed.yaml | \
             sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
                 -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | \
             kubectl apply -f -
+          ./ops/kubernetes/utils/wait_for_job.sh api-test-database-seed-${{ env.DEPLOYMENT_VERSION }}
       - name: Run integration tests
         run: |
           cat ops/kubernetes/backend/api/jobs/tests/run.yaml | \
