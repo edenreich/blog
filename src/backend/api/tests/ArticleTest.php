@@ -41,8 +41,8 @@ class ArticleTest extends KernelTestCase
             $jwt = json_decode($client->post('authorize', [
                 RequestOptions::JSON => [
                     'username' => 'admin@gmail.com',
-                    'password' => 'admin'
-                ]
+                    'password' => 'admin',
+                ],
             ])->getBody(), true)['token'];
             $this->client = new Client([
                 'base_uri' => self::BASE_URI,
@@ -52,7 +52,7 @@ class ArticleTest extends KernelTestCase
                 ],
             ]);
         } catch (ClientExceptionInterface $exception) {
-            dd('Could not fetch access token: '. $exception->getMessage());
+            dd('Could not fetch access token: '.$exception->getMessage());
         }
     }
 
