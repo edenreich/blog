@@ -9,10 +9,11 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Psr\Http\Client\ClientExceptionInterface;
 
 class ReactionTest extends KernelTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1:8080';
+    private const BASE_URI = 'http://127.0.0.1:8080/api/v1/';
 
     /**
      * Store the guzzle http client.
@@ -40,7 +41,24 @@ class ReactionTest extends KernelTestCase
         $platform = $connection->getDatabasePlatform();
         $connection->executeStatement($platform->getTruncateTableSQL('reactions', true));
 
-        $this->client = new Client(['base_uri' => self::BASE_URI]);
+        $client = new Client(['base_uri' => self::BASE_URI]);
+        try {
+            $jwt = json_decode($client->post('authorize', [
+                RequestOptions::JSON => [
+                    'username' => 'admin@gmail.com',
+                    'password' => 'admin'
+                ]
+            ])->getBody(), true)['token'];
+            $this->client = new Client([
+                'base_uri' => self::BASE_URI,
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $jwt),
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+        } catch (ClientExceptionInterface $exception) {
+            dd('Could not fetch access token: '. $exception->getMessage());
+        }
     }
 
     /**
@@ -66,7 +84,7 @@ class ReactionTest extends KernelTestCase
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
-        $response = $this->client->post('/reactions', [
+        $response = $this->client->post('reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
@@ -98,7 +116,7 @@ class ReactionTest extends KernelTestCase
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
-        $response = $this->client->post('/reactions', [
+        $response = $this->client->post('reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
@@ -130,7 +148,7 @@ class ReactionTest extends KernelTestCase
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
-        $response = $this->client->post('/reactions', [
+        $response = $this->client->post('reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
@@ -163,7 +181,7 @@ class ReactionTest extends KernelTestCase
         $article = $articles[mt_rand(0, 9)];
 
         // dislike the article
-        $this->client->post('/reactions', [
+        $this->client->post('reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
@@ -172,7 +190,7 @@ class ReactionTest extends KernelTestCase
         ]);
 
         // changed my mind like the article
-        $this->client->post('/reactions', [
+        $this->client->post('reactions', [
             RequestOptions::JSON => [
                 'session' => $session->getId(),
                 'article' => $article->getId(),
@@ -195,11 +213,7 @@ class ReactionTest extends KernelTestCase
         $articles = $articleRepository->findAll();
         $article = $articles[mt_rand(0, 9)];
 
-        $response = $this->client->get('/reactions/count?article='.$article->getId(), [
-            RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json',
-            ],
-        ]);
+        $response = $this->client->get('reactions/count?article='.$article->getId());
         $reactions = json_decode($response->getBody(), true);
 
         $expectedCount = [

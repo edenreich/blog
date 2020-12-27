@@ -8,10 +8,11 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Psr\Http\Client\ClientExceptionInterface;
 
 class NotificationTest extends KernelTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1:8080';
+    private const BASE_URI = 'http://127.0.0.1:8080/api/v1/';
 
     /**
      * Store the guzzle http client.
@@ -39,7 +40,24 @@ class NotificationTest extends KernelTestCase
         $platform = $connection->getDatabasePlatform();
         $connection->executeStatement($platform->getTruncateTableSQL('notifications', true));
 
-        $this->client = new Client(['base_uri' => self::BASE_URI]);
+        $client = new Client(['base_uri' => self::BASE_URI]);
+        try {
+            $jwt = json_decode($client->post('authorize', [
+                RequestOptions::JSON => [
+                    'username' => 'admin@gmail.com',
+                    'password' => 'admin'
+                ]
+            ])->getBody(), true)['token'];
+            $this->client = new Client([
+                'base_uri' => self::BASE_URI,
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $jwt),
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+        } catch (ClientExceptionInterface $exception) {
+            dd('Could not fetch access token: '. $exception->getMessage());
+        }
     }
 
     /**
@@ -58,7 +76,7 @@ class NotificationTest extends KernelTestCase
         $session = $this->entityManager->getRepository(Session::class)->findAll()[mt_rand(0, 9)];
         $email = 'test@gmail.com';
 
-        $response = $this->client->post('/notifications', [
+        $response = $this->client->post('notifications', [
             RequestOptions::JSON => [
                 'is_enabled' => true,
                 'session' => $session->getId(),
@@ -86,7 +104,7 @@ class NotificationTest extends KernelTestCase
         $session->setNotification($notification);
         $this->entityManager->flush();
 
-        $response = $this->client->put('/notifications/'.$notification->getId(), [
+        $response = $this->client->put('notifications/'.$notification->getId(), [
             RequestOptions::JSON => [
                 'is_enabled' => false,
                 'session' => $session->getId(),
