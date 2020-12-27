@@ -1,4 +1,4 @@
-name: Build API and deploy to stage
+name: API
 
 on:
   push:
