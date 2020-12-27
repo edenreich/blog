@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\V1;
 
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
