@@ -26,8 +26,8 @@ spec:
         env:
         - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
-              name: blog-environment
+            secretKeyRef:
+              name: api
               key: database_url
         resources:
           requests:

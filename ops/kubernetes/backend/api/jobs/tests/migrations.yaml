@@ -18,8 +18,8 @@ spec:
           value: test
         - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
-              name: blog-environment
+            secretKeyRef:
+              name: api
               key: test_database_url
         resources:
           requests:

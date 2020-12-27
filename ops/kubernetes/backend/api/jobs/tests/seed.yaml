@@ -18,7 +18,7 @@ spec:
           value: test
         - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: blog-environment
               key: test_database_url
         resources:
