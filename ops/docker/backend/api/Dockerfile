@@ -21,9 +21,9 @@ COPY ops/docker/backend/api/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
 RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
 RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf
-EXPOSE 8080
 USER www-data
 WORKDIR /var/www/api
+EXPOSE 8080
 CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
 
 FROM common AS development
