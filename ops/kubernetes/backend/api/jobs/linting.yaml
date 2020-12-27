@@ -20,7 +20,7 @@ spec:
           limits:
             cpu: "200m"
             memory: "499Mi"
-        command: [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose -- src tests migrations" ]
+        command: [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose" ]
       restartPolicy: Never
       imagePullSecrets:
       - name: regcred
