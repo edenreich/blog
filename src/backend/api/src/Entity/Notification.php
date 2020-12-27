@@ -74,7 +74,7 @@ class Notification
      */
     public function onPreUpdate(): void
     {
-        $this->updatedAt= new DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**

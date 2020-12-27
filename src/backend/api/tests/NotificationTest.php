@@ -34,7 +34,7 @@ class NotificationTest extends KernelTestCase
             ->getContainer()
             ->get('doctrine')
             ->getManager();
-    
+
         $connection = $this->entityManager->getConnection();
         $platform = $connection->getDatabasePlatform();
         $connection->executeStatement($platform->getTruncateTableSQL('notifications', true));
@@ -91,7 +91,7 @@ class NotificationTest extends KernelTestCase
                 'is_enabled' => false,
                 'session' => $session->getId(),
                 'email' => $notification->getEmail(),
-            ]
+            ],
         ]);
 
         /** @var Notification */

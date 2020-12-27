@@ -28,9 +28,10 @@ class NotificationRepository extends ServiceEntityRepository
     public function store(array $body): Notification
     {
         try {
-            /** 
+            /**
              * @var Notification|null
-             * @throws NoResultException 
+             *
+             * @throws NoResultException
              **/
             $notification = $this->getEntityManager()
                 ->createQueryBuilder('n')
@@ -45,13 +46,14 @@ class NotificationRepository extends ServiceEntityRepository
             $notification->setIsEnabled(true);
         } catch (NoResultException $exception) {
             $session = $this->getEntityManager()->getRepository(Session::class)->findOneBy(['id' => $body['session']]);
-            $notification = new Notification;
+            $notification = new Notification();
             $notification->setEmail($body['email']);
             $notification->setSession($session);
             $notification->setIsEnabled(true);
             $this->getEntityManager()->persist($notification);
         } finally {
             $this->getEntityManager()->flush();
+
             return $notification;
         }
     }
@@ -64,9 +66,10 @@ class NotificationRepository extends ServiceEntityRepository
         $session = $this->getEntityManager()->getRepository(Session::class)->findOneBy(['id' => $body['session']]);
 
         try {
-            /** 
+            /**
              * @var Notification|null
-             * @throws NoResultException 
+             *
+             * @throws NoResultException
              **/
             $notification = $this->getEntityManager()
                 ->createQueryBuilder('n')
@@ -83,6 +86,7 @@ class NotificationRepository extends ServiceEntityRepository
             $notification->setIsEnabled($body['is_enabled']);
             $notification->setSession($session);
             $this->getEntityManager()->flush();
+
             return $notification;
         } catch (NoResultException $exception) {
             return null;
