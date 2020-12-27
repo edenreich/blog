@@ -59,7 +59,9 @@ jobs:
     steps:
       - name: Run linter
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO_DEV }} envsubst < ops/kubernetes/backend/api/jobs/linting.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
+          envsubst < ops/kubernetes/backend/api/jobs/linting.yaml | kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-linting-${{ env.DEPLOYMENT_VERSION }}
   analyse:
     runs-on: self-hosted
@@ -67,7 +69,9 @@ jobs:
     steps:
       - name: Run static analysis
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO_DEV }} envsubst < ops/kubernetes/backend/api/jobs/analyse.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
+          envsubst < ops/kubernetes/backend/api/jobs/analyse.yaml | kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
   test:
     runs-on: self-hosted
@@ -75,15 +79,21 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO_DEV }} envsubst < ops/kubernetes/backend/api/jobs/tests/migrations.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
+          envsubst < ops/kubernetes/backend/api/jobs/tests/migrations.yaml | kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-test-database-migration-${{ env.DEPLOYMENT_VERSION }}
       - name: Load fixture database seeds
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO_DEV }} envsubst < ops/kubernetes/backend/api/jobs/tests/seed.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
+          envsubst < ops/kubernetes/backend/api/jobs/tests/seed.yaml | kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-test-database-seed-${{ env.DEPLOYMENT_VERSION }}
       - name: Run integration tests
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO_DEV }} envsubst < ops/kubernetes/backend/api/jobs/tests/run.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
+          envsubst < ops/kubernetes/backend/api/jobs/tests/run.yaml | kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
   migrations:
     runs-on: self-hosted
@@ -91,7 +101,9 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO }} envsubst < ops/kubernetes/backend/api/jobs/migrations.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO }} \
+          envsubst < ops/kubernetes/backend/api/jobs/migrations.yaml | kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-database-migration-${{ env.DEPLOYMENT_VERSION }}
   deploy:
     runs-on: self-hosted
@@ -102,7 +114,9 @@ jobs:
         run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} REPOSITORY=${{ env.DOCKER_REPO }} envsubst < ops/kubernetes/backend/api/deployment.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          REPOSITORY=${{ env.DOCKER_REPO }} \
+          envsubst < ops/kubernetes/backend/api/deployment.yaml | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
@@ -121,10 +135,12 @@ jobs:
           done
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} envsubst < ops/kubernetes/backend/api/hpa.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          envsubst < ops/kubernetes/backend/api/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} envsubst < ops/kubernetes/backend/api/service.yaml | kubectl apply -f -
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          envsubst < ops/kubernetes/backend/api/service.yaml | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy
