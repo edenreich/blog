@@ -126,7 +126,7 @@ jobs:
               echo "===> Waited for too long for a successful rolled out green version, but something went wrong. Aborting..."
               exit 1
             fi
-            if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} --timeout=5s | grep 'successfully rolled out') ]]; then
+            if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} --timeout=5s | grep 'successfully rolled out' &>/dev/null) ]]; then
               echo "=====> Green deployment has been successfully rolled out. Continuing..."
               break
             fi
