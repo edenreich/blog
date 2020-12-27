@@ -27,6 +27,7 @@ WORKDIR /var/www/api
 CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
 
 FROM common AS development
+USER root
 WORKDIR /var/www/api
 ENV APP_ENV=dev
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
