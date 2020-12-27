@@ -10,6 +10,7 @@ spec:
   - hosts:
     - stage.eden-reich.com
     - stage-admin.eden-reich.com
+    - stage-api.eden-reich.com
     secretName: eden-reich.com-tls
   rules:  
     - host: stage.eden-reich.com
@@ -25,6 +26,13 @@ spec:
         - path: /
           backend:
             serviceName: blog-admin
+            servicePort: 8080
+    - host: stage-api.eden-reich.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: api
             servicePort: 8080
 ---
 apiVersion: v1

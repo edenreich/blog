@@ -10,43 +10,46 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class SessionTest extends KernelTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1';
+    private const BASE_URI = 'http://127.0.0.1:8080';
 
     /**
      * Store the guzzle http client.
-     *
-     * @var Client
      */
-    private $client;
+    private Client $client;
 
     /**
-     * Setup a client.
+     * Store the entity manager.
+     */
+    private EntityManager $entityManager;
+
+    /**
+     * Setup a client and entity manager.
      */
     protected function setUp(): void
     {
-        parent::tearDown();
+        parent::setUp();
+
+        $this->entityManager = static::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
     /**
-     * Unset the client.
+     * Unset the client and the entity manager.
      */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->client);
+        unset($this->entityManager);
     }
 
     public function testCanCreateAClientSession(): void
     {
-        /** @var EntityManager */
-        $em = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var Session */
-        $session = $em->getRepository(Session::class)->findAll()[0];
+        $session = $this->entityManager->getRepository(Session::class)->findAll()[0];
 
         $response = $this->client->post('/sessions?ip_address='.$session->getIpAddress());
         $sessionResponse = json_decode($response->getBody());
@@ -57,14 +60,8 @@ class SessionTest extends KernelTestCase
 
     public function testCanRetrieveTheCurrentSession(): void
     {
-        /** @var EntityManager */
-        $em = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var Session */
-        $session = $em->getRepository(Session::class)->findAll()[0];
+        $session = $this->entityManager->getRepository(Session::class)->findAll()[0];
 
         $response = $this->client->get('/sessions?ip_address='.$session->getIpAddress());
         $sessionResponse = json_decode($response->getBody());

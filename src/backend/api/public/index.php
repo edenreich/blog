@@ -7,10 +7,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-if ('GuzzleHttp/7' === $_SERVER['HTTP_USER_AGENT']) {
-    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env.test.local');
-} else {
-    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+$_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? '0';
+$_SERVER['APP_ENV'] = $_SERVER['APP_ENV'] ?? 'dev';
+
+if (file_exists(dirname(__DIR__).'/.env.test.local') && file_exists(dirname(__DIR__).'/.env')) {
+    if ('GuzzleHttp/7' === $_SERVER['HTTP_USER_AGENT']) {
+        (new Dotenv())->bootEnv(dirname(__DIR__).'/.env.test.local');
+    } else {
+        (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+    }
 }
 
 if ($_SERVER['APP_DEBUG']) {

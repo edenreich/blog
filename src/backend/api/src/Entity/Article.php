@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,87 +20,69 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Article
 {
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * @Groups({"admin", "frontend"})
      */
-    private $id;
+    private ?string $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $title;
+    private string $title;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="slug", type="string", length=255, nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $slug;
+    private string $slug;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="meta_keywords", type="string", length=255, nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $metaKeywords;
+    private ?string $metaKeywords = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="meta_description", type="string", length=255, nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $metaDescription;
+    private ?string $metaDescription = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="content", type="text", nullable=false)
      * @Groups({"admin", "frontend"})
      */
-    private $content;
+    private string $content;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(name="published_at", type="datetimetz", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $publishedAt;
+    private ?DateTimeInterface $publishedAt = null;
 
     /**
-     * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     * @Groups({"admin", "frontend"})
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTimeInterface|null
-     *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt;
 
     /**
-     * @var ArrayCollection<Reaction[]>
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @Groups({"admin", "frontend"})
+     */
+    private DateTimeInterface $createdAt;
+
+    /**
+     * @var Collection|Reaction[]
      *
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="article", fetch="EAGER")
      * @Groups({"admin", "frontend"})
      */
-    private $reactions;
+    private Collection $reactions;
 
     /**
      * Initialize properties.
@@ -106,18 +90,7 @@ class Article
     public function __construct()
     {
         $this->reactions = new ArrayCollection();
-    }
-
-    /**
-     * Gets triggered only on insert.
-     *
-     * @ORM\PrePersist
-     */
-    public function onPrePersist(): void
-    {
-        if (is_null($this->createdAt)) {
-            $this->setCreatedAt(new \DateTime('now'));
-        }
+        $this->createdAt = new DateTime();
     }
 
     /**
@@ -127,13 +100,11 @@ class Article
      */
     public function onPreUpdate(): void
     {
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->updatedAt = new DateTime();
     }
 
     /**
      * Get the value of id.
-     *
-     * @return string
      */
     public function getId(): ?string
     {
@@ -186,10 +157,8 @@ class Article
 
     /**
      * Set the value of metaKeywords.
-     *
-     * @param string|null $metaKeywords
      */
-    public function setMetaKeywords($metaKeywords): self
+    public function setMetaKeywords(?string $metaKeywords): self
     {
         $this->metaKeywords = $metaKeywords;
 
@@ -206,10 +175,8 @@ class Article
 
     /**
      * Set the value of metaDescription.
-     *
-     * @param string|null $metaDescription
      */
-    public function setMetaDescription($metaDescription): self
+    public function setMetaDescription(?string $metaDescription): self
     {
         $this->metaDescription = $metaDescription;
 
@@ -237,7 +204,7 @@ class Article
     /**
      * Get the value of publishedAt.
      */
-    public function getPublishedAt(): ?\DateTimeInterface
+    public function getPublishedAt(): ?DateTimeInterface
     {
         return $this->publishedAt;
     }
@@ -245,7 +212,7 @@ class Article
     /**
      * Set the value of publishedAt.
      */
-    public function setPublishedAt(\DateTimeInterface $publishedAt): self
+    public function setPublishedAt(?DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
 
@@ -253,31 +220,9 @@ class Article
     }
 
     /**
-     * Get the value of createdAt.
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of createdAt.
-     *
-     * @param \DateTimeInterface|null $createdAt
-     */
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -285,7 +230,7 @@ class Article
     /**
      * Set the value of updatedAt.
      */
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -293,9 +238,27 @@ class Article
     }
 
     /**
+     * Get the value of createdAt.
+     */
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt.
+     */
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
      * Get the value of reactions.
      *
-     * @return ArrayCollection<Reaction[]>
+     * @return Collection|Reaction[]
      */
     public function getReactions(): Collection
     {
@@ -304,12 +267,22 @@ class Article
 
     /**
      * Set the value of reactions.
-     *
-     * @param Reaction $reaction
      */
     public function addReaction(Reaction $reaction): self
     {
         $this->reactions->add($reaction);
+
+        return $this;
+    }
+
+    public function removeReaction(Reaction $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getArticle() === $this) {
+                $reaction->setArticle(null);
+            }
+        }
 
         return $this;
     }

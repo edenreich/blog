@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-test-database-seed-{{VERSION}}
+  namespace: blog
+  labels:
+    app: api
+    version: '{{VERSION}}'
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: api-test-database-seed
+        image: '{{REPOSITORY}}:{{VERSION}}'
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: test_database_url
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        command: [ "bin/console", "doctrine:fixtures:load", "--no-interaction" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 1

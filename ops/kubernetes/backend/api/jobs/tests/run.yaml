@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-integration-tests-{{VERSION}}
+  namespace: blog
+  labels:
+    app: api
+    version: '{{VERSION}}'
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: api-integration-tests
+        image: '{{REPOSITORY}}:{{VERSION}}'
+        env:
+        - name: APP_ENV
+          value: test
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: blog-environment
+              key: test_database_url
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        command: [ "/bin/sh", "-c", "supervisord -c /etc/supervisord.conf & bin/phpunit" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 1

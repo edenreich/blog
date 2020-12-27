@@ -8,16 +8,23 @@ WORKDIR /app
 COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
-FROM php:7.2.25-fpm-alpine AS common
+FROM php:7.4-fpm-alpine AS common
 RUN apk add --update bash nginx supervisor postgresql-dev
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install pdo_pgsql && \
     apk del .build-deps
 RUN mkdir /run/nginx
-COPY ops/docker/backend/api/supervisor.d /etc/supervisor.d
+COPY ops/docker/backend/api/supervisor.d/programs /etc/supervisor.d
+COPY ops/docker/backend/api/supervisor.d/supervisord.conf /etc/supervisord.conf
 COPY ops/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD [ "supervisord", "--pidfile", "/run/supervisord.pid", "-c", "/etc/supervisord.conf" ]
+COPY ops/docker/backend/api/nginx/nginx.conf /etc/nginx/nginx.conf
+RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
+RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
+RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf
+EXPOSE 8080
+USER www-data
+WORKDIR /var/www/api
+CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
 
 FROM common AS development
 WORKDIR /var/www/api
@@ -33,53 +40,19 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.client_port=9000' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo 'xdebug.log=/tmp/xdebug.log' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo 'xdebug.log_level=0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-VOLUME [ "/var/www" ]
+VOLUME [ "/var/www/api" ]
 
-FROM common AS lint
-WORKDIR /var/www/api
-ENV APP_ENV=dev
-COPY src/backend/api .
-COPY --from=dev-builder /app/vendor .
+FROM common AS src
+COPY --chown=www-data:www-data src/backend/api .
+
+FROM src AS src-with-devtools
+COPY --chown=www-data:www-data --from=dev-builder /app/vendor vendor
+COPY --chown=www-data:www-data --from=dev-builder /usr/bin/composer /usr/bin/composer
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-CMD [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose -- src tests migrations" ]
 
-FROM common AS analyse
-WORKDIR /var/www/api
-ENV APP_ENV=dev
-COPY src/backend/api .
-COPY --from=dev-builder /app/vendor .
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-CMD [ "/bin/sh", "-c", "vendor/bin/phpstan analyse src tests" ]
-
-FROM common AS migrate
-WORKDIR /var/www/api
+FROM src AS production
 ENV APP_ENV=prod
-COPY src/backend/api .
-COPY --from=builder /app/vendor .
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-CMD [ "bin/console" "doctrine:migration:migrate" ]
-
-FROM common AS test
-WORKDIR /var/www/api
-ENV APP_ENV=test
-COPY src/backend/api .
-COPY --from=dev-builder /app/vendor .
-COPY --from=dev-builder /usr/bin/composer /usr/bin/composer
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-CMD [ "php", "bin/phpunit" ]
-
-FROM common AS stage
-WORKDIR /var/www/api
-ENV APP_ENV=prod
-COPY src/backend/api .
-COPY --from=builder /app/vendor .
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-
-FROM common AS production
-WORKDIR /var/www/api
-ENV APP_ENV=prod
-COPY src/backend/api .
-COPY --from=builder /app/vendor .
+COPY --chown=www-data:www-data --from=builder /app/vendor vendor
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini

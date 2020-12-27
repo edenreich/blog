@@ -10,31 +10,40 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ArticleTest extends KernelTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1';
+    private const BASE_URI = 'http://127.0.0.1:8080';
 
     /**
      * Store the guzzle http client.
-     *
-     * @var Client
      */
-    private $client;
+    private Client $client;
 
     /**
-     * Setup a client.
+     * Store the entity manager.
+     */
+    private EntityManager $entityManager;
+
+    /**
+     * Setup a client and entity manager.
      */
     protected function setUp(): void
     {
-        parent::tearDown();
+        parent::setUp();
+
+        $this->entityManager = self::bootKernel()
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager();
         $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
     /**
-     * Unset the client.
+     * Unset the client and the entity manager.
      */
     protected function tearDown(): void
     {
         parent::tearDown();
         unset($this->client);
+        unset($this->entityManager);
     }
 
     public function testCanFetchAllArticles(): void
@@ -47,14 +56,8 @@ class ArticleTest extends KernelTestCase
 
     public function testCanFetchSingleArticle(): void
     {
-        /** @var EntityManager */
-        $em = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var Article */
-        $article = $em->getRepository(Article::class)->findAll()[0];
+        $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
         $title = $article->getTitle();
 
         $response = $this->client->get(sprintf('/articles/%s', $article->getId()));
@@ -76,14 +79,8 @@ class ArticleTest extends KernelTestCase
 
     public function testFetchArticlesInDescendingOrderByDefault(): void
     {
-        /** @var EntityManager */
-        $em = self::bootKernel()
-        ->getContainer()
-        ->get('doctrine')
-        ->getManager();
-
         /** @var Article[] */
-        $articles = $em->getRepository(Article::class)->findAll();
+        $articles = $this->entityManager->getRepository(Article::class)->findAll();
         usort($articles, function (Article $first, Article $second) {
             return $first->getCreatedAt() < $second->getCreatedAt();
         });
@@ -98,14 +95,8 @@ class ArticleTest extends KernelTestCase
 
     public function testCanFetchASingleArticleBySlug(): void
     {
-        /** @var EntityManager */
-        $em = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
         /** @var Article */
-        $article = $em->getRepository(Article::class)->findAll()[0];
+        $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
         $title = $article->getId();
 
         $response = $this->client->get(sprintf('/articles/%s', $article->getSlug()));

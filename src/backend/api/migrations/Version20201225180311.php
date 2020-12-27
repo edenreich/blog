@@ -10,25 +10,25 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20201220215053 extends AbstractMigration
+final class Version20201225180311 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Make reaction unique identified by combination of session and article. One reaction per user per article.';
+        return 'Make created_at not nullable.';
     }
 
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP INDEX reactions_id_unique');
-        $this->addSql('CREATE UNIQUE INDEX reactions_articles_sessions_id_unique ON reactions (id, article_id, session_id)');
+        $this->addSql('ALTER TABLE notifications ALTER created_at SET NOT NULL');
+        $this->addSql('ALTER TABLE reactions ALTER created_at SET NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('DROP INDEX reactions_articles_sessions_id_unique');
-        $this->addSql('CREATE UNIQUE INDEX reactions_id_unique ON reactions (id)');
+        $this->addSql('ALTER TABLE notifications ALTER created_at DROP NOT NULL');
+        $this->addSql('ALTER TABLE reactions ALTER created_at DROP NOT NULL');
     }
 }

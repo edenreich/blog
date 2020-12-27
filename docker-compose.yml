@@ -35,8 +35,6 @@ services:
   admin:
     build:
       target: development
-      args:
-        NODE_ENV: development
       context: .
       dockerfile: ops/docker/backend/admin/Dockerfile
     volumes:
