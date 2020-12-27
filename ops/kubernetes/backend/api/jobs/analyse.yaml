@@ -1,18 +1,18 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-code-analysis-{{VERSION}}
+  name: api-code-analysis-${VERSION}
   namespace: blog
   labels:
     app: api
-    version: '{{VERSION}}'
+    version: ${VERSION}
 spec:
   ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
       - name: api-code-analysis
-        image: '{{REPOSITORY}}:{{VERSION}}'
+        image: ${REPOSITORY}:${VERSION}
         resources:
           requests:
             cpu: "200m"

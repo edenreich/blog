@@ -1,18 +1,18 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-test-database-seed-{{VERSION}}
+  name: api-test-database-seed-${VERSION}
   namespace: blog
   labels:
     app: api
-    version: '{{VERSION}}'
+    version: ${VERSION}
 spec:
   ttlSecondsAfterFinished: 60
   template:
     spec:
       containers:
       - name: api-test-database-seed
-        image: '{{REPOSITORY}}:{{VERSION}}'
+        image: ${REPOSITORY}:${VERSION}
         env:
         - name: DATABASE_URL
           valueFrom:
