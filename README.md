@@ -1,4 +1,4 @@
-![build](https://github.com/edenreich/blog/workflows/build/badge.svg?branch=master)
+![API](https://github.com/edenreich/blog/workflows/Build%20API%20and%20deploy%20to%20stage/badge.svg)
 
 # Blog
 
