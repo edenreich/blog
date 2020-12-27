@@ -61,7 +61,10 @@ jobs:
     steps:
       - name: Run static analysis
         run: |
-          cat ops/kubernetes/backend/api/jobs/analyse.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/analyse.yaml | \
+            sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
+                -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | \
+            kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-code-analysis-${{ env.DEPLOYMENT_VERSION }}
   test:
     runs-on: self-hosted
@@ -69,13 +72,22 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/tests/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/tests/migrations.yaml | \
+            sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
+                -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | \
+            kubectl apply -f -
       - name: Load fixture database seeds
         run: |
-          cat ops/kubernetes/backend/api/jobs/tests/seed.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/tests/seed.yaml | \
+            sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
+                -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | \
+            kubectl apply -f -
       - name: Run integration tests
         run: |
-          cat ops/kubernetes/backend/api/jobs/tests/run.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/tests/run.yaml | \
+            sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
+                -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_DEV_ESCAPED }}/g" | \
+            kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-integration-tests-${{ env.DEPLOYMENT_VERSION }}
   migrations:
     runs-on: self-hosted
@@ -83,7 +95,10 @@ jobs:
     steps:
       - name: Run database migrations
         run: |
-          cat ops/kubernetes/backend/api/jobs/migrations.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_ESCAPED }}/g" | kubectl apply -f -
+          cat ops/kubernetes/backend/api/jobs/migrations.yaml | \
+            sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
+                -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_ESCAPED }}/g" | \
+            kubectl apply -f -
           ./ops/kubernetes/utils/wait_for_job.sh api-database-migration-${{ env.DEPLOYMENT_VERSION }}
   deploy:
     runs-on: self-hosted
@@ -93,7 +108,11 @@ jobs:
       - name: Kubernetes - switch to stage context
         run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/backend/api/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_ESCAPED }}/g" | kubectl apply -f -
+        run: |
+          cat ops/kubernetes/backend/api/deployment.yaml | \
+            sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" \
+                -e "s/{{REPOSITORY}}/${{ env.DOCKER_REPO_ESCAPED }}/g" | \
+            kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
@@ -119,12 +138,16 @@ jobs:
     needs: deploy
     steps:
       - name: Remove all related images from github-runner except latest
-        run: docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
+        run: |
+          docker rmi -f \ 
+            $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 5 container images
         run: for server in $(echo ${{ env.STAGE_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
       - name: Keep 2 deployments available for rollback
-        run: kubectl delete deployments $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
+        run: |
+          kubectl delete deployments \
+            $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
       - name: Remove completed jobs
         run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
