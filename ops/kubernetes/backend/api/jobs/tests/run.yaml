@@ -5,7 +5,7 @@ metadata:
   namespace: blog
   labels:
     app: api
-    version: ${VERSION}
+    version: "${VERSION}"
 spec:
   ttlSecondsAfterFinished: 60
   template:

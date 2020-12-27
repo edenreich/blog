@@ -5,7 +5,7 @@ metadata:
   namespace: blog
   labels:
     app: api
-    version: ${VERSION}
+    version: "${VERSION}"
 spec:
   minReplicas: 2
   maxReplicas: 10
