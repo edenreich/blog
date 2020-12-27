@@ -139,8 +139,8 @@ jobs:
     steps:
       - name: Remove all related images from github-runner except latest
         run: |
-          docker rmi -f \ 
-            $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1,$2)} END {print image}' | xargs) || true
+          docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1, $2); print image}' | xargs) || true
+          docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO_DEV }} | grep -v latest | awk '{image = sprintf("%s:%s", $1, $2); print image}' | xargs) || true
       - name: Remove Dangling Docker Images
         run: docker system prune -f
       - name: Keep 2 deployments available for rollback
