@@ -14,9 +14,11 @@ spec:
       - name: api-test-database-seed
         image: ${REPOSITORY}:${VERSION}
         env:
+        - name: APP_ENV
+          value: test
         - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: blog-environment
               key: test_database_url
         resources:

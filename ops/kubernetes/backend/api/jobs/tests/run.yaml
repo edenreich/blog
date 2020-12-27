@@ -16,10 +16,25 @@ spec:
         env:
         - name: APP_ENV
           value: test
+        - name: JWT_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: api
+              key: jwt_passphrase
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api
+              key: jwt_secret_key
+        - name: JWT_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api
+              key: jwt_public_key
         - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
-              name: blog-environment
+            secretKeyRef:
+              name: api
               key: test_database_url
         resources:
           requests:

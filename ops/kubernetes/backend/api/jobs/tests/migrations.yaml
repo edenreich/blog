@@ -14,10 +14,12 @@ spec:
       - name: api-test-database-migration
         image: ${REPOSITORY}:${VERSION}
         env:
+        - name: APP_ENV
+          value: test
         - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
-              name: blog-environment
+            secretKeyRef:
+              name: api
               key: test_database_url
         resources:
           requests:
