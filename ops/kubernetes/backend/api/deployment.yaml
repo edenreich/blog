@@ -56,11 +56,11 @@ spec:
         readinessProbe:
           httpGet:
             port: 8080
-            path: /api/v1/healthcheck
+            path: /healthcheck
         livenessProbe:
           httpGet:
             port: 8080
-            path: /api/v1/healthcheck
+            path: /healthcheck
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
