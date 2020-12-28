@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class SessionTest extends KernelTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1:8080/api/v1/';
+    private const BASE_URI = 'http://127.0.0.1:8080/api/';
 
     /**
      * Store the guzzle http client.
@@ -45,7 +45,7 @@ class SessionTest extends KernelTestCase
                 ],
             ])->getBody(), true)['token'];
             $this->client = new Client([
-                'base_uri' => self::BASE_URI,
+                'base_uri' => self::BASE_URI . 'v1/',
                 RequestOptions::HEADERS => [
                     'Authorization' => sprintf('Bearer %s', $jwt),
                     'Content-Type' => 'application/json',
