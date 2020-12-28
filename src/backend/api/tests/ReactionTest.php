@@ -50,7 +50,7 @@ class ReactionTest extends KernelTestCase
                 ],
             ])->getBody(), true)['token'];
             $this->client = new Client([
-                'base_uri' => self::BASE_URI . 'v1/',
+                'base_uri' => self::BASE_URI.'v1/',
                 RequestOptions::HEADERS => [
                     'Authorization' => sprintf('Bearer %s', $jwt),
                     'Content-Type' => 'application/json',
