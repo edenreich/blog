@@ -1,5 +1,9 @@
 controllers:
-    resource: ../../src/Controller/V1
+    resource: ../../src/Controller/
+    type: annotation
+
+api:
+    resource: ../../src/Controller/V1/
     type: annotation
     prefix: '/api/v1'
 
