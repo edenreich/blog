@@ -47,6 +47,7 @@ class SessionTest extends KernelTestCase
             $this->client = new Client([
                 'base_uri' => self::BASE_URI.'v1/',
                 RequestOptions::HEADERS => [
+                    'User-Agent' => 'Test',
                     'Authorization' => sprintf('Bearer %s', $jwt),
                     'Content-Type' => 'application/json',
                 ],
