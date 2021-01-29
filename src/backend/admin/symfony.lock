@@ -99,6 +99,9 @@
             ".php_cs.dist"
         ]
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
     "guzzlehttp/guzzle": {
         "version": "7.2.0"
     },
@@ -122,9 +125,6 @@
     },
     "nikic/php-parser": {
         "version": "v4.10.4"
-    },
-    "ocramius/proxy-manager": {
-        "version": "2.10.0"
     },
     "php-cs-fixer/diff": {
         "version": "v1.3.1"
@@ -404,6 +404,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.20.0"
     },
+    "symfony/polyfill-uuid": {
+        "version": "v1.22.0"
+    },
     "symfony/process": {
         "version": "v5.2.1"
     },
@@ -508,6 +511,9 @@
     "symfony/twig-pack": {
         "version": "v1.0.1"
     },
+    "symfony/uid": {
+        "version": "v5.2.2"
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {
@@ -552,9 +558,6 @@
     },
     "twig/twig": {
         "version": "v3.1.1"
-    },
-    "webimpress/safe-writer": {
-        "version": "2.1.0"
     },
     "webmozart/assert": {
         "version": "1.9.1"
