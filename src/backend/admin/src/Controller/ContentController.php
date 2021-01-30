@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Dto\Article;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -78,31 +80,88 @@ class ContentController extends NavigationAwareController
     /**
      * @Route("/content/{id}/delete", methods={"GET"}, name="content_delete")
      */
-    public function delete(): Response
+    public function deleteAction(string $id): Response
     {
-        // @todo implement delete on the API
-
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        
+        $client->delete(sprintf('/api/v1/articles/%s', $id));
+        $this->addFlash(
+            'success',
+            'Article has been successfully deleted!'
+        );
         return $this->redirectToRoute('navigation_sub_content_list');
     }
 
     /**
      * @Route("/content/{id}/edit", methods={"POST"}, name="content_edit_submit")
      */
-    public function editSubmit(string $id): RedirectResponse
+    public function editAction(string $id, Request $request): RedirectResponse
     {
-        // @todo implement edit on the API
+        $payload = $request->request->all();
 
-        return $this->redirectToRoute('navigation_sub_content_list');
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        
+        try {
+            $client->put(sprintf('/api/v1/articles/%s', $id), [
+                RequestOptions::JSON => $payload
+            ]);
+            $this->addFlash(
+                'success',
+                sprintf('Article %s has been successfully saved!', $payload['title'])
+            );
+            return $this->redirectToRoute('navigation_sub_content_list');
+        } catch (ClientException $exception) {
+            $this->addFlash(
+                'danger',
+                'Could not save the article!'
+            );
+            return $this->redirectToRoute('navigation_sub_content_edit');
+        }
     }
 
     /**
      * @Route("/content/create", methods={"POST"}, name="content_create_submit")
      */
-    public function createSubmit(): RedirectResponse
+    public function createAction(Request $request): RedirectResponse
     {
-        // @todo implement create on the API
+        $payload = $request->request->all();
 
-        return $this->redirectToRoute('navigation_sub_content_list');
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        
+        try {
+            $client->post('/api/v1/articles', [
+                RequestOptions::JSON => $payload
+            ]);
+            $this->addFlash(
+                'success',
+                sprintf('Article %s has been successfully created!', $payload['title'])
+            );
+            return $this->redirectToRoute('navigation_sub_content_list');
+        } catch (ClientException $exception) {
+            $this->addFlash(
+                'danger',
+                'Could not create the article!'
+            );
+            return $this->redirectToRoute('navigation_sub_content_create');
+        }
     }
 
     /**
@@ -123,7 +182,11 @@ class ContentController extends NavigationAwareController
 
             return json_decode($response->getBody(), true)['token'];
         } catch (ClientExceptionInterface $exception) {
-            dd($exception);
+            $this->addFlash(
+                'danger',
+                'Could not fetch auth token!'
+            );
+            return $this->redirectToRoute('navigation_sub_content_list');
         }
     }
 }
