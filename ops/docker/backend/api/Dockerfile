@@ -1,10 +1,12 @@
-FROM composer:2.0.9 AS dev-builder
+FROM alpine:3.12 AS dev-builder
 WORKDIR /app
+RUN apk --update add composer && composer self-update
 COPY src/backend/api/composer.* ./
 RUN composer install
 
-FROM composer:2.0.9 AS builder
+FROM alpine:3.12 AS builder
 WORKDIR /app
+RUN apk --update add composer && composer self-update
 COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
