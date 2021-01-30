@@ -1,15 +1,16 @@
-FROM composer AS dev-builder
+FROM composer:1.9 AS dev-builder
 WORKDIR /app
 COPY src/backend/admin/composer.* ./
 RUN composer install
 
-FROM composer AS builder
+FROM composer:1.9 AS builder
 WORKDIR /app
 COPY src/backend/admin/composer.* ./
 RUN composer install --no-dev
 
 FROM php:7.4.14-fpm-alpine3.12 AS common
-RUN apk add --update bash nginx supervisor postgresql-dev
+RUN apk update
+RUN apk add --no-cache bash nginx supervisor postgresql-dev
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install pdo_pgsql intl && \
     apk del .build-deps
@@ -22,7 +23,7 @@ CMD [ "supervisord", "--pidfile", "/run/supervisord.pid", "-c", "/etc/supervisor
 FROM common AS development
 WORKDIR /var/www/admin
 ENV APP_ENV=dev
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+RUN apk add --update --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     pecl install xdebug && \
     docker-php-ext-enable xdebug && \
     apk del .build-deps
