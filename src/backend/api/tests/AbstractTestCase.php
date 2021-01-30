@@ -2,14 +2,14 @@
 
 namespace App\Tests;
 
-use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Client;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Client\ClientExceptionInterface;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityManager;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Client\ClientExceptionInterface;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractTestCase extends WebTestCase
 {
@@ -83,9 +83,9 @@ abstract class AbstractTestCase extends WebTestCase
     {
         return [
             new \App\DataFixtures\User(self::$container->get('security.password_encoder')),
-            new \App\DataFixtures\Article,
-            new \App\DataFixtures\Reaction,
-            new \App\DataFixtures\Session,
+            new \App\DataFixtures\Article(),
+            new \App\DataFixtures\Reaction(),
+            new \App\DataFixtures\Session(),
         ];
     }
 }

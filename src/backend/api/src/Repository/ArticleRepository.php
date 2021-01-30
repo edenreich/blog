@@ -2,11 +2,11 @@
 
 namespace App\Repository;
 
-use Exception;
 use App\Entity\Article;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -40,7 +40,7 @@ class ArticleRepository extends ServiceEntityRepository
     public function delete(string $id): bool
     {
         $em = $this->getEntityManager();
-        
+
         /** @var Article */
         $article = $em->find(Article::class, $id);
 

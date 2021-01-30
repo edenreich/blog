@@ -2,8 +2,8 @@
 
 namespace App\Tests;
 
-use DateTime;
 use App\Entity\Article;
+use DateTime;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 

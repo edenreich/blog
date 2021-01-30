@@ -243,7 +243,7 @@ class Article
     /**
      * Get the value of deletedAt.
      */
-    public function getDeletedAt(): ?\DateTimeInterface
+    public function getDeletedAt(): ?DateTimeInterface
     {
         return $this->deletedAt;
     }
@@ -251,7 +251,7 @@ class Article
     /**
      * Set the value of deletedAt.
      */
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 

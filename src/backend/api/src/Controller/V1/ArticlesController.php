@@ -2,9 +2,9 @@
 
 namespace App\Controller\V1;
 
-use Exception;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ class ArticlesController extends AbstractController
     {
         /** @var \App\Repository\ArticleRepository */
         $articleRepository = $entityManager->getRepository(Article::class);
-        
+
         $articles = $articleRepository->findAll();
 
         return $this->json($articles, 200, ['groups' => ['admin', 'frontend']]);
