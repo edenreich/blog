@@ -117,11 +117,25 @@ class ArticleTest extends KernelTestCase
     {
         /** @var Article */
         $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
-        $title = $article->getId();
+        $id = $article->getId();
 
         $response = $this->client->get(sprintf('articles/%s', $article->getSlug()));
 
         $article = json_decode($response->getBody());
-        $this->assertEquals($title, $article->id);
+        $this->assertEquals($id, $article->id);
+    }
+
+    public function testCanDeleteAnArticle(): void
+    {
+        /** @var Article */
+        $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
+
+        $response = $this->client->delete(sprintf('articles/%s', $article->getId()));
+
+        $content = json_decode($response->getBody());
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNull($content);
+        $this->assertNotNull($article->getDeletedAt());
     }
 }
