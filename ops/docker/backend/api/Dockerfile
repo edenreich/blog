@@ -1,9 +1,9 @@
-FROM composer AS dev-builder
+FROM composer:2.0.9 AS dev-builder
 WORKDIR /app
 COPY src/backend/api/composer.* ./
 RUN composer install
 
-FROM composer AS builder
+FROM composer:2.0.9 AS builder
 WORKDIR /app
 COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
