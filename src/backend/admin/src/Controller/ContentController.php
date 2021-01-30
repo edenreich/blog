@@ -138,6 +138,11 @@ class ContentController extends NavigationAwareController
     {
         $payload = $request->request->all();
 
+        $session = $request->getSession();
+        foreach ($payload as $key => $value) {
+            $session->set('article.' . $key, $value);
+        }
+
         $client = new Client([
             'base_uri' => $this->getParameter('api_url'),
             RequestOptions::HEADERS => [
