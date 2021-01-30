@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Dto\Article;
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,8 +27,14 @@ class ContentController extends NavigationAwareController
     public function list(): Response
     {
         if ($this->request->isXmlHttpRequest()) {
-            $client = new Client(['base_uri' => 'https://admin.eden-reich.com']);
-            $response = $client->get('/articles');
+            $client = new Client([
+                'base_uri' => $this->getParameter('api_url'),
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+            $response = $client->get('/api/v1/articles');
             $responseArticles = json_decode($response->getBody(), true);
             $articles = array_map(function ($responseArticle) {
                 return new Article($responseArticle);
@@ -51,11 +59,17 @@ class ContentController extends NavigationAwareController
      */
     public function edit(string $id): Response
     {
-        // $client = new Client(['base_uri' => 'https://admin.eden-reich.com']);
-        // $response = $client->get('/articles/' . $id);
-        // $responseArticle = json_decode($response->getBody(), true);
-        // $article = new Article($responseArticle);
-        $article['id'] = $id;
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        $response = $client->get(sprintf('/api/v1/articles/%s', $id));
+        $responseArticle = json_decode($response->getBody(), true);
+        $article = new Article($responseArticle);
+
         return $this->render('content/edit.html.twig', [
             'article' => $article,
         ]);
@@ -66,7 +80,9 @@ class ContentController extends NavigationAwareController
      */
     public function delete(): Response
     {
-        return $this->redirectToRoute('navigation_content_list');
+        // @todo implement delete on the API
+
+        return $this->redirectToRoute('navigation_sub_content_list');
     }
 
     /**
@@ -74,6 +90,40 @@ class ContentController extends NavigationAwareController
      */
     public function editSubmit(string $id): RedirectResponse
     {
-        return $this->redirectToRoute('content_edit');
+        // @todo implement edit on the API
+
+        return $this->redirectToRoute('navigation_sub_content_list');
+    }
+
+    /**
+     * @Route("/content/create", methods={"POST"}, name="content_create_submit")
+     */
+    public function createSubmit(): RedirectResponse
+    {
+        // @todo implement create on the API
+
+        return $this->redirectToRoute('navigation_sub_content_list');
+    }
+
+    /**
+     * Fetch the JWT.
+     */
+    private function getAuthToken(): string
+    {
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+        ]);
+        try {
+            $response = $client->post('api/authorize', [
+                RequestOptions::JSON => [
+                    'username' => 'admin@gmail.com',
+                    'password' => 'admin',
+                ],
+            ]);
+
+            return json_decode($response->getBody(), true)['token'];
+        } catch (ClientExceptionInterface $exception) {
+            dd($exception);
+        }
     }
 }
