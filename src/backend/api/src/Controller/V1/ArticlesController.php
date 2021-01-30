@@ -2,6 +2,7 @@
 
 namespace App\Controller\V1;
 
+use Exception;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,13 +33,13 @@ class ArticlesController extends AbstractController
                 $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
 
                 if (!$article) {
-                    throw new \Exception(sprintf('could not find article with slug or id %s', $id));
+                    throw new Exception(sprintf('could not find article with slug or id %s', $id));
                 }
             }
-        } catch (\Exception $exception) {
+
+            return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
             return $this->json(['message' => sprintf('could not find article with slug or id %s', $id)], 404);
         }
-
-        return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
     }
 }
