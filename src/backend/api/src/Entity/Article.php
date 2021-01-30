@@ -62,7 +62,13 @@ class Article
      * @ORM\Column(name="published_at", type="datetimetz", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private ?DateTimeInterface $publishedAt = null;
+    private ?DateTimeInterface $publishedAt;
+
+    /**
+     * @ORM\Column(name="deleted_at", type="datetimetz", nullable=true)
+     * @Groups({"admin", "frontend"})
+     */
+    private ?DateTimeInterface $deletedAt;
 
     /**
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
@@ -220,6 +226,24 @@ class Article
     }
 
     /**
+     * Get the value of deletedAt.
+     */
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set the value of deletedAt.
+     */
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
      * Get the value of updatedAt.
      */
     public function getUpdatedAt(): ?DateTimeInterface
@@ -275,6 +299,9 @@ class Article
         return $this;
     }
 
+    /**
+     * Remove a reaction.
+     */
     public function removeReaction(Reaction $reaction): self
     {
         if ($this->reactions->removeElement($reaction)) {
