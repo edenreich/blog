@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Route("/articles", methods={"GET", "OPTIONS"}, name="articles.list")
+     * @Route("/articles", methods={"GET"}, name="articles.list")
      */
     public function list(EntityManagerInterface $entityManager): JsonResponse
     {
@@ -26,7 +26,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/articles/{id}", methods={"GET", "OPTIONS"}, name="articles.find")
+     * @Route("/articles/{id}", methods={"GET"}, name="articles.find")
      */
     public function find(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -48,7 +48,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/articles/{id}", methods={"DELETE", "OPTIONS"}, name="articles.delete")
+     * @Route("/articles/{id}", methods={"DELETE"}, name="articles.delete")
      */
     public function delete(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -68,7 +68,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/articles", methods={"POST", "OPTIONS"}, name="articles.store")
+     * @Route("/articles", methods={"POST"}, name="articles.store")
      */
     public function store(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -78,6 +78,22 @@ class ArticlesController extends AbstractController
             $article = $articleRepository->store(json_decode($request->getContent(), true));
 
             return $this->json($article, 201, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
+            return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
+        }
+    }
+
+    /**
+     * @Route("/articles/{id}", methods={"PUT", "PATCH"}, name="articles.update")
+     */
+    public function update(string $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        try {
+            /** @var \App\Repository\ArticleRepository */
+            $articleRepository = $entityManager->getRepository(Article::class);
+            $article = $articleRepository->update($id, json_decode($request->getContent(), true));
+
+            return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
             return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
         }

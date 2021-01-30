@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Exception;
 use App\Entity\Article;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -55,7 +56,7 @@ class ArticleRepository extends ServiceEntityRepository
 
     /**
      * Create a new article.
-     * 
+     *
      * @throws ORMInvalidArgumentException
      * @throws ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -66,6 +67,44 @@ class ArticleRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
 
         $em->persist($article);
+        $em->flush();
+
+        return $article;
+    }
+
+    /**
+     * Create a new article.
+     *
+     * @throws ORMInvalidArgumentException
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function update(string $id, array $attributes): Article
+    {
+        $em = $this->getEntityManager();
+        /** @var Article */
+        $article = $em->find(Article::class, $id);
+
+        if (!$article) {
+            throw new Exception(sprintf('Article not found by %s', $id));
+        }
+
+        if (isset($attributes['title'])) {
+            $article->setTitle($attributes['title']);
+        }
+        if (isset($attributes['slug'])) {
+            $article->setSlug($attributes['slug']);
+        }
+        if (isset($attributes['meta_keywords'])) {
+            $article->setMetaKeywords($attributes['meta_keywords']);
+        }
+        if (isset($attributes['meta_description'])) {
+            $article->setMetaDescription($attributes['meta_description']);
+        }
+        if (isset($attributes['content'])) {
+            $article->setContent($attributes['content']);
+        }
+
         $em->flush();
 
         return $article;

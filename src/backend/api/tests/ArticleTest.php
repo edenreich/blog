@@ -137,6 +137,44 @@ class ArticleTest extends AbstractTestCase
 
     public function testCanUpdateExistingArticle(): void
     {
-        throw new \Exception('Pending Implementation');
+        $response = $this->client->get('articles');
+        $article = json_decode($response->getBody(), true)[0];
+
+        $payload = [
+            'title' => 'Test Article',
+            'slug' => 'test-article',
+            'meta_keywords' => 'test, testing',
+            'meta_description' => 'This is a test article',
+            'content' => '<html><head><title>Test Article</title></head><body><p>This is a test article</p></body></html>',
+        ];
+
+        $response = $this->client->put(sprintf('articles/%s', $article['id']), [
+            RequestOptions::JSON => $payload,
+        ]);
+
+        $responseArticle = json_decode($response->getBody(), true);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertArrayHasKey('id', $responseArticle);
+        $this->assertArrayHasKey('title', $responseArticle);
+        $this->assertArrayHasKey('slug', $responseArticle);
+        $this->assertArrayHasKey('meta_keywords', $responseArticle);
+        $this->assertArrayHasKey('meta_description', $responseArticle);
+        $this->assertArrayHasKey('content', $responseArticle);
+        $this->assertArrayHasKey('published_at', $responseArticle);
+        $this->assertArrayHasKey('deleted_at', $responseArticle);
+        $this->assertArrayHasKey('updated_at', $responseArticle);
+        $this->assertArrayHasKey('created_at', $responseArticle);
+        $this->assertEquals($article['id'], $responseArticle['id']);
+        $this->assertNotEquals($article['title'], $responseArticle['title']);
+        $this->assertEquals($payload['title'], $responseArticle['title']);
+        $this->assertEquals($payload['slug'], $responseArticle['slug']);
+        $this->assertEquals($payload['meta_keywords'], $responseArticle['meta_keywords']);
+        $this->assertEquals($payload['meta_description'], $responseArticle['meta_description']);
+        $this->assertEquals($payload['content'], $responseArticle['content']);
+        $this->assertNull($responseArticle['published_at']);
+        $this->assertNull($responseArticle['deleted_at']);
+        $this->assertNotNull($responseArticle['updated_at']);
+        $this->assertNotNull($responseArticle['created_at']);
     }
 }
