@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ReactionsController extends AbstractController
 {
     /**
-     * @Route("/reactions", methods={"POST", "OPTIONS"}, name="reactions.create")
+     * @Route("/reactions", methods={"POST"}, name="reactions.create")
      */
     public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
@@ -29,7 +29,7 @@ class ReactionsController extends AbstractController
     }
 
     /**
-     * @Route("/reactions/count", methods={"GET", "OPTIONS"}, name="reactions.count")
+     * @Route("/reactions/count", methods={"GET"}, name="reactions.count")
      */
     public function count(Request $request, EntityManagerInterface $entityManager): Response
     {

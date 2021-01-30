@@ -14,7 +14,7 @@ class NotificationController extends AbstractController
     /**
      * Create or update a notification.
      *
-     * @Route("/notifications", methods={"POST", "OPTIONS"}, name="notifications.create")
+     * @Route("/notifications", methods={"POST"}, name="notifications.create")
      */
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -35,7 +35,7 @@ class NotificationController extends AbstractController
     /**
      * Update a notification.
      *
-     * @Route("/notifications/{id}", methods={"PUT", "OPTIONS"}, name="notifications.update")
+     * @Route("/notifications/{id}", methods={"PUT"}, name="notifications.update")
      */
     public function update(string $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
