@@ -14,6 +14,8 @@ use Exception;
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method bool         delete(int $id)
+ * @method Article      store(array $attributes)
+ * @method Article      update(string $id, array $attributes)
  */
 class ArticleRepository extends ServiceEntityRepository
 {
