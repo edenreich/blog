@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Article;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -11,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Article|null findOneBy(array $criteria, array $orderBy = null)
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method bool         delete(int $id)
  */
 class ArticleRepository extends ServiceEntityRepository
 {
@@ -28,5 +30,25 @@ class ArticleRepository extends ServiceEntityRepository
             ->orderBy('a.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Delete an article by given id.
+     */
+    public function delete(string $id): bool
+    {
+        $em = $this->getEntityManager();
+        
+        /** @var Article */
+        $article = $em->find(Article::class, $id);
+
+        if (!$article) {
+            return false;
+        }
+
+        $article->setDeletedAt(new DateTime());
+        $em->flush();
+
+        return true;
     }
 }
