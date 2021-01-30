@@ -4,24 +4,29 @@ namespace App\Controller\V1;
 
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticlesController extends AbstractController
 {
     /**
-     * @Route("/articles", methods={"GET", "OPTIONS"}, name="articles.list")
+     * @Route("/articles", methods={"GET"}, name="articles.list")
      */
     public function list(EntityManagerInterface $entityManager): JsonResponse
     {
-        $articles = $entityManager->getRepository(Article::class)->findAll();
+        /** @var \App\Repository\ArticleRepository */
+        $articleRepository = $entityManager->getRepository(Article::class);
+
+        $articles = $articleRepository->findAll();
 
         return $this->json($articles, 200, ['groups' => ['admin', 'frontend']]);
     }
 
     /**
-     * @Route("/articles/{id}", methods={"GET", "OPTIONS"}, name="articles.find")
+     * @Route("/articles/{id}", methods={"GET"}, name="articles.find")
      */
     public function find(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -32,13 +37,65 @@ class ArticlesController extends AbstractController
                 $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
 
                 if (!$article) {
-                    throw new \Exception(sprintf('could not find article with slug or id %s', $id));
+                    throw new Exception(sprintf('could not find article with slug or id %s', $id));
                 }
             }
-        } catch (\Exception $exception) {
-            return $this->json(['message' => sprintf('could not find article with slug or id %s', $id)], 404);
-        }
 
-        return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
+            return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
+            return $this->json(['message' => sprintf('could not find article with slug or id %s', $id)], 404, ['groups' => ['admin', 'frontend']]);
+        }
+    }
+
+    /**
+     * @Route("/articles/{id}", methods={"DELETE"}, name="articles.delete")
+     */
+    public function delete(string $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        try {
+            /** @var \App\Repository\ArticleRepository */
+            $articleRepository = $entityManager->getRepository(Article::class);
+            $affectedRow = $articleRepository->delete($id);
+
+            if (!$affectedRow) {
+                throw new Exception(sprintf('could not find or delete article with id %s', $id));
+            }
+
+            return $this->json([], 204, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
+            return $this->json(['message' => sprintf('could not find or delete article with id %s', $id)], 404, ['groups' => ['admin', 'frontend']]);
+        }
+    }
+
+    /**
+     * @Route("/articles", methods={"POST"}, name="articles.store")
+     */
+    public function store(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        try {
+            /** @var \App\Repository\ArticleRepository */
+            $articleRepository = $entityManager->getRepository(Article::class);
+            $article = $articleRepository->store(json_decode($request->getContent(), true));
+
+            return $this->json($article, 201, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
+            return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
+        }
+    }
+
+    /**
+     * @Route("/articles/{id}", methods={"PUT", "PATCH"}, name="articles.update")
+     */
+    public function update(string $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        try {
+            /** @var \App\Repository\ArticleRepository */
+            $articleRepository = $entityManager->getRepository(Article::class);
+            $article = $articleRepository->update($id, json_decode($request->getContent(), true));
+
+            return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
+            return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
+        }
     }
 }

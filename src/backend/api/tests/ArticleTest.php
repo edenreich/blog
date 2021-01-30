@@ -3,75 +3,32 @@
 namespace App\Tests;
 
 use App\Entity\Article;
-use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Client;
+use DateTime;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Client\ClientExceptionInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ArticleTest extends KernelTestCase
+class ArticleTest extends AbstractTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1:8080/api/';
-
-    /**
-     * Store the guzzle http client.
-     */
-    private Client $client;
-
-    /**
-     * Store the entity manager.
-     */
-    private EntityManager $entityManager;
-
-    /**
-     * Setup a client and entity manager.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->entityManager = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-        $client = new Client(['base_uri' => self::BASE_URI]);
-
-        try {
-            $jwt = json_decode($client->post('authorize', [
-                RequestOptions::JSON => [
-                    'username' => 'admin@gmail.com',
-                    'password' => 'admin',
-                ],
-            ])->getBody(), true)['token'];
-            $this->client = new Client([
-                'base_uri' => self::BASE_URI.'v1/',
-                RequestOptions::HEADERS => [
-                    'Authorization' => sprintf('Bearer %s', $jwt),
-                    'Content-Type' => 'application/json',
-                ],
-            ]);
-        } catch (ClientExceptionInterface $exception) {
-            dd('Could not fetch access token: '.$exception->getMessage());
-        }
-    }
-
-    /**
-     * Unset the client and the entity manager.
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        unset($this->client);
-        unset($this->entityManager);
-    }
-
     public function testCanFetchAllArticles(): void
     {
         $response = $this->client->get('articles');
-
         $articles = json_decode($response->getBody());
+
         $this->assertCount(10, $articles);
+    }
+
+    public function testFetchingOnlyNonDeletedArticles(): void
+    {
+        /** @var Article */
+        $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
+
+        $article->setDeletedAt(new DateTime());
+        $this->entityManager->flush();
+
+        $response = $this->client->get('articles');
+        $articles = json_decode($response->getBody());
+
+        $this->assertCount(9, $articles);
     }
 
     public function testCanFetchSingleArticle(): void
@@ -117,11 +74,107 @@ class ArticleTest extends KernelTestCase
     {
         /** @var Article */
         $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
-        $title = $article->getId();
+        $id = $article->getId();
 
         $response = $this->client->get(sprintf('articles/%s', $article->getSlug()));
 
         $article = json_decode($response->getBody());
-        $this->assertEquals($title, $article->id);
+        $this->assertEquals($id, $article->id);
+    }
+
+    public function testCanDeleteAnArticle(): void
+    {
+        /** @var Article */
+        $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
+
+        $response = $this->client->delete(sprintf('articles/%s', $article->getId()));
+        $this->entityManager->refresh($article);
+
+        $content = json_decode($response->getBody());
+
+        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertNull($content);
+        $this->assertNotNull($article->getDeletedAt());
+    }
+
+    public function testCanCreateAnArticle(): void
+    {
+        $payload = [
+            'title' => 'Test Article',
+            'slug' => 'test-article',
+            'meta_keywords' => 'test, testing',
+            'meta_description' => 'This is a test article',
+            'content' => '<html><head><title>Test Article</title></head><body><p>This is a test article</p></body></html>',
+        ];
+
+        $response = $this->client->post('articles', [
+            RequestOptions::JSON => $payload,
+        ]);
+
+        $responseArticle = json_decode($response->getBody(), true);
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertArrayHasKey('id', $responseArticle);
+        $this->assertArrayHasKey('title', $responseArticle);
+        $this->assertArrayHasKey('slug', $responseArticle);
+        $this->assertArrayHasKey('meta_keywords', $responseArticle);
+        $this->assertArrayHasKey('meta_description', $responseArticle);
+        $this->assertArrayHasKey('content', $responseArticle);
+        $this->assertArrayHasKey('published_at', $responseArticle);
+        $this->assertArrayHasKey('deleted_at', $responseArticle);
+        $this->assertArrayHasKey('updated_at', $responseArticle);
+        $this->assertArrayHasKey('created_at', $responseArticle);
+        $this->assertEquals($payload['title'], $responseArticle['title']);
+        $this->assertEquals($payload['slug'], $responseArticle['slug']);
+        $this->assertEquals($payload['meta_keywords'], $responseArticle['meta_keywords']);
+        $this->assertEquals($payload['meta_description'], $responseArticle['meta_description']);
+        $this->assertEquals($payload['content'], $responseArticle['content']);
+        $this->assertNull($responseArticle['published_at']);
+        $this->assertNull($responseArticle['deleted_at']);
+        $this->assertNull($responseArticle['updated_at']);
+        $this->assertNotNull($responseArticle['created_at']);
+    }
+
+    public function testCanUpdateExistingArticle(): void
+    {
+        $response = $this->client->get('articles');
+        $article = json_decode($response->getBody(), true)[0];
+
+        $payload = [
+            'title' => 'Test Article',
+            'slug' => 'test-article',
+            'meta_keywords' => 'test, testing',
+            'meta_description' => 'This is a test article',
+            'content' => '<html><head><title>Test Article</title></head><body><p>This is a test article</p></body></html>',
+        ];
+
+        $response = $this->client->put(sprintf('articles/%s', $article['id']), [
+            RequestOptions::JSON => $payload,
+        ]);
+
+        $responseArticle = json_decode($response->getBody(), true);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertArrayHasKey('id', $responseArticle);
+        $this->assertArrayHasKey('title', $responseArticle);
+        $this->assertArrayHasKey('slug', $responseArticle);
+        $this->assertArrayHasKey('meta_keywords', $responseArticle);
+        $this->assertArrayHasKey('meta_description', $responseArticle);
+        $this->assertArrayHasKey('content', $responseArticle);
+        $this->assertArrayHasKey('published_at', $responseArticle);
+        $this->assertArrayHasKey('deleted_at', $responseArticle);
+        $this->assertArrayHasKey('updated_at', $responseArticle);
+        $this->assertArrayHasKey('created_at', $responseArticle);
+        $this->assertEquals($article['id'], $responseArticle['id']);
+        $this->assertNotEquals($article['title'], $responseArticle['title']);
+        $this->assertEquals($payload['title'], $responseArticle['title']);
+        $this->assertEquals($payload['slug'], $responseArticle['slug']);
+        $this->assertEquals($payload['meta_keywords'], $responseArticle['meta_keywords']);
+        $this->assertEquals($payload['meta_description'], $responseArticle['meta_description']);
+        $this->assertEquals($payload['content'], $responseArticle['content']);
+        $this->assertNull($responseArticle['published_at']);
+        $this->assertNull($responseArticle['deleted_at']);
+        $this->assertNotNull($responseArticle['updated_at']);
+        $this->assertNotNull($responseArticle['created_at']);
     }
 }

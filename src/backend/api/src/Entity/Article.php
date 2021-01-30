@@ -65,10 +65,16 @@ class Article
     private ?DateTimeInterface $publishedAt = null;
 
     /**
+     * @ORM\Column(name="deleted_at", type="datetimetz", nullable=true)
+     * @Groups({"admin", "frontend"})
+     */
+    private ?DateTimeInterface $deletedAt = null;
+
+    /**
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      * @Groups({"admin", "frontend"})
      */
-    private ?DateTimeInterface $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
@@ -87,10 +93,25 @@ class Article
     /**
      * Initialize properties.
      */
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
         $this->reactions = new ArrayCollection();
         $this->createdAt = new DateTime();
+        if (isset($attributes['title'])) {
+            $this->setTitle($attributes['title']);
+        }
+        if (isset($attributes['slug'])) {
+            $this->setSlug($attributes['slug']);
+        }
+        if (isset($attributes['meta_keywords'])) {
+            $this->setMetaKeywords($attributes['meta_keywords']);
+        }
+        if (isset($attributes['meta_description'])) {
+            $this->setMetaDescription($attributes['meta_description']);
+        }
+        if (isset($attributes['content'])) {
+            $this->setContent($attributes['content']);
+        }
     }
 
     /**
@@ -220,6 +241,24 @@ class Article
     }
 
     /**
+     * Get the value of deletedAt.
+     */
+    public function getDeletedAt(): ?DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set the value of deletedAt.
+     */
+    public function setDeletedAt(?DateTimeInterface $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
      * Get the value of updatedAt.
      */
     public function getUpdatedAt(): ?DateTimeInterface
@@ -275,6 +314,9 @@ class Article
         return $this;
     }
 
+    /**
+     * Remove a reaction.
+     */
     public function removeReaction(Reaction $reaction): self
     {
         if ($this->reactions->removeElement($reaction)) {

@@ -16,7 +16,7 @@ class SessionsController extends AbstractController
     /**
      * Find or create a new session.
      *
-     * @Route("/sessions", methods={"POST", "OPTIONS"}, name="sessions.create")
+     * @Route("/sessions", methods={"POST"}, name="sessions.create")
      *
      * @return Response|JsonResponse
      */
@@ -39,7 +39,7 @@ class SessionsController extends AbstractController
     /**
      * Find a single session by given id.
      *
-     * @Route("/sessions/{id}", methods={"GET", "OPTIONS"}, name="sessions.find")
+     * @Route("/sessions/{id}", methods={"GET"}, name="sessions.find")
      *
      * @param Request $request
      *
@@ -66,7 +66,7 @@ class SessionsController extends AbstractController
     /**
      * Find a session by given query param ip_address.
      *
-     * @Route("/sessions", methods={"GET", "OPTIONS"}, name="sessions.find_by_ip")
+     * @Route("/sessions", methods={"GET"}, name="sessions.find_by_ip")
      *
      * @return Response|JsonResponse
      */
