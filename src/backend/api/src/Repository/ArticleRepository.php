@@ -28,6 +28,7 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->orderBy('a.createdAt', 'DESC')
+            ->where('a.deletedAt IS NULL')
             ->getQuery()
             ->getResult();
     }

@@ -16,7 +16,10 @@ class ArticlesController extends AbstractController
      */
     public function list(EntityManagerInterface $entityManager): JsonResponse
     {
-        $articles = $entityManager->getRepository(Article::class)->findAll();
+        /** @var \App\Repository\ArticleRepository */
+        $articleRepository = $entityManager->getRepository(Article::class);
+        
+        $articles = $articleRepository->findAll();
 
         return $this->json($articles, 200, ['groups' => ['admin', 'frontend']]);
     }

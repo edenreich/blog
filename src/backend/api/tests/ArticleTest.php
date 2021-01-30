@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use DateTime;
 use App\Entity\Article;
 use GuzzleHttp\Exception\ClientException;
 
@@ -13,6 +14,20 @@ class ArticleTest extends AbstractTestCase
         $articles = json_decode($response->getBody());
 
         $this->assertCount(10, $articles);
+    }
+
+    public function testFetchingOnlyNonDeletedArticles(): void
+    {
+        /** @var Article */
+        $article = $this->entityManager->getRepository(Article::class)->findAll()[0];
+
+        $article->setDeletedAt(new DateTime());
+        $this->entityManager->flush();
+
+        $response = $this->client->get('articles');
+        $articles = json_decode($response->getBody());
+
+        $this->assertCount(9, $articles);
     }
 
     public function testCanFetchSingleArticle(): void
