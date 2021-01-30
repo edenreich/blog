@@ -7,6 +7,7 @@ use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticlesController extends AbstractController
@@ -63,6 +64,22 @@ class ArticlesController extends AbstractController
             return $this->json([], 204, ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
             return $this->json(['message' => sprintf('could not find or delete article with id %s', $id)], 404, ['groups' => ['admin', 'frontend']]);
+        }
+    }
+
+    /**
+     * @Route("/articles", methods={"POST", "OPTIONS"}, name="articles.store")
+     */
+    public function store(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        try {
+            /** @var \App\Repository\ArticleRepository */
+            $articleRepository = $entityManager->getRepository(Article::class);
+            $article = $articleRepository->store(json_decode($request->getContent(), true));
+
+            return $this->json($article, 201, ['groups' => ['admin', 'frontend']]);
+        } catch (Exception $exception) {
+            return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
         }
     }
 }

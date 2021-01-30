@@ -52,4 +52,22 @@ class ArticleRepository extends ServiceEntityRepository
 
         return true;
     }
+
+    /**
+     * Create a new article.
+     * 
+     * @throws ORMInvalidArgumentException
+     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function store(array $attributes): Article
+    {
+        $article = new Article($attributes);
+        $em = $this->getEntityManager();
+
+        $em->persist($article);
+        $em->flush();
+
+        return $article;
+    }
 }
