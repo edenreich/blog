@@ -33,6 +33,7 @@ class ReactionTest extends AbstractTestCase
         /** @var \App\Repository\ReactionRepository */
         $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
+        $this->entityManager->refresh($reaction);
 
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals($reaction->getId(), $reactionResponse->id);
@@ -65,6 +66,7 @@ class ReactionTest extends AbstractTestCase
         /** @var \App\Repository\ReactionRepository */
         $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
+        $this->entityManager->refresh($reaction);
 
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals($reaction->getId(), $reactionResponse->id);
@@ -97,6 +99,7 @@ class ReactionTest extends AbstractTestCase
         /** @var \App\Repository\ReactionRepository */
         $reactionRepository = $this->entityManager->getRepository(Reaction::class);
         $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
+        $this->entityManager->refresh($reaction);
 
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals($reaction->getId(), $reactionResponse->id);
@@ -137,10 +140,10 @@ class ReactionTest extends AbstractTestCase
 
         /** @var \App\Repository\ReactionRepository */
         $reactionRepository = $this->entityManager->getRepository(Reaction::class);
-        $reactions = $reactionRepository->findBy(['session' => $session, 'article' => $article]);
+        $reaction = $reactionRepository->findOneBy(['session' => $session, 'article' => $article]);
+        $this->entityManager->refresh($reaction);
 
-        $this->assertCount(1, $reactions);
-        $this->assertEquals('like', $reactions[0]->getType());
+        $this->assertEquals('like', $reaction->getType());
     }
 
     public function testCanFetchCountOfAllReactionsForASpecificArticle(): void
