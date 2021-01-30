@@ -95,4 +95,14 @@ class ArticleTest extends AbstractTestCase
         $this->assertNull($content);
         $this->assertNotNull($article->getDeletedAt());
     }
+
+    public function testCanCreateAnArticle(): void
+    {
+        throw new \Exception('Pending Implementation');
+    }
+
+    public function testCanUpdateExistingArticle(): void
+    {
+        throw new \Exception('Pending Implementation');
+    }
 }
