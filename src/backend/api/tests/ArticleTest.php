@@ -3,74 +3,15 @@
 namespace App\Tests;
 
 use App\Entity\Article;
-use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Client\ClientExceptionInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ArticleTest extends KernelTestCase
+class ArticleTest extends AbstractTestCase
 {
-    private const BASE_URI = 'http://127.0.0.1:8080/api/';
-
-    /**
-     * Store the guzzle http client.
-     */
-    private Client $client;
-
-    /**
-     * Store the entity manager.
-     */
-    private EntityManager $entityManager;
-
-    /**
-     * Setup a client and entity manager.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->entityManager = self::bootKernel()
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager();
-        $client = new Client(['base_uri' => self::BASE_URI]);
-
-        try {
-            $jwt = json_decode($client->post('authorize', [
-                RequestOptions::JSON => [
-                    'username' => 'admin@gmail.com',
-                    'password' => 'admin',
-                ],
-            ])->getBody(), true)['token'];
-            $this->client = new Client([
-                'base_uri' => self::BASE_URI.'v1/',
-                RequestOptions::HEADERS => [
-                    'Authorization' => sprintf('Bearer %s', $jwt),
-                    'Content-Type' => 'application/json',
-                ],
-            ]);
-        } catch (ClientExceptionInterface $exception) {
-            dd('Could not fetch access token: '.$exception->getMessage());
-        }
-    }
-
-    /**
-     * Unset the client and the entity manager.
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        unset($this->client);
-        unset($this->entityManager);
-    }
-
     public function testCanFetchAllArticles(): void
     {
         $response = $this->client->get('articles');
-
         $articles = json_decode($response->getBody());
+
         $this->assertCount(10, $articles);
     }
 
