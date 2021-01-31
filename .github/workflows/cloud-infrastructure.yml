@@ -3,7 +3,7 @@ name: cloud-infrastructure
 on:
   push:
     branches:
-      - develop 
+      - create-storage-bucket-on-google-cloud
     paths:
       - ".github/workflows/cloud-infrastructure.yml"
       - "ops/cloud/terraform/**"
