@@ -1,7 +1,3 @@
-provider "google" {
-  project     = "eden-266620"
-  region      = "europe-west1"
-}
 resource "google_storage_bucket" "assets" {
   name          = "eden-reich.com"
   location      = "europe-west1"
