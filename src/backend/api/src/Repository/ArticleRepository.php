@@ -24,18 +24,6 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    public function findOneBy(array $criteria, array $orderBy = null): Article
-    {
-        return $this->createQueryBuilder('a')
-            ->where('a.id = :id')
-            ->orWhere('a.slug = :slug')
-            ->setParameters(['id' => $criteria['id'], 'slug' => $criteria['slug']])
-            ->andWhere('a.deletedAt IS NULL')
-            ->orderBy('a.createdAt', 'DESC')
-            ->getQuery()
-            ->getSingleResult();
-    }
-
     /**
      * @return Article[] Returns an array of Article objects
      */

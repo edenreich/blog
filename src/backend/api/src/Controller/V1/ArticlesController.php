@@ -31,20 +31,17 @@ class ArticlesController extends AbstractController
     public function find(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            /** @var \App\Repository\ArticleRepository */
-            $articleRepository = $entityManager->getRepository(Article::class);
-
-            if ($this->isValidUuid($id)) {
-                $article = $articleRepository->findOneBy(['id' => $id, 'slug' => null]);
-            } else {
-                $article = $articleRepository->findOneBy(['id' => null, 'slug' => $id]);
-            }
+            $article = $entityManager->getRepository(Article::class)->findOneBy(['slug' => $id]);
 
             if (!$article) {
-                throw new Exception(sprintf('could not find article with slug or id %s', $id));
+                $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
+
+                if (!$article) {
+                    throw new Exception(sprintf('could not find article with slug or id %s', $id));
+                }
             }
 
-            return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
+            return $this->json($article, 200, [], ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
             return $this->json(['message' => sprintf('could not find article with slug or id %s', $id)], 404, [], ['groups' => ['admin', 'frontend']]);
         }
