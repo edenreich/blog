@@ -29,7 +29,7 @@ class NotificationController extends AbstractController
             return $this->json($exception->getMessage(), 422);
         }
 
-        return $this->json($notification, 201, ['groups' => ['admin', 'frontend']]);
+        return $this->json($notification, 201, [], ['groups' => ['admin', 'frontend']]);
     }
 
     /**
@@ -50,6 +50,6 @@ class NotificationController extends AbstractController
             return $this->json($exception->getMessage(), 422);
         }
 
-        return $this->json($notification, 200, ['groups' => ['admin', 'frontend']]);
+        return $this->json($notification, 200, [], ['groups' => ['admin', 'frontend']]);
     }
 }

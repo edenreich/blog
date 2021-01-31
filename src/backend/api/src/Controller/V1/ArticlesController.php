@@ -22,7 +22,7 @@ class ArticlesController extends AbstractController
 
         $articles = $articleRepository->findAll();
 
-        return $this->json($articles, 200, ['groups' => ['admin', 'frontend']]);
+        return $this->json($articles, 200, [], ['groups' => ['admin', 'frontend']]);
     }
 
     /**
@@ -31,19 +31,22 @@ class ArticlesController extends AbstractController
     public function find(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            $article = $entityManager->getRepository(Article::class)->findOneBy(['slug' => $id]);
+            /** @var \App\Repository\ArticleRepository */
+            $articleRepository = $entityManager->getRepository(Article::class);
+
+            if ($this->isValidUuid($id)) {
+                $article = $articleRepository->findOneBy(['id' => $id, 'slug' => null]);
+            } else {
+                $article = $articleRepository->findOneBy(['id' => null, 'slug' => $id]);
+            }
 
             if (!$article) {
-                $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
-
-                if (!$article) {
-                    throw new Exception(sprintf('could not find article with slug or id %s', $id));
-                }
+                throw new Exception(sprintf('could not find article with slug or id %s', $id));
             }
 
             return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
-            return $this->json(['message' => sprintf('could not find article with slug or id %s', $id)], 404, ['groups' => ['admin', 'frontend']]);
+            return $this->json(['message' => sprintf('could not find article with slug or id %s', $id)], 404, [], ['groups' => ['admin', 'frontend']]);
         }
     }
 
@@ -61,9 +64,9 @@ class ArticlesController extends AbstractController
                 throw new Exception(sprintf('could not find or delete article with id %s', $id));
             }
 
-            return $this->json([], 204, ['groups' => ['admin', 'frontend']]);
+            return $this->json([], 204, [], ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
-            return $this->json(['message' => sprintf('could not find or delete article with id %s', $id)], 404, ['groups' => ['admin', 'frontend']]);
+            return $this->json(['message' => sprintf('could not find or delete article with id %s', $id)], 404, [], ['groups' => ['admin', 'frontend']]);
         }
     }
 
@@ -77,9 +80,9 @@ class ArticlesController extends AbstractController
             $articleRepository = $entityManager->getRepository(Article::class);
             $article = $articleRepository->store(json_decode($request->getContent(), true));
 
-            return $this->json($article, 201, ['groups' => ['admin', 'frontend']]);
+            return $this->json($article, 201, [], ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
-            return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
+            return $this->json($exception->getMessage(), 422, [], ['groups' => ['admin', 'frontend']]);
         }
     }
 
@@ -93,9 +96,21 @@ class ArticlesController extends AbstractController
             $articleRepository = $entityManager->getRepository(Article::class);
             $article = $articleRepository->update($id, json_decode($request->getContent(), true));
 
-            return $this->json($article, 200, ['groups' => ['admin', 'frontend']]);
+            return $this->json($article, 200, [], ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {
-            return $this->json($exception->getMessage(), 422, ['groups' => ['admin', 'frontend']]);
+            return $this->json($exception->getMessage(), 422, [], ['groups' => ['admin', 'frontend']]);
         }
+    }
+
+    /**
+     * Check if given string is uuid.
+     */
+    private function isValidUuid(string $uuid): bool
+    {
+        if (!is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
+            return false;
+        }
+
+        return true;
     }
 }

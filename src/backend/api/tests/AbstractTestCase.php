@@ -59,7 +59,7 @@ abstract class AbstractTestCase extends KernelTestCase
                 RequestOptions::HEADERS => [
                     'Authorization' => sprintf('Bearer %s', $jwt),
                     'Content-Type' => 'application/json',
-                    'User-Agent' => 'Test'
+                    'User-Agent' => 'Test',
                 ],
             ]);
         } catch (ClientExceptionInterface $exception) {

@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use LogicException;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\Ignore;
@@ -194,7 +195,7 @@ class Reaction
     {
         $availableReactionTypes = ['like' => 'like', 'love' => 'love', 'dislike' => 'dislike'];
         if (!isset($availableReactionTypes[$type])) {
-            throw new \LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $type, implode(', ', $availableReactionTypes)));
+            throw new LogicException(sprintf('Attempting to set an invalid type %s. Use one of the following %s', $type, implode(', ', $availableReactionTypes)));
         }
     }
 }
