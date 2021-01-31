@@ -58,6 +58,9 @@ class Article implements JsonSerializable
     public function __construct($properties)
     {
         foreach ($properties as $property => $value) {
+            if ($value === null) {
+                continue;
+            }
             $setter = sprintf('set%s', ucfirst(str_replace('_', '', ucwords($property, '_'))));
             if (method_exists($this, $setter)) {
                 if ('setUpdatedAt' === $setter || 'setCreatedAt' === $setter || 'setPublishedAt' === $setter) {
@@ -242,9 +245,9 @@ class Article implements JsonSerializable
             'meta_keywords' => $this->getMetaKeywords(),
             'meta_description' => $this->getMetaDescription(),
             'content' => $this->getContent(),
-            'published_at' => $this->getPublishedAt()->format('Y-m-d H:i:s'),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
+            'published_at' => $this->getPublishedAt() === null ? null : $this->getPublishedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $this->getUpdatedAt() === null ? null : $this->getUpdatedAt()->format('Y-m-d H:i:s'),
+            'created_at' => $this->getCreatedAt() === null ? null : $this->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
     }
 }
