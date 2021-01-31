@@ -23,13 +23,21 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Download terraform plugins
-      run: terraform init
+      run: |
+        cd ops/cloud/terraform
+        terraform init
 
     - name: Linting check
-      run: terraform fmt -check
+      run: |
+        cd ops/cloud/terraform
+        terraform fmt -check
 
     - name: Execute terraform plan
-      run: terraform plan
+      run: |
+        cd ops/cloud/terraform
+        terraform plan
 
     - name: Apply terraform plan
-      run: terraform apply -auto-approve
+      run: |
+        cd ops/cloud/terraform
+        terraform apply -auto-approve
