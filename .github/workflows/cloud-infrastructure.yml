@@ -1,0 +1,35 @@
+name: cloud-infrastructure
+
+on:
+  push:
+    branches:
+      - develop 
+    paths:
+      - ".github/workflows/cloud-infrastructure.yml"
+      - "ops/cloud/terraform/**"
+
+env:
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: self-hosted
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Download terraform plugins
+      run: terraform init
+
+    - name: Linting check
+      run: terraform fmt -check
+
+    - name: Execute terraform plan
+      run: terraform plan
+
+    - name: Apply terraform plan
+      run: terraform apply -auto-approve
