@@ -9,9 +9,9 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Client\ClientExceptionInterface;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-abstract class AbstractTestCase extends WebTestCase
+abstract class AbstractTestCase extends KernelTestCase
 {
     private const BASE_URI = 'http://127.0.0.1:8080/api/';
 
@@ -59,6 +59,7 @@ abstract class AbstractTestCase extends WebTestCase
                 RequestOptions::HEADERS => [
                     'Authorization' => sprintf('Bearer %s', $jwt),
                     'Content-Type' => 'application/json',
+                    'User-Agent' => 'Test'
                 ],
             ]);
         } catch (ClientExceptionInterface $exception) {
