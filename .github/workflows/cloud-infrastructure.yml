@@ -21,14 +21,13 @@ jobs:
 
     - name: Download terraform plugins
       run: |
-        echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
         cd ops/cloud/terraform
         terraform init
 
     - name: Linting check
       run: |
         cd ops/cloud/terraform
-        terraform fmt -check
+        terraform fmt -check -diff
 
     - name: Execute terraform plan
       run: |
