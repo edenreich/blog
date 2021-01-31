@@ -8,16 +8,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ReactionsController extends AbstractController
 {
     /**
      * @Route("/reactions", methods={"POST"}, name="reactions.create")
      */
-    public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -25,13 +23,13 @@ class ReactionsController extends AbstractController
         $reactionsRepository = $entityManager->getRepository(Reaction::class);
         $reaction = $reactionsRepository->store($data);
 
-        return new Response($serializer->serialize($reaction, 'json', ['groups' => ['admin', 'frontend']]), 201, ['content-type' => 'application/json']);
+        return $this->json($reaction, 201, [], ['groups' => ['admin', 'frontend']]);
     }
 
     /**
      * @Route("/reactions/count", methods={"GET"}, name="reactions.count")
      */
-    public function count(Request $request, EntityManagerInterface $entityManager): Response
+    public function count(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $articleId = $request->query->get('article');
 
@@ -40,7 +38,7 @@ class ReactionsController extends AbstractController
         $article = $articlesRepository->findOneBy(['id' => $articleId]);
 
         if (!$articleId) {
-            return new JsonResponse(['message' => sprintf('Could not find article id %s', $articleId)], 404);
+            return $this->json(['message' => sprintf('Could not find article id %s', $articleId)], 404);
         }
 
         $count = [
@@ -52,6 +50,6 @@ class ReactionsController extends AbstractController
             ++$count[$reaction->getType()];
         });
 
-        return new JsonResponse($count, 200);
+        return $this->json($count, 200);
     }
 }

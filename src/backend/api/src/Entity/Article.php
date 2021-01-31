@@ -97,19 +97,19 @@ class Article
     {
         $this->reactions = new ArrayCollection();
         $this->createdAt = new DateTime();
-        if (isset($attributes['title'])) {
+        if (!empty($attributes['title'])) {
             $this->setTitle($attributes['title']);
         }
-        if (isset($attributes['slug'])) {
+        if (!empty($attributes['slug'])) {
             $this->setSlug($attributes['slug']);
         }
-        if (isset($attributes['meta_keywords'])) {
+        if (!empty($attributes['meta_keywords'])) {
             $this->setMetaKeywords($attributes['meta_keywords']);
         }
-        if (isset($attributes['meta_description'])) {
+        if (!empty($attributes['meta_description'])) {
             $this->setMetaDescription($attributes['meta_description']);
         }
-        if (isset($attributes['content'])) {
+        if (!empty($attributes['content'])) {
             $this->setContent($attributes['content']);
         }
     }

@@ -9,11 +9,18 @@ COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
 FROM php:7.4.14-fpm-alpine3.12 AS common
-RUN apk add --update bash nginx supervisor postgresql-dev
+RUN apk update
+RUN apk add --no-cache bash nginx supervisor postgresql-dev
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+    echo "Europe/Berlin" > /etc/timezone && \
+    apk del tzdata
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
-    docker-php-ext-install pdo_pgsql && \
+    docker-php-ext-install pdo_pgsql intl && \
     apk del .build-deps
 RUN mkdir /run/nginx
+COPY ops/docker/backend/api/php/php.ini-development /usr/local/etc/php/php.ini-development
+COPY ops/docker/backend/api/php/php.ini-production /usr/local/etc/php/php.ini-production
 COPY ops/docker/backend/api/supervisor.d/programs /etc/supervisor.d
 COPY ops/docker/backend/api/supervisor.d/supervisord.conf /etc/supervisord.conf
 COPY ops/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
@@ -30,7 +37,7 @@ FROM common AS development
 USER root
 WORKDIR /var/www/api
 ENV APP_ENV=dev
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+RUN apk add --update --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     pecl install xdebug && \
     docker-php-ext-enable xdebug && \
     apk del .build-deps

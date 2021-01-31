@@ -16,6 +16,7 @@ services:
           - eden-reich.com
           - dev.eden-reich.com
           - dev-admin.eden-reich.com
+          - dev-api.eden-reich.com
     depends_on:
       - openssl
 
@@ -93,10 +94,11 @@ services:
 
   composer:
     image: composer
-    command: composer install
+    command: /bin/bash -c 'composer install && cd ../admin && composer install'
     working_dir: /var/www/api
     volumes:
      - ./src/backend/api:/var/www/api:rw
+     - ./src/backend/admin:/var/www/admin:rw
 
 volumes:
   database-data:

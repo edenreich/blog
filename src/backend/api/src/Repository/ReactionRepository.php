@@ -24,8 +24,9 @@ class ReactionRepository extends ServiceEntityRepository
      */
     public function store(array $data): Reaction
     {
-        $article = $this->_em->getRepository(\App\Entity\Article::class)->findOneBy(['id' => $data['article']]);
-        $session = $this->_em->getRepository(\App\Entity\Session::class)->findOneBy(['id' => $data['session']]);
+        $em = $this->getEntityManager();
+        $article = $em->getRepository(\App\Entity\Article::class)->findOneBy(['id' => $data['article']]);
+        $session = $em->getRepository(\App\Entity\Session::class)->findOneBy(['id' => $data['session']]);
 
         if (!$article || !$session) {
             throw new \Exception(sprintf('Article id %s or session id %s does not exist', $data['article'], $data['session']));
@@ -39,10 +40,10 @@ class ReactionRepository extends ServiceEntityRepository
             $reaction->setType($data['type']);
         } else {
             $reaction = new Reaction($data);
-            $this->_em->persist($reaction);
+            $em->persist($reaction);
         }
 
-        $this->_em->flush();
+        $em->flush();
 
         return $reaction;
     }
