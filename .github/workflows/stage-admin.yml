@@ -7,8 +7,8 @@ on:
     paths:
       - ".github/workflows/stage-admin.yml"
       - "src/backend/admin/**"
-      - "ops/docker/backend/admin/**"
-      - "ops/kubernetes/backend/admin/**"
+      - "ops/on-premises/docker/backend/admin/**"
+      - "ops/on-premises/kubernetes/backend/admin/**"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -17,7 +17,7 @@ env:
   DEPLOYMENT_NAME: blog-admin
   DEPLOYMENT_VERSION: ${{ github.run_number }}
   SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
-  ARTIFACT_FILES: src/backend/admin/package.json src/backend/admin/yarn.lock ops/docker/backend/admin/artifacts/Dockerfile
+  ARTIFACT_FILES: src/backend/admin/package.json src/backend/admin/yarn.lock ops/on-premises/docker/backend/admin/artifacts/Dockerfile
 
 jobs:
   check:
@@ -50,7 +50,7 @@ jobs:
           docker build \
             --target admin-artifacts \
             -t admin-artifacts:latest \
-            -f ops/docker/backend/admin/artifacts/Dockerfile .
+            -f ops/on-premises/docker/backend/admin/artifacts/Dockerfile .
   build:
     runs-on: self-hosted
     needs: build-artifacts
@@ -62,7 +62,7 @@ jobs:
             --target stage \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f ops/docker/backend/admin/Dockerfile .
+            -f ops/on-premises/docker/backend/admin/Dockerfile .
       - name: Docker Tag Image
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
@@ -84,7 +84,7 @@ jobs:
       - name: Kubernetes - switch to stage context
         run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
-        run: cat ops/kubernetes/backend/admin/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
+        run: cat ops/on-premises/kubernetes/backend/admin/deployment.yaml | sed -e "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" -e "s/{{REPOSITORY}}/${{ env.DOCKER_IMAGE }}/g" | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=180
@@ -102,9 +102,9 @@ jobs:
             sleep 1
           done
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
-        run: cat ops/kubernetes/backend/admin/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/on-premises/kubernetes/backend/admin/hpa.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
-        run: cat ops/kubernetes/backend/admin/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
+        run: cat ops/on-premises/kubernetes/backend/admin/service.yaml | sed "s/{{VERSION}}/${{ env.DEPLOYMENT_VERSION }}/g" | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy
