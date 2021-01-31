@@ -31,14 +31,17 @@ class ArticlesController extends AbstractController
     public function find(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            $article = $entityManager->getRepository(Article::class)->findOneBy(['slug' => $id]);
+            /** @var \App\Repository\ArticleRepository */
+            $articlesRepository = $entityManager->getRepository(Article::class);
 
+            if ($this->isValidUuid($id)) {
+                $article = $articlesRepository->findOneBy(['id' => $id]);
+            } else {
+                $article = $articlesRepository->findOneBy(['slug' => $id]);
+            }
+   
             if (!$article) {
-                $article = $entityManager->getRepository(Article::class)->findOneBy(['id' => $id]);
-
-                if (!$article) {
-                    throw new Exception(sprintf('could not find article with slug or id %s', $id));
-                }
+                throw new Exception(sprintf('could not find article with slug or id %s', $id));
             }
 
             return $this->json($article, 200, [], ['groups' => ['admin', 'frontend']]);
@@ -104,7 +107,7 @@ class ArticlesController extends AbstractController
      */
     private function isValidUuid(string $uuid): bool
     {
-        if (!is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
+        if (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid)) {
             return false;
         }
 
