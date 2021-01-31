@@ -9,7 +9,7 @@ on:
       - "ops/cloud/terraform/**"
 
 env:
-  GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
 jobs:
   terraform:
@@ -21,7 +21,7 @@ jobs:
 
     - name: Download terraform plugins
       run: |
-        echo $GOOGLE_APPLICATION_CREDENTIALS
+        echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
         cd ops/cloud/terraform
         terraform init
 
