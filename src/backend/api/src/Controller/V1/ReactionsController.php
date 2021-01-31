@@ -6,8 +6,8 @@ use App\Entity\Article;
 use App\Entity\Reaction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ReactionsController extends AbstractController
@@ -15,7 +15,7 @@ class ReactionsController extends AbstractController
     /**
      * @Route("/reactions", methods={"POST"}, name="reactions.create")
      */
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -29,7 +29,7 @@ class ReactionsController extends AbstractController
     /**
      * @Route("/reactions/count", methods={"GET"}, name="reactions.count")
      */
-    public function count(Request $request, EntityManagerInterface $entityManager): Response
+    public function count(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $articleId = $request->query->get('article');
 

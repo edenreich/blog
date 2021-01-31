@@ -8,7 +8,6 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SessionsController extends AbstractController
@@ -17,8 +16,6 @@ class SessionsController extends AbstractController
      * Find or create a new session.
      *
      * @Route("/sessions", methods={"POST"}, name="sessions.create")
-     *
-     * @return Response|JsonResponse
      */
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -40,8 +37,6 @@ class SessionsController extends AbstractController
      * Find a single session by given id.
      *
      * @Route("/sessions/{id}", methods={"GET"}, name="sessions.find")
-     *
-     * @param Request $request
      */
     public function find(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
