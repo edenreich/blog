@@ -16,6 +16,7 @@ services:
           - eden-reich.com
           - dev.eden-reich.com
           - dev-admin.eden-reich.com
+          - dev-api.eden-reich.com
     depends_on:
       - openssl
 
