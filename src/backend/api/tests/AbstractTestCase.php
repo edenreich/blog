@@ -46,7 +46,13 @@ abstract class AbstractTestCase extends KernelTestCase
         $executor = new ORMExecutor($this->entityManager, $purger);
         $executor->execute($loader->getFixtures());
 
-        $client = new Client(['base_uri' => self::BASE_URI]);
+        $client = new Client([
+            'base_uri' => self::BASE_URI,
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'application/json',
+                'User-Agent' => 'Test',
+            ]
+        ]);
         try {
             $jwt = json_decode($client->post('authorize', [
                 RequestOptions::JSON => [
