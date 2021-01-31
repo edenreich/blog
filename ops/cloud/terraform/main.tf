@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 0.14.5"
 
   backend "gcs" {
-    bucket  = "eden-reich.com-tf-state"
+    bucket  = "eden-reich-com-tf-state"
     prefix  = "terraform/state"
   }
 }
