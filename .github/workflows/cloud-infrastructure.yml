@@ -8,9 +8,6 @@ on:
       - ".github/workflows/cloud-infrastructure.yml"
       - "ops/cloud/terraform/**"
 
-env:
-  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
 jobs:
   terraform:
     name: Terraform
