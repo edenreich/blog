@@ -51,7 +51,7 @@ abstract class AbstractTestCase extends KernelTestCase
             RequestOptions::HEADERS => [
                 'Content-Type' => 'application/json',
                 'User-Agent' => 'Test',
-            ]
+            ],
         ]);
         try {
             $jwt = json_decode($client->post('authorize', [

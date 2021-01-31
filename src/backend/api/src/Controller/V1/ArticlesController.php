@@ -39,7 +39,7 @@ class ArticlesController extends AbstractController
             } else {
                 $article = $articlesRepository->findOneBy(['slug' => $id]);
             }
-   
+
             if (!$article) {
                 throw new Exception(sprintf('could not find article with slug or id %s', $id));
             }
