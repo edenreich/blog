@@ -20,12 +20,12 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install pdo_pgsql intl && \
     apk del .build-deps
 RUN mkdir /run/nginx
-COPY ops/docker/backend/api/php/php.ini-development /usr/local/etc/php/php.ini-development
-COPY ops/docker/backend/api/php/php.ini-production /usr/local/etc/php/php.ini-production
-COPY ops/docker/backend/admin/supervisor.d/programs /etc/supervisor.d
-COPY ops/docker/backend/admin/supervisor.d/supervisord.conf /etc/supervisord.conf
-COPY ops/docker/backend/admin/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ops/docker/backend/admin/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ops/on-premises/docker/backend/api/php/php.ini-development /usr/local/etc/php/php.ini-development
+COPY ops/on-premises/docker/backend/api/php/php.ini-production /usr/local/etc/php/php.ini-production
+COPY ops/on-premises/docker/backend/admin/supervisor.d/programs /etc/supervisor.d
+COPY ops/on-premises/docker/backend/admin/supervisor.d/supervisord.conf /etc/supervisord.conf
+COPY ops/on-premises/docker/backend/admin/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ops/on-premises/docker/backend/admin/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
 RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
 RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf

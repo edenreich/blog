@@ -4,9 +4,9 @@ services:
   ingress:
     build:
       context: .
-      dockerfile: ops/docker/ingress/Dockerfile
+      dockerfile: ops/on-premises/docker/ingress/Dockerfile
     volumes:
-      - ./ops/docker/helpers/openssl/certs:/etc/nginx/certs:ro
+      - ./ops/on-premises/docker/helpers/openssl/certs:/etc/nginx/certs:ro
     ports:
       - 80:80
       - 443:443
@@ -24,7 +24,7 @@ services:
     build:
       target: development
       context: .
-      dockerfile: ops/docker/frontend/Dockerfile
+      dockerfile: ops/on-premises/docker/frontend/Dockerfile
     environment:
       MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
       MAILGUN_API_KEY: ${MAILGUN_API_KEY}
@@ -37,7 +37,7 @@ services:
     build:
       target: development
       context: .
-      dockerfile: ops/docker/backend/admin/Dockerfile
+      dockerfile: ops/on-premises/docker/backend/admin/Dockerfile
     volumes:
       - ./src/backend/admin:/var/www/admin:rw
     extra_hosts:
@@ -49,7 +49,7 @@ services:
     build:
       target: development
       context: .
-      dockerfile: ops/docker/backend/api/Dockerfile
+      dockerfile: ops/on-premises/docker/backend/api/Dockerfile
     volumes:
       - ./src/backend/api:/var/www/api:rw
     extra_hosts:
@@ -73,9 +73,9 @@ services:
   openssl:
     build:
       context: .
-      dockerfile: ops/docker/helpers/openssl/Dockerfile
+      dockerfile: ops/on-premises/docker/helpers/openssl/Dockerfile
     volumes:
-      - ./ops/docker/helpers/openssl/certs:/root/certs:rw
+      - ./ops/on-premises/docker/helpers/openssl/certs:/root/certs:rw
 
   npm:
     image: node:15.2.1-buster-slim
