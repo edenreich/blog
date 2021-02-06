@@ -89,12 +89,13 @@ class ContentController extends NavigationAwareController
                 'Content-Type' => 'application/json',
             ],
         ]);
-        
+
         $client->delete(sprintf('/api/v1/articles/%s', $id));
         $this->addFlash(
             'success',
             'Article has been successfully deleted!'
         );
+
         return $this->redirectToRoute('navigation_sub_content_list');
     }
 
@@ -112,21 +113,23 @@ class ContentController extends NavigationAwareController
                 'Content-Type' => 'application/json',
             ],
         ]);
-        
+
         try {
             $client->put(sprintf('/api/v1/articles/%s', $id), [
-                RequestOptions::JSON => $payload
+                RequestOptions::JSON => $payload,
             ]);
             $this->addFlash(
                 'success',
                 sprintf('Article %s has been successfully saved!', $payload['title'])
             );
+
             return $this->redirectToRoute('navigation_sub_content_list');
         } catch (ClientException $exception) {
             $this->addFlash(
                 'danger',
                 'Could not save the article!'
             );
+
             return $this->redirectToRoute('navigation_sub_content_edit');
         }
     }
@@ -140,7 +143,7 @@ class ContentController extends NavigationAwareController
 
         $session = $request->getSession();
         foreach ($payload as $key => $value) {
-            $session->set('article.' . $key, $value);
+            $session->set('article.'.$key, $value);
         }
 
         $client = new Client([
@@ -150,21 +153,23 @@ class ContentController extends NavigationAwareController
                 'Content-Type' => 'application/json',
             ],
         ]);
-        
+
         try {
             $client->post('/api/v1/articles', [
-                RequestOptions::JSON => $payload
+                RequestOptions::JSON => $payload,
             ]);
             $this->addFlash(
                 'success',
                 sprintf('Article %s has been successfully created!', $payload['title'])
             );
+
             return $this->redirectToRoute('navigation_sub_content_list');
         } catch (ClientException $exception) {
             $this->addFlash(
                 'danger',
                 'Could not create the article!'
             );
+
             return $this->redirectToRoute('navigation_sub_content_create');
         }
     }
@@ -191,6 +196,7 @@ class ContentController extends NavigationAwareController
                 'danger',
                 'Could not fetch auth token!'
             );
+
             return $this->redirectToRoute('navigation_sub_content_list');
         }
     }
