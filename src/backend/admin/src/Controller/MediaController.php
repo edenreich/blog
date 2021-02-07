@@ -34,11 +34,11 @@ class MediaController extends AbstractController
                     'upload' => $blobBase64,
                 ],
             ]);
-            $body = json_encode($response->getBody(), true);
+            $body = json_decode($response->getBody(), true);
 
             return $this->json([
                 'success' => true,
-                'url' => $body['url'],
+                'url' => $body['file']['mediaLink'],
             ]);
         } catch (ClientExceptionInterface $exception) {
             return $this->json([
