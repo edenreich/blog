@@ -11,7 +11,8 @@ RUN composer install --no-dev
 FROM php:7.4.14-fpm-alpine3.12 AS common
 USER root
 RUN apk update
-RUN apk add --no-cache bash nginx supervisor postgresql-dev
+RUN apk add --no-cache bash nginx supervisor postgresql-dev nodejs npm
+RUN npm install --global yarn
 RUN apk add --no-cache tzdata && \
     cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
     echo "Europe/Berlin" > /etc/timezone && \
