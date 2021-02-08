@@ -1,56 +1,60 @@
-{% extends 'admin.layout.twig' %}
+{% extends 'fixed-sidebar.layout.twig' %}
 {% block title %}Admin - Content{% endblock %}
-{% block body %}
-<!-- header area start -->
-{% include 'includes/header.html.twig' %}
-<!-- header area end -->
-<!-- page title area start -->
-{% include 'includes/title.html.twig' with {'breadcrumbs': [{'name':'Content','link':'/content'},{'name':'List','link':'/content/list'}]} %}
-<!-- page title area end -->
-<div class="main-content-inner">
-    <div class="row">
-        <!-- Primary table start -->
-        <div class="col-12 mt-5">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endfor %}
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title">Articles</h4>
-                    <div class="data-tables datatable-primary">
-                        <table id="dataTable" class="text-center">
-                            <thead class="text-capitalize">
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Title</th>
-                                    <th>Slug</th>
-                                    <th>Meta Keywords</th>
-                                    <th>Meta Description</th>
-                                    <th>Published At</th>
-                                    <th>Updated At</th>
-                                    <th>Created At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <!-- Rendered data -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Primary table end -->
-    </div>
+{% block header %}
+<div class="row mb-2">
+  <div class="col-sm-6">
+    <h1>Content</h1>
+  </div>
+  {% include 'includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Content','link':'/content'},{'name':'List','link':'/content/list'}]} %}
 </div>
 {% endblock %}
+{% block body %}
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Primary table start -->
+      <div class="col-12 mt-5">
+          {% for label, messages in app.flashes %}
+              {% for message in messages %}
+                  <div class="alert alert-{{ label }}">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+          {% endfor %}
+          <div class="card">
+              <div class="card-body">
+                  <h4 class="header-title">Articles</h4>
+                  <div class="data-tables datatable-primary">
+                      <table id="dataTable" class="text-center" style="width: 100%">
+                          <thead class="text-capitalize">
+                              <tr>
+                                  <th>Id</th>
+                                  <th>Title</th>
+                                  <th>Slug</th>
+                                  <th>Meta Keywords</th>
+                                  <th>Meta Description</th>
+                                  <th>Published At</th>
+                                  <th>Updated At</th>
+                                  <th>Created At</th>
+                                  <th>Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                          <!-- Rendered data -->
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- Primary table end -->
+    </div>
+  </div>
+</section>
+{% endblock %}
 {% block javascripts %}
-<script>
-    $(document).ready(function () {
+<script defer>
+    window.onload = function () {
         var table = $('#dataTable').DataTable({
             {# data: articlesResponse, #}
             responsive: true,
@@ -76,7 +80,7 @@
                 { 
                     data: "buttons",
                     fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html(`<div style="display:flex"><a href="/content/${oData.id}/edit" style="flex-grow:1"><i class="ti-pencil"></i></a><a href="/content/${oData.id}/delete" style="flex-grow:1"><i class="ti-trash"></i></a></div>`);
+                        $(nTd).html(`<div style="display:flex"><a href="/content/${oData.id}/edit" style="flex-grow:1"><i class="fas fa-pencil-alt"></i></a><a href="/content/${oData.id}/delete" style="flex-grow:1"><i class="fas fa-trash"></i></a></div>`);
                     },
                     width: '40px'
                 },
@@ -85,6 +89,6 @@
                 console.error(err);
             }
         });
-    });
+    };
 </script>
 {% endblock %}

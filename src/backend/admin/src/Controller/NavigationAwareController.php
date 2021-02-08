@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Navigation;
+use App\Repository\NavigationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,43 +25,43 @@ abstract class NavigationAwareController extends AbstractController
     /**
      * Initialize request and navigation array.
      */
-    public function __construct(RequestStack $requestStack, RouterInterface $router)
+    public function __construct(RequestStack $requestStack, RouterInterface $router, EntityManagerInterface $em)
     {
         $this->request = $requestStack->getCurrentRequest();
-        $navigation = [];
-        $id = 1;
-        $parentId = null;
-        $categoryName = '';
-        foreach ($router->getRouteCollection()->getIterator() as $routeName => $route) {
-            $requestedRouteName = $this->request->get('_route');
-            if (preg_match('/^navigation_parent_(.*)/', $routeName, $matches)) {
-                $parentId = $id;
-                $categoryName = $matches[1];
-                $isCurrentCat = ($requestedRouteName === $routeName || preg_match(sprintf('/^navigation_sub_%s_(.*)/', $categoryName), $requestedRouteName)) ? true : false;
-                $navigation[$categoryName] = [
-                    'id' => $parentId,
-                    'active' => $isCurrentCat,
-                    'path' => $route->getPath(),
-                    'name' => ucfirst($categoryName),
-                    'parent_id' => null,
-                ];
-            } elseif (preg_match(sprintf('/^navigation_sub_%s_(.*)/', $categoryName), $routeName, $matches)) {
-                $subCategoryName = $matches[1];
-                $isCurrentSubCat = $requestedRouteName === $routeName ? true : false;
-                $navigation[$categoryName]['sub'][] = [
-                    'id' => $id,
-                    'active' => $isCurrentSubCat,
-                    'path' => $route->getPath(),
-                    'name' => ucfirst($subCategoryName),
-                    'parent' => $parentId,
-                ];
-            } else {
-                $parentId = null;
-                $categoryName = '';
+        /** @var NavigationRepository */
+        $navigationRepository = $em->getRepository(Navigation::class);
+        /** @var Navigation[] */
+        $categories = $navigationRepository->findAllCategories();
+        $requestedPath = $this->request->getPathInfo();
+        $categoriesArray = [];
+        foreach ($categories as $category) {
+            $categoriesArray[$category->getName()] = [
+                'id' => $category->getId(),
+                'active' => false,
+                'name' => $category->getName(),
+                'path' => $category->getUrl(),
+                'icon' => $category->getIcon(),
+                'parent_id' => null,
+            ];
+            if ($requestedPath === $category->getUrl()) {
+                $categoriesArray[$category->getName()]['active'] = true;
             }
-            ++$id;
+            foreach ($category->getChildren() as $index => $subcategory) {
+                $categoriesArray[$category->getName()]['sub'][] = [
+                    'id' => $subcategory->getId(),
+                    'active' => false,
+                    'name' => $subcategory->getName(),
+                    'path' => $subcategory->getUrl(),
+                    'icon' => $subcategory->getIcon(),
+                    'parent_id' => $subcategory->getParent()->getId(),
+                ];
+                if ($requestedPath === $subcategory->getUrl()) {
+                    $categoriesArray[$category->getName()][$index]['active'] = true;
+                    $categoriesArray[$category->getName()]['active'] = true;
+                }
+            }
         }
-        $this->navigation = array_reverse($navigation);
+        $this->navigation = $categoriesArray;
     }
 
     /**
