@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
-use DateTime;
-use DateTimeInterface;
 
 /**
  * @ORM\Entity(repositoryClass=\App\Repository\NavigationRepository::class)
@@ -25,14 +25,14 @@ class Navigation
      */
     private string $id;
 
-   /**
-    * @ORM\ManyToOne(targetEntity="Navigation", inversedBy="children")
-    */
+    /**
+     * @ORM\ManyToOne(targetEntity="Navigation", inversedBy="children")
+     */
     private Navigation $parent;
 
-   /**
-    * @ORM\OneToMany(targetEntity="Navigation", mappedBy="parent", fetch="EAGER")
-    */
+    /**
+     * @ORM\OneToMany(targetEntity="Navigation", mappedBy="parent", fetch="EAGER")
+     */
     private Collection $children;
 
     /**
@@ -134,24 +134,24 @@ class Navigation
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 

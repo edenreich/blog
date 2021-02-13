@@ -12,12 +12,12 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20210207225152 extends AbstractMigration
 {
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return '';
     }
 
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE navigations (id UUID NOT NULL, parent_id UUID DEFAULT NULL, name VARCHAR(180) NOT NULL, url VARCHAR(180) NOT NULL, icon VARCHAR(180) NOT NULL, updated_at TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL, PRIMARY KEY(id))');
@@ -29,7 +29,7 @@ final class Version20210207225152 extends AbstractMigration
         $this->addSql('ALTER TABLE navigations ADD CONSTRAINT FK_AD21D8F3727ACA70 FOREIGN KEY (parent_id) REFERENCES navigations (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');

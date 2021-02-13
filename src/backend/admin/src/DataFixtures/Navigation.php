@@ -2,10 +2,10 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Navigation as NavigationEntity;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\Navigation AS NavigationEntity;
 
 class Navigation extends Fixture implements OrderedFixtureInterface
 {
@@ -16,7 +16,7 @@ class Navigation extends Fixture implements OrderedFixtureInterface
                 'name' => 'Dashboard',
                 'url' => '/dashboard',
                 'icon' => 'fas fa-tachometer-alt',
-                'childrens' => []
+                'childrens' => [],
             ],
             [
                 'name' => 'Content',
@@ -33,13 +33,13 @@ class Navigation extends Fixture implements OrderedFixtureInterface
                         'url' => '/content/create',
                         'icon' => 'fas fa-circle nav-icon',
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'Media',
                 'url' => '/media',
                 'icon' => 'fas fa-photo-video',
-                'childrens' => []
+                'childrens' => [],
             ],
         ];
 
@@ -57,7 +57,7 @@ class Navigation extends Fixture implements OrderedFixtureInterface
                 $subnavigation->setUrl($subnavigationData['url']);
                 $subnavigation->setIcon($subnavigationData['icon']);
                 $subnavigation->setParent($navigation);
-                
+
                 $manager->persist($subnavigation);
             }
         }
