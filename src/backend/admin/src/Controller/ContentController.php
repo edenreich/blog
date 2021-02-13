@@ -16,15 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContentController extends NavigationAwareController
 {
     /**
-     * @Route("/content", methods={"GET"}, name="navigation_parent_content")
+     * @Route("/content", methods={"GET"}, name="content")
      */
     public function index(): RedirectResponse
     {
-        return $this->redirectToRoute('navigation_sub_content_list');
+        return $this->redirectToRoute('content_list');
     }
 
     /**
-     * @Route("/content/list", methods={"GET"}, name="navigation_sub_content_list")
+     * @Route("/content/list", methods={"GET"}, name="content_list")
      */
     public function list(): Response
     {
@@ -49,7 +49,7 @@ class ContentController extends NavigationAwareController
     }
 
     /**
-     * @Route("/content/create", methods={"GET"}, name="navigation_sub_content_create")
+     * @Route("/content/create", methods={"GET"}, name="content_create")
      */
     public function create(): Response
     {
@@ -96,7 +96,7 @@ class ContentController extends NavigationAwareController
             'Article has been successfully deleted!'
         );
 
-        return $this->redirectToRoute('navigation_sub_content_list');
+        return $this->redirectToRoute('content_list');
     }
 
     /**
@@ -123,14 +123,14 @@ class ContentController extends NavigationAwareController
                 sprintf('Article %s has been successfully saved!', $payload['title'])
             );
 
-            return $this->redirectToRoute('navigation_sub_content_list');
+            return $this->redirectToRoute('content_list');
         } catch (ClientException $exception) {
             $this->addFlash(
                 'danger',
                 'Could not save the article!'
             );
 
-            return $this->redirectToRoute('navigation_sub_content_edit');
+            return $this->redirectToRoute('content_edit');
         }
     }
 
@@ -163,14 +163,14 @@ class ContentController extends NavigationAwareController
                 sprintf('Article %s has been successfully created!', $payload['title'])
             );
 
-            return $this->redirectToRoute('navigation_sub_content_list');
+            return $this->redirectToRoute('content_list');
         } catch (ClientException $exception) {
             $this->addFlash(
                 'danger',
                 'Could not create the article!'
             );
 
-            return $this->redirectToRoute('navigation_sub_content_create');
+            return $this->redirectToRoute('content_create');
         }
     }
 
@@ -197,7 +197,7 @@ class ContentController extends NavigationAwareController
                 'Could not fetch auth token!'
             );
 
-            return $this->redirectToRoute('navigation_sub_content_list');
+            return $this->redirectToRoute('content_list');
         }
     }
 }

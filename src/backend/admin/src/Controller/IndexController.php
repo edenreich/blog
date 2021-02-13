@@ -12,6 +12,6 @@ class IndexController extends NavigationAwareController
      */
     public function index(): RedirectResponse
     {
-        return $this->redirectToRoute('navigation_parent_dashboard');
+        return $this->redirectToRoute('dashboard');
     }
 }

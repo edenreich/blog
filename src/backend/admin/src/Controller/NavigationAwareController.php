@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class NavigationAwareController extends AbstractController
 {
@@ -25,7 +24,7 @@ abstract class NavigationAwareController extends AbstractController
     /**
      * Initialize request and navigation array.
      */
-    public function __construct(RequestStack $requestStack, RouterInterface $router, EntityManagerInterface $em)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
         $this->request = $requestStack->getCurrentRequest();
         /** @var NavigationRepository */

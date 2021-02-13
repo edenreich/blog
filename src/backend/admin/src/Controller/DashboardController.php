@@ -13,11 +13,11 @@ class DashboardController extends NavigationAwareController
      */
     public function admin(): RedirectResponse
     {
-        return $this->redirectToRoute('navigation_parent_dashboard');
+        return $this->redirectToRoute('dashboard');
     }
 
     /**
-     * @Route("/dashboard", methods={"GET"}, name="navigation_parent_dashboard")
+     * @Route("/dashboard", methods={"GET"}, name="dashboard")
      */
     public function dashboard(): Response
     {
