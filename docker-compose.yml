@@ -52,6 +52,9 @@ services:
       dockerfile: ops/on-premises/docker/backend/api/Dockerfile
     volumes:
       - ./src/backend/api:/var/www/api:rw
+    env_file: ./src/backend/api/.env
+    secrets:
+      - service_account.json
     extra_hosts:
       - host.docker.internal:172.18.0.1
     networks:
@@ -105,3 +108,7 @@ volumes:
 
 networks:
   app:
+
+secrets:
+   service_account.json:
+     file: ~/keys/terraform.json
