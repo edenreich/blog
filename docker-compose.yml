@@ -110,5 +110,5 @@ networks:
   app:
 
 secrets:
-   service_account.json:
-     file: ~/keys/terraform.json
+  service_account.json:
+    file: ~/keys/terraform.json
