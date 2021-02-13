@@ -99,6 +99,9 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
+    "firebase/php-jwt": {
+        "version": "v5.2.0"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
@@ -116,6 +119,18 @@
     },
     "fzaninotto/faker": {
         "version": "v1.9.2"
+    },
+    "google/auth": {
+        "version": "v1.15.0"
+    },
+    "google/cloud-core": {
+        "version": "v1.41.0"
+    },
+    "google/cloud-storage": {
+        "version": "v1.23.1"
+    },
+    "google/crc32": {
+        "version": "v0.1.0"
     },
     "guzzlehttp/guzzle": {
         "version": "7.2.0"
@@ -152,6 +167,9 @@
         "files": [
             "config/packages/lexik_jwt_authentication.yaml"
         ]
+    },
+    "monolog/monolog": {
+        "version": "2.2.0"
     },
     "myclabs/deep-copy": {
         "version": "1.10.2"
@@ -235,6 +253,9 @@
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
+    },
+    "rize/uri-template": {
+        "version": "0.3.2"
     },
     "sebastian/code-unit-reverse-lookup": {
         "version": "1.0.2"
