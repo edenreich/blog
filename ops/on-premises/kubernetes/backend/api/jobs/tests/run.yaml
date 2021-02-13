@@ -10,9 +10,20 @@ spec:
   ttlSecondsAfterFinished: 60
   template:
     spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: api
+          items:
+          - key: google_application_credentials
+            path: service_account.json
       containers:
       - name: api-integration-tests
         image: ${REPOSITORY}:${VERSION}
+        volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/gcp
+            readOnly: true
         env:
         - name: APP_ENV
           value: test
