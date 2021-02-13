@@ -35,10 +35,18 @@ class MediaController extends NavigationAwareController
     /**
      * @Route("/media/images/upload", methods={"POST"}, name="media_images_upload")
      */
-    public function uploadImageAction(Request $request): JsonResponse
+    public function uploadImageAction(Request $request): Response
     {
-        $body = json_decode($request->getContent(), true);
-        $blobBase64 = $body['upload'];
+        if ($request->isXmlHttpRequest()) {
+            $content = json_decode($request->getContent(), true);
+            $blobBase64 = $content['upload'];
+        } else {
+            $file = $request->files->get('upload');
+            $handler = fopen($file->getRealPath(),'rb');
+            $blob = stream_get_contents($handler);
+            $blobBase64 = base64_encode($blob);
+            fclose($handler);
+        }
 
         $client = new Client([
             'base_uri' => $this->getParameter('api_url'),
@@ -56,15 +64,31 @@ class MediaController extends NavigationAwareController
             ]);
             $body = json_decode($response->getBody(), true);
 
-            return $this->json([
-                'success' => true,
-                'url' => $body['file']['mediaLink'],
-            ]);
-        } catch (ClientExceptionInterface $exception) {
-            return $this->json([
-                'success' => false,
-                'message' => $exception->getMessage(),
-            ]);
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'success' => true,
+                    'url' => $body['file']['mediaLink'],
+                ]);
+            } else {
+                $this->addFlash(
+                    'success',
+                    'Image successfully uploaded!'
+                );
+                return $this->redirectToRoute('media');
+            }
+        } catch (ClientExceptionInterface $exception) {    
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'success' => false,
+                    'message' => $exception->getMessage(),
+                ]);
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'Could not upload the image!'
+                );
+                return $this->redirectToRoute('media');
+            }
         }
     }
 

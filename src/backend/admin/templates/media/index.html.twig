@@ -12,6 +12,25 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
+      <div class="col-6">
+        <form method="POST" action="{{ path('media_images_upload') }}" role="form" enctype="multipart/form-data">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="image">Image</label>
+              <div class="input-group">
+                <div class="custom-file">
+                  <input type="file" name="upload" class="custom-file-input" id="image">
+                  <label class="custom-file-label" for="image">Choose image</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </div>
+        </form>
+      </div>
       <div class="col-12 mt-5">
         {% for label, messages in app.flashes %}
           {% for message in messages %}
@@ -68,6 +87,10 @@
       $('.btn[data-filter]').on('click', function() {
         $('.btn[data-filter]').removeClass('active');
         $(this).addClass('active');
+      });
+      $('#image').on('change', function() {
+        var filename = $(this).val().split('\\').pop();
+        $(this).next('label').text(filename);
       });
     });
   };
