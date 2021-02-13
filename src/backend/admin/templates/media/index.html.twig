@@ -1,0 +1,37 @@
+{% extends 'admin.layout.twig' %}
+{% block title %}Admin - Media{% endblock %}
+{% block header %}
+<div class="row mb-2">
+  <div class="col-sm-6">
+    <h1>Media</h1>
+  </div>
+  {% include 'includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Media','link':'/media'}]} %}
+</div>
+{% endblock %}
+{% block body %}
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 mt-5">
+        {% for label, messages in app.flashes %}
+          {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endfor %}
+        <div class="card">
+          <div class="card-body">
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block javascripts %}
+<script defer>
+
+</script>
+{% endblock %}

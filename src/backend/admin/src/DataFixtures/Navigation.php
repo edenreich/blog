@@ -35,6 +35,12 @@ class Navigation extends Fixture implements OrderedFixtureInterface
                     ],
                 ]
             ],
+            [
+                'name' => 'Media',
+                'url' => '/media',
+                'icon' => 'fas fa-photo-video',
+                'childrens' => []
+            ],
         ];
 
         foreach ($navigations as $navigationData) {

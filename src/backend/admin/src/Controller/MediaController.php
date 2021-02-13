@@ -6,12 +6,21 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MediaController extends AbstractController
+class MediaController extends NavigationAwareController
 {
+    /**
+     * @Route("/media", methods={"GET"}, name="media")
+     */
+    public function index(): Response
+    {
+        return $this->render('media/index.html.twig');
+    }
+
     /**
      * @Route("/media/images/upload", methods={"POST"}, name="media_images_upload")
      */
