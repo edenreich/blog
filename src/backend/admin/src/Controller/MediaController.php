@@ -18,7 +18,18 @@ class MediaController extends NavigationAwareController
      */
     public function index(): Response
     {
-        return $this->render('media/index.html.twig');
+        // @todo implement an API endpoint that retrieve all the images in the google bucket
+        $mockedImages = [
+            [
+                'id' => 1,
+                'name' => 'Image name',
+                'url' => 'https://storage.googleapis.com/eden-reich-com-assets/59c2f3c4-ffd5-4f7c-ba4b-4efcb5e2dd46.png'
+            ]
+        ];
+
+        return $this->render('media/index.html.twig', [
+            'images' => $mockedImages
+        ]);
     }
 
     /**

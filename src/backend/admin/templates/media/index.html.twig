@@ -22,7 +22,35 @@
         {% endfor %}
         <div class="card">
           <div class="card-body">
-           
+          <div>
+            <div class="btn-group w-100 mb-2">
+              <a class="btn btn-info active" href="javascript:void(0)" data-filter="all"> All items </a>
+              <a class="btn btn-info" href="javascript:void(0)" data-filter="1"> Main </a>
+            </div>
+            <div class="mb-2">
+              <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a>
+              <div class="float-right">
+                <select class="custom-select" style="width: auto;" data-sortOrder>
+                  <option value="index"> Sort by Position </option>
+                  <option value="sortData"> Sort by Custom Data </option>
+                </select>
+                <div class="btn-group">
+                  <a class="btn btn-default" href="javascript:void(0)" data-sortAsc> Ascending </a>
+                  <a class="btn btn-default" href="javascript:void(0)" data-sortDesc> Descending </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="filter-container p-0 row">
+              {% for image in images %}
+              <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
+                <a href="{{ image.url }}" data-toggle="lightbox" data-title="{{ image.name }}">
+                  <img src="{{ image.url }}" class="img-fluid mb-2" alt="white sample"/>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
@@ -32,6 +60,21 @@
 {% endblock %}
 {% block javascripts %}
 <script defer>
+  window.onload = () => {
+    $(() => {
+      $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox({
+          alwaysShowClose: true
+        });
+      });
 
+      $('.filter-container').filterizr({gutterPixels: 3});
+      $('.btn[data-filter]').on('click', function() {
+        $('.btn[data-filter]').removeClass('active');
+        $(this).addClass('active');
+      });
+    });
+  };
 </script>
 {% endblock %}
