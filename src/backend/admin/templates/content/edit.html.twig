@@ -61,56 +61,56 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/25.0.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
-    function MyCustomUploadAdapterPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return new MyUploadAdapter(loader);
-        };
+  function MyCustomUploadAdapterPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return new MyUploadAdapter(loader);
+    };
+  }
+
+  ClassicEditor.create(document.querySelector('#content'), {
+    extraPlugins: [ MyCustomUploadAdapterPlugin ],
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+  class MyUploadAdapter {
+    constructor(loader) {
+      this.loader = loader;
+      this.url = '/media/images/upload';
+      this.axios = axios;
     }
 
-    ClassicEditor.create(document.querySelector('#content'), {
-        extraPlugins: [MyCustomUploadAdapterPlugin],
-    })
-    .catch(error => {
-        console.error(error);
-    });
-
-    class MyUploadAdapter {
-        constructor(loader) {
-            this.loader = loader;
-            this.url = '/media/images/upload';
-            this.axios = axios;
-        }
-
-        upload() {
-            return this.loader.file.then(file => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsBinaryString(file);
-                    reader.onload = () => {
-                        const base64Data = btoa(reader.result);
-                        axios.request({
-                            url: this.url,
-                            method: 'POST',
-                            data: { 'upload': base64Data },
-                            headers: { 'Content-Type': 'application/json' },
-                        }).then(response => {
-                            if (response.data.success) {
-                                resolve({
-                                    default: response.data.url
-                                });
-                            } else {
-                                throw Error(response.data.message);
-                            }
-                        }).catch(errorMessage => {
-                            reject(errorMessage || 'Upload failed.');
-                        });
-                    };
+    upload() {
+      return this.loader.file.then(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsBinaryString(file);
+          reader.onload = () => {
+            const base64Data = btoa(reader.result);
+            axios.request({
+              url: this.url,
+              method: 'POST',
+              data: { 'upload': base64Data },
+              headers: { 'Content-Type': 'application/json' },
+            }).then(response => {
+              if (response.data.success) {
+                resolve({
+                  default: response.data.url
                 });
+              } else {
+                throw Error(response.data.message);
+              }
             }).catch(errorMessage => {
-                console.error(errorMessage);
-                throw Error(errorMessage);
+              reject(errorMessage || 'Upload failed.');
             });
-        }
+          };
+        });
+      }).catch(errorMessage => {
+        console.error(errorMessage);
+        throw Error(errorMessage);
+      });
     }
+  }
 </script>
 {% endblock %}

@@ -14,38 +14,38 @@
     <div class="row">
       <!-- Primary table start -->
       <div class="col-12 mt-5">
-          {% for label, messages in app.flashes %}
-              {% for message in messages %}
-                  <div class="alert alert-{{ label }}">
-                      {{ message }}
-                  </div>
-              {% endfor %}
+        {% for label, messages in app.flashes %}
+          {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+              {{ message }}
+            </div>
           {% endfor %}
-          <div class="card">
-              <div class="card-body">
-                  <h4 class="header-title">Articles</h4>
-                  <div class="data-tables datatable-primary">
-                      <table id="dataTable" class="text-center" style="width: 100%">
-                          <thead class="text-capitalize">
-                              <tr>
-                                  <th>Id</th>
-                                  <th>Title</th>
-                                  <th>Slug</th>
-                                  <th>Meta Keywords</th>
-                                  <th>Meta Description</th>
-                                  <th>Published At</th>
-                                  <th>Updated At</th>
-                                  <th>Created At</th>
-                                  <th>Actions</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                          <!-- Rendered data -->
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
+        {% endfor %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="header-title">Articles</h4>
+            <div class="data-tables datatable-primary">
+              <table id="dataTable" class="text-center" style="width: 100%">
+                <thead class="text-capitalize">
+                  <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Slug</th>
+                    <th>Meta Keywords</th>
+                    <th>Meta Description</th>
+                    <th>Published At</th>
+                    <th>Updated At</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <!-- Rendered data -->
+                </tbody>
+              </table>
+            </div>
           </div>
+        </div>
       </div>
       <!-- Primary table end -->
     </div>
@@ -54,41 +54,40 @@
 {% endblock %}
 {% block javascripts %}
 <script defer>
-    window.onload = function () {
-        var table = $('#dataTable').DataTable({
-            {# data: articlesResponse, #}
-            responsive: true,
-            ajax: {
-                url: '/content/list',
-                type: 'GET',
-                dataSrc: "",
-            },
-            columnDefs: [{
-                targets: -1,
-                data: null,
-                defaultContent: ""
-            }],
-            columns: [
-                { data: "id" },
-                { data: "title" },
-                { data: "slug" },
-                { data: "meta_keywords" },
-                { data: "meta_description" },
-                { data: "published_at" },
-                { data: "updated_at" },
-                { data: "created_at" },
-                { 
-                    data: "buttons",
-                    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).html(`<div style="display:flex"><a href="/content/${oData.id}/edit" style="flex-grow:1"><i class="fas fa-pencil-alt"></i></a><a href="/content/${oData.id}/delete" style="flex-grow:1"><i class="fas fa-trash"></i></a></div>`);
-                    },
-                    width: '40px'
-                },
-            ],
-            error: function(err) {
-                console.error(err);
-            }
-        });
-    };
+  window.onload = function () {
+    var table = $('#dataTable').DataTable({
+      responsive: true,
+      ajax: {
+        url: '/content/list',
+        type: 'GET',
+        dataSrc: "",
+      },
+      columnDefs: [{
+        targets: -1,
+        data: null,
+        defaultContent: ""
+      }],
+      columns: [
+        { data: "id" },
+        { data: "title" },
+        { data: "slug" },
+        { data: "meta_keywords" },
+        { data: "meta_description" },
+        { data: "published_at" },
+        { data: "updated_at" },
+        { data: "created_at" },
+        { 
+          data: "buttons",
+          fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+            $(nTd).html(`<div style="display:flex"><a href="/content/${oData.id}/edit" style="flex-grow:1"><i class="fas fa-pencil-alt"></i></a><a href="/content/${oData.id}/delete" style="flex-grow:1"><i class="fas fa-trash"></i></a></div>`);
+          },
+          width: '40px'
+        },
+      ],
+      error: function(err) {
+        console.error(err);
+      }
+    });
+  };
 </script>
 {% endblock %}

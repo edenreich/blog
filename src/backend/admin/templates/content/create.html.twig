@@ -15,11 +15,11 @@
       <!-- Primary table start -->
       <div class="col-12 mt-5">
         {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+          {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+              {{ message }}
+            </div>
+          {% endfor %}
         {% endfor %}
         <div class="card">
           <div class="card-body">
