@@ -47,6 +47,11 @@ spec:
             secretKeyRef:
               name: api
               key: test_database_url
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          valueFrom:
+            configMapKeyRef:
+              name: api
+              key: google_application_credentials_path
         resources:
           requests:
             cpu: "200m"
