@@ -20,9 +20,20 @@ spec:
         app: api
         version: "${VERSION}"
     spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: api
+          items:
+          - key: google_application_credentials
+            path: service_account.json
       containers:
       - name: api
         image: ${REPOSITORY}:${VERSION}
+        volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/gcp
+            readOnly: true
         env:
         - name: JWT_PASSPHRASE
           valueFrom:
@@ -44,6 +55,11 @@ spec:
             secretKeyRef:
               name: api
               key: database_url
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          valueFrom:
+            configMapKeyRef:
+              name: api
+              key: google_application_credentials_path
         resources:
           requests:
             cpu: "200m"
