@@ -5,10 +5,8 @@ namespace App\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Client\ClientExceptionInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MediaController extends NavigationAwareController
@@ -18,18 +16,29 @@ class MediaController extends NavigationAwareController
      */
     public function index(): Response
     {
-        // @todo implement an API endpoint that retrieve all the images in the google bucket
-        $mockedImages = [
-            [
-                'id' => 1,
-                'name' => 'Image name',
-                'url' => 'https://storage.googleapis.com/eden-reich-com-assets/59c2f3c4-ffd5-4f7c-ba4b-4efcb5e2dd46.png'
-            ]
-        ];
-
-        return $this->render('media/index.html.twig', [
-            'images' => $mockedImages
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                'Content-Type' => 'application/json',
+            ],
         ]);
+
+        try {
+            $response = $client->get('/api/v1/media/images');
+            $body = json_decode($response->getBody(), true);
+
+            return $this->render('media/index.html.twig', [
+                'images' => $body['files'],
+            ]);
+        } catch (ClientExceptionInterface $exception) {
+            $this->addFlash(
+                'danger',
+                'Could not fetch the images!'
+            );
+
+            return $this->render('media/index.html.twig');
+        }
     }
 
     /**
@@ -42,7 +51,7 @@ class MediaController extends NavigationAwareController
             $blobBase64 = $content['upload'];
         } else {
             $file = $request->files->get('upload');
-            $handler = fopen($file->getRealPath(),'rb');
+            $handler = fopen($file->getRealPath(), 'rb');
             $blob = stream_get_contents($handler);
             $blobBase64 = base64_encode($blob);
             fclose($handler);
@@ -74,9 +83,10 @@ class MediaController extends NavigationAwareController
                     'success',
                     'Image successfully uploaded!'
                 );
+
                 return $this->redirectToRoute('media');
             }
-        } catch (ClientExceptionInterface $exception) {    
+        } catch (ClientExceptionInterface $exception) {
             if ($request->isXmlHttpRequest()) {
                 return $this->json([
                     'success' => false,
@@ -87,6 +97,7 @@ class MediaController extends NavigationAwareController
                     'danger',
                     'Could not upload the image!'
                 );
+
                 return $this->redirectToRoute('media');
             }
         }

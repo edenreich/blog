@@ -12,6 +12,24 @@ use Symfony\Component\Uid\UuidV4;
 class MediaController extends AbstractController
 {
     /**
+     * @Route("/media/images", methods={"GET"}, name="media.list")
+     */
+    public function list(StorageClient $storage): JsonResponse
+    {
+        $bucket = $storage->bucket('eden-reich-com-assets');
+        $objects = $bucket->objects();
+        $files = []; 
+        foreach ($objects as $object) {
+            $files[] = [
+                'url' => $object->info()['mediaLink']
+            ];
+        }
+        return $this->json([
+            'files' => $files
+        ]);
+    }
+
+    /**
      * @Route("/media/images/upload", methods={"POST"}, name="media.images.upload")
      */
     public function uploadImageAction(Request $request, StorageClient $storage): JsonResponse
