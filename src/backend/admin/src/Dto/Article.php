@@ -200,7 +200,7 @@ class Article implements JsonSerializable
     /**
      * Get the value of createdAt.
      */
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
