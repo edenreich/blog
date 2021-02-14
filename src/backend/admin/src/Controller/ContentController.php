@@ -124,6 +124,7 @@ class ContentController extends NavigationAwareController
     public function createAction(Request $request): RedirectResponse
     {
         $payload = $request->request->all();
+        $article = new Article($payload);
 
         $session = $request->getSession();
         foreach ($payload as $key => $value) {
@@ -140,11 +141,11 @@ class ContentController extends NavigationAwareController
 
         try {
             $client->post('/api/v1/articles', [
-                RequestOptions::JSON => $payload,
+                RequestOptions::JSON => $article,
             ]);
             $this->addFlash(
                 'success',
-                sprintf('Article %s has been successfully created!', $payload['title'])
+                sprintf('Article %s has been successfully created!', $article->getTitle())
             );
 
             return $this->redirectToRoute('content_list');
