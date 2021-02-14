@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Article;
+use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
@@ -83,6 +84,11 @@ class ContentController extends NavigationAwareController
     public function editAction(string $id, Request $request): RedirectResponse
     {
         $payload = $request->request->all();
+        $article = new Article($payload);
+
+        if (!empty($payload['publish'])) {
+            $article->setPublishedAt(new DateTime());
+        }
 
         $client = new Client([
             'base_uri' => $this->getParameter('api_url'),
@@ -94,7 +100,7 @@ class ContentController extends NavigationAwareController
 
         try {
             $client->put(sprintf('/api/v1/articles/%s', $id), [
-                RequestOptions::JSON => $payload,
+                RequestOptions::JSON => $article,
             ]);
             $this->addFlash(
                 'success',

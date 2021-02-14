@@ -91,20 +91,23 @@ class ArticleRepository extends ServiceEntityRepository
             throw new Exception(sprintf('Article not found by %s', $id));
         }
 
-        if (isset($attributes['title'])) {
+        if (!empty($attributes['title'])) {
             $article->setTitle($attributes['title']);
         }
-        if (isset($attributes['slug'])) {
+        if (!empty($attributes['slug'])) {
             $article->setSlug($attributes['slug']);
         }
-        if (isset($attributes['meta_keywords'])) {
+        if (!empty($attributes['meta_keywords'])) {
             $article->setMetaKeywords($attributes['meta_keywords']);
         }
-        if (isset($attributes['meta_description'])) {
+        if (!empty($attributes['meta_description'])) {
             $article->setMetaDescription($attributes['meta_description']);
         }
-        if (isset($attributes['content'])) {
+        if (!empty($attributes['content'])) {
             $article->setContent($attributes['content']);
+        }
+        if (!empty($attributes['published_at'])) {
+            $article->setPublishedAt(new DateTime($attributes['published_at']));
         }
 
         $em->flush();

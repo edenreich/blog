@@ -92,9 +92,10 @@ class ArticlesController extends AbstractController
     public function update(string $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
+            $payload = json_decode($request->getContent(), true);
             /** @var \App\Repository\ArticleRepository */
             $articleRepository = $entityManager->getRepository(Article::class);
-            $article = $articleRepository->update($id, json_decode($request->getContent(), true));
+            $article = $articleRepository->update($id, $payload);
 
             return $this->json($article, 200, [], ['groups' => ['admin', 'frontend']]);
         } catch (Exception $exception) {

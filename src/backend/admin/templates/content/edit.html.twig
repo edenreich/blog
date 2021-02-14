@@ -46,6 +46,8 @@
                 <input type="checkbox" name="publish" class="form-check-input" id="publish" {{ (article.publishedAt) ? 'checked' : '' }}>
                 <label class="form-check-label" for="publish">Publish</label>
               </div>
+              <input type="hidden" name="updated_at" value="{{ article.updatedAt|format_datetime() }}">
+              <input type="hidden" name="created_at" value="{{ article.createdAt|format_datetime() }}">
               <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Save</button>
             </form>
           </div>
