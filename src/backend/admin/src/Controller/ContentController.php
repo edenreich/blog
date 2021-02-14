@@ -87,6 +87,8 @@ class ContentController extends NavigationAwareController
 
         if (!empty($payload['publish'])) {
             $article->setPublishedAt(new DateTime());
+        } else {
+            $article->setPublishedAt(null);
         }
 
         $client = new Client([
@@ -106,7 +108,7 @@ class ContentController extends NavigationAwareController
                 sprintf('Article %s has been successfully saved!', $payload['title'])
             );
 
-            return $this->redirectToRoute('content_list');
+            return $this->redirectToRoute('content_edit_submit', [ 'id' => $id ]);
         } catch (ClientException $exception) {
             $this->addFlash(
                 'danger',

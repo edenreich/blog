@@ -108,6 +108,8 @@ class ArticleRepository extends ServiceEntityRepository
         }
         if (!empty($attributes['published_at'])) {
             $article->setPublishedAt(new DateTime($attributes['published_at']));
+        } else {
+            $article->setPublishedAt(null);
         }
 
         $em->flush();

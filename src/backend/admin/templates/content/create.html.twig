@@ -12,7 +12,6 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <!-- Primary table start -->
       <div class="col-12 mt-5">
         {% for label, messages in app.flashes %}
           {% for message in messages %}
@@ -32,11 +31,11 @@
                 </div>
                 <div class="form-group">
                   <label for="title">Title</label>
-                  <input type="text" name="title" class="form-control" id="title" placeholder="Title..." value="{{ app.session.get('article.title') }}">
+                  <input type="text" name="title" class="form-control" id="title" placeholder="Title..." value="{{ app.session.get('article.title') }}" required>
                 </div>
                 <div class="form-group">
                   <label for="slug">Slug</label>
-                  <input type="text" name="slug" class="form-control" id="slug" placeholder="Slug..." value="{{ app.session.get('article.slug') }}">
+                  <input type="text" name="slug" class="form-control" id="slug" placeholder="Slug..." value="{{ app.session.get('article.slug') }}" required>
                 </div>
                 <div class="form-group">
                   <label for="meta_keywords">Meta Keywords</label>
@@ -48,7 +47,7 @@
                 </div>
                 <div class="form-group">
                   <label for="content">Content</label>
-                  <textarea name="content" class="form-control" id="content" rows="50" style="resize: none">{{ app.session.get('article.content') }}</textarea>
+                  <textarea name="content" class="form-control" id="content" required>{{ app.session.get('article.content') }}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Create</button>
               </form>
@@ -56,7 +55,6 @@
           </div>
         </div>
       </div>
-      <!-- Primary table end -->
     </div>
   </div>
 </div>

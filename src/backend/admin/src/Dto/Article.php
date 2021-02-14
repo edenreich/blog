@@ -38,7 +38,7 @@ class Article implements JsonSerializable
     private $content;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeInterface|null
      */
     private $publishedAt;
 
@@ -190,7 +190,7 @@ class Article implements JsonSerializable
     /**
      * Set the value of publishedAt.
      */
-    public function setPublishedAt(\DateTimeInterface $publishedAt): self
+    public function setPublishedAt(?\DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
 
