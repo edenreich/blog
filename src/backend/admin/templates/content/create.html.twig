@@ -48,7 +48,7 @@
                 </div>
                 <div class="form-group">
                   <label for="content">Content</label>
-                  <textarea name="content" class="form-control" id="content" rows="10" style="resize: none">{{ app.session.get('article.content') }}</textarea>
+                  <textarea name="content" class="form-control" id="content" rows="50" style="resize: none">{{ app.session.get('article.content') }}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Create</button>
               </form>
@@ -60,4 +60,17 @@
     </div>
   </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+<script>
+  window.onload = () => {
+    $(() => {
+      $('textarea').summernote({
+        placeholder: 'Type your content...',
+        tabsize: 2,
+        height: 300,
+      });
+    });
+  }
+</script>
 {% endblock %}
