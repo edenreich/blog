@@ -25,7 +25,7 @@ spec:
         paths:
         - path: /
           backend:
-            serviceName: blog-admin
+            serviceName: admin
             servicePort: 8080
     - host: stage-api.eden-reich.com
       http:
