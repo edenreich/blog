@@ -75,7 +75,7 @@ jobs:
           ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-code-analysis-${{ env.DEPLOYMENT_VERSION }}
   migrations:
     runs-on: self-hosted
-    needs: [lint, analyse, test]
+    needs: [lint, analyse]
     steps:
       - name: Run database migrations
         run: |
