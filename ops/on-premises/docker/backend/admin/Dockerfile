@@ -63,9 +63,11 @@ COPY --chown=www-data:www-data src/backend/admin .
 FROM src AS src-with-devtools
 ENV NODE_ENV=dev
 ENV APP_ENV=dev
-COPY --from=composer:1.9 /usr/bin/composer /usr/bin/composer
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+USER root
 RUN apk add --no-cache nodejs npm && npm install --global yarn
+COPY --from=composer:1.9 /usr/bin/composer /usr/bin/composer
+USER www-data
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 RUN yarn install && yarn build
 RUN composer install
 
