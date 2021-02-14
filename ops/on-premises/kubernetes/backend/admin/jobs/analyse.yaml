@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: admin-code-analysis-${VERSION}
+  namespace: blog
+  labels:
+    app: admin
+    version: "${VERSION}"
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: admin-code-analysis
+        image: ${REPOSITORY}:${VERSION}
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "499Mi"
+          limits:
+            cpu: "200m"
+            memory: "499Mi"
+        command: [ "vendor/bin/phpstan", "analyse", "src" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 1
