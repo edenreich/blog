@@ -42,7 +42,7 @@ class ContentController extends NavigationAwareController
                 return new Article($responseArticle);
             }, $responseArticles);
 
-            return new JsonResponse($articles);
+            return $this->json($articles);
         }
 
         return $this->render('content/list.html.twig');
@@ -75,28 +75,6 @@ class ContentController extends NavigationAwareController
         return $this->render('content/edit.html.twig', [
             'article' => $article,
         ]);
-    }
-
-    /**
-     * @Route("/content/{id}/delete", methods={"GET"}, name="content_delete")
-     */
-    public function deleteAction(string $id): Response
-    {
-        $client = new Client([
-            'base_uri' => $this->getParameter('api_url'),
-            RequestOptions::HEADERS => [
-                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
-        $client->delete(sprintf('/api/v1/articles/%s', $id));
-        $this->addFlash(
-            'success',
-            'Article has been successfully deleted!'
-        );
-
-        return $this->redirectToRoute('content_list');
     }
 
     /**
@@ -172,6 +150,28 @@ class ContentController extends NavigationAwareController
 
             return $this->redirectToRoute('content_create');
         }
+    }
+
+    /**
+     * @Route("/content/{id}/delete", methods={"GET"}, name="content_delete")
+     */
+    public function deleteAction(string $id): Response
+    {
+        $client = new Client([
+            'base_uri' => $this->getParameter('api_url'),
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $this->getAuthToken()),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $client->delete(sprintf('/api/v1/articles/%s', $id));
+        $this->addFlash(
+            'success',
+            'Article has been successfully deleted!'
+        );
+
+        return $this->redirectToRoute('content_list');
     }
 
     /**
