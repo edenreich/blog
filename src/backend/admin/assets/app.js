@@ -2,13 +2,13 @@
 global.moment = require('moment');
 require('moment/min/locales');
 const $ = require('jquery');
-window.$ = global.jQuery = $;
+global.$ = global.jQuery = $;
 
 require('admin-lte/plugins/fontawesome-free/css/all.css');
 require('admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.css');
 require('admin-lte/plugins/overlayScrollbars/js/OverlayScrollbars');
-require('admin-lte/plugins/bootstrap/js/bootstrap');
 require('admin-lte/plugins/jquery-ui/jquery-ui');
+require('admin-lte/plugins/bootstrap/js/bootstrap');
 require('admin-lte/plugins/jquery-knob/jquery.knob.min');
 require('admin-lte/plugins/summernote/summernote-bs4.css');
 require('admin-lte/plugins/summernote/summernote-bs4');
