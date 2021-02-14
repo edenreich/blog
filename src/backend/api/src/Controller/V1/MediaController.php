@@ -18,14 +18,15 @@ class MediaController extends AbstractController
     {
         $bucket = $storage->bucket('eden-reich-com-assets');
         $objects = $bucket->objects();
-        $files = []; 
+        $files = [];
         foreach ($objects as $object) {
             $files[] = [
-                'url' => $object->info()['mediaLink']
+                'url' => $object->info()['mediaLink'],
             ];
         }
+
         return $this->json([
-            'files' => $files
+            'files' => $files,
         ]);
     }
 
