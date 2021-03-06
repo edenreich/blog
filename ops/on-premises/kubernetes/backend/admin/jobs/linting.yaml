@@ -23,5 +23,5 @@ spec:
         command: [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose" ]
       restartPolicy: Never
       imagePullSecrets:
-      - name: regcred
+      - name: container-registry
   backoffLimit: 1

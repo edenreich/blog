@@ -29,5 +29,5 @@ spec:
         command: [ "bin/console", "doctrine:migration:migrate", "--no-interaction" ]
       restartPolicy: Never
       imagePullSecrets:
-      - name: regcred
+      - name: container-registry
   backoffLimit: 1

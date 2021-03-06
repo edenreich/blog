@@ -23,5 +23,5 @@ spec:
         command: [ "vendor/bin/phpstan", "analyse", "src" ]
       restartPolicy: Never
       imagePullSecrets:
-      - name: regcred
+      - name: container-registry
   backoffLimit: 1
