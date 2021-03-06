@@ -18,8 +18,8 @@ env:
   STAGING_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
   PRODUCTION_SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
   DEPLOYMENT_NAME: admin
-  DEPLOYMENT_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
-  DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
+  DEPLOYMENT_VERSION: $(echo ${{ github.event.after }} | cut -c1-8)
+  DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.event.before }} | cut -c1-8)
 
 jobs:
   debug:
