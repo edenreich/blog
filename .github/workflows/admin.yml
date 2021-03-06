@@ -46,22 +46,25 @@ jobs:
         run: |
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
           envsubst < ops/on-premises/kubernetes/secrets/container_registry.yaml | kubectl apply -f -
-  # update_secrets_production:
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: production
-  #   steps:
-  #     - name: Kubernetes - switch to production context
-  #       run: |
-  #         kubectl config use-context production
-  #     - name: Kubernetes - update secrets in the cluster
-  #       run: |
-  #         ADMIN_DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
-  #         envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
-  #     - name: Kubernetes - add docker pull secrets if not exists
-  #       run: |
-  #         DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
-  #         envsubst < ops/on-premises/kubernetes/secrets/container_registry.yaml | kubectl apply -f -
+  update_secrets_production:
+    runs-on: self-hosted
+    environment:
+      name: production
+    steps:
+      - name: check
+        run: echo checking if it is asking for approval
+      # - uses: actions/checkout@master
+      # - name: Kubernetes - switch to staging context
+      #   run: |
+      #     kubectl config use-context staging
+      # - name: Kubernetes - update secrets in the cluster
+      #   run: |
+      #     ADMIN_DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
+      #     envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
+      # - name: Kubernetes - add docker pull secrets if not exists
+      #   run: |
+      #     DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
+      #     envsubst < ops/on-premises/kubernetes/secrets/container_registry.yaml | kubectl apply -f -
   build:
     runs-on: self-hosted
     needs: docker_login
