@@ -62,39 +62,39 @@ jobs:
   #       run: |
   #         DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
   #         envsubst < ops/on-premises/kubernetes/secrets/container_registry.yaml | kubectl apply -f -
-  # build:
-  #   runs-on: self-hosted
-  #   needs: docker_login
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Docker - build container image
-  #       run: |
-  #         docker build \
-  #           --target production \
-  #           --cache-from ${{ env.DOCKER_REPO }}:latest \
-  #           -t ${{ env.DOCKER_REPO }}:latest \
-  #           -f ops/on-premises/docker/backend/admin/Dockerfile .
-  #     - name: Docker - build test container image
-  #       run: |
-  #         docker build \
-  #           --target src-with-devtools \
-  #           --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
-  #           -t ${{ env.DOCKER_REPO_DEV }}:latest \
-  #           -f ops/on-premises/docker/backend/admin/Dockerfile .
-  #     - name: Docker - tag container images
-  #       run: |
-  #         docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-  #         docker tag ${{ env.DOCKER_REPO_DEV }}:latest ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
-  # push:
-  #   needs: build
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Docker - push image to registry
-  #       run: |
-  #         docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-  #         docker push ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
-  #         docker push ${{ env.DOCKER_REPO }}:latest
-  #         docker push ${{ env.DOCKER_REPO_DEV }}:latest
+  build:
+    runs-on: self-hosted
+    needs: docker_login
+    steps:
+      - uses: actions/checkout@master
+      - name: Docker - build container image
+        run: |
+          docker build \
+            --target production \
+            --cache-from ${{ env.DOCKER_REPO }}:latest \
+            -t ${{ env.DOCKER_REPO }}:latest \
+            -f ops/on-premises/docker/backend/admin/Dockerfile .
+      - name: Docker - build test container image
+        run: |
+          docker build \
+            --target src-with-devtools \
+            --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
+            -t ${{ env.DOCKER_REPO_DEV }}:latest \
+            -f ops/on-premises/docker/backend/admin/Dockerfile .
+      - name: Docker - tag container images
+        run: |
+          docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+          docker tag ${{ env.DOCKER_REPO_DEV }}:latest ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
+  push:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Docker - push image to registry
+        run: |
+          docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+          docker push ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
+          docker push ${{ env.DOCKER_REPO }}:latest
+          docker push ${{ env.DOCKER_REPO_DEV }}:latest
   # lint:
   #   needs: push
   #   runs-on: self-hosted
