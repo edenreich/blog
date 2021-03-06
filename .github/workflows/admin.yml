@@ -26,9 +26,7 @@ jobs:
     runs-on: self-hosted
     steps:
     - name: debug
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
+      run: echo running job..
   # build:
   #   runs-on: self-hosted
   #   steps:
@@ -141,16 +139,16 @@ jobs:
   #         envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
   #     - name: Kubernetes - remove completed jobs
   #       run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
-  # deploy_production:
-  #   name: Deploy to production
-  #   needs: deploy_staging
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: production
-  #     url: https://admin.eden-reich.com
-  #   steps:
-  #     - name: Check
-  #       run: echo checking manuell trigger on github actions..
+  deploy_production:
+    name: Deploy to production
+    needs: debug
+    runs-on: self-hosted
+    environment:
+      name: production
+      url: https://admin.eden-reich.com
+    steps:
+      - name: Check
+        run: echo checking manuell trigger on github actions..
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - switch to production context
   #       run: kubectl config use-context production
