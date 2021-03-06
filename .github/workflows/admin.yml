@@ -255,7 +255,7 @@ jobs:
         run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   cleanup:
     runs-on: self-hosted
-    needs: deploy_stage
+    needs: deploy_staging
     steps:
       - name: Github-runner - remove all related images except latest
         run: |
