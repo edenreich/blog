@@ -169,7 +169,8 @@ jobs:
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - switch to production context
-  #       run: kubectl config use-context production
+  #       run: |
+  #         kubectl config use-context production
   #     - name: Kubernetes - run database migrations
   #       run: |
   #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
@@ -216,6 +217,9 @@ jobs:
   #     name: production
   #     url: https://admin.eden-reich.com
   #   steps:
+  #     - name: Kubernetes - switch to production context
+  #       run: |
+  #         kubectl config use-context production
   #     - name: Kubernetes - revert database migrations to previous version
   #       run: |
   #         VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
