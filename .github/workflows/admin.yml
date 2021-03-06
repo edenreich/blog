@@ -33,13 +33,14 @@ jobs:
     environment:
       name: staging
     steps:
+      - uses: actions/checkout@master
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
       - name: Kubernetes - update secrets in the cluster
         run: |
-          ADMIN_DATABASE_URL=c29tZXRoaW5nZWxzZQo= \
-          envsubst < ops/on-premises/kubernetes/secrets/admin.yaml
+          ADMIN_DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
+          envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
