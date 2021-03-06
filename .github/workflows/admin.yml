@@ -127,7 +127,6 @@ jobs:
           envsubst < ops/on-premises/kubernetes/backend/admin/jobs/analyse.yaml | kubectl apply -f -
           ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-code-analysis-${{ env.DEPLOYMENT_VERSION }}
   deploy_staging:
-    if: github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/master' 
     needs: [lint, analyse]
     runs-on: self-hosted
     environment:
