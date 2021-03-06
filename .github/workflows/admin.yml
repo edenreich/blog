@@ -38,7 +38,7 @@ jobs:
           kubectl config use-context staging
       - name: Kubernetes - update secrets in the cluster
         run: |
-          ADMIN_DATABASE_URL=somethingelse \
+          ADMIN_DATABASE_URL=c29tZXRoaW5nZWxzZQo= \
           envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
