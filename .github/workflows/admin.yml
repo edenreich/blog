@@ -28,6 +28,7 @@ jobs:
       - name: Add docker login credentials to github-runner server
         run: |
           echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > ~/.docker/config.json
+          docker login
   update_secrets_staging:
     runs-on: self-hosted
     environment:
