@@ -177,6 +177,7 @@ jobs:
       - name: Kubernetes - remove completed jobs
         run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   deploy_production:
+    if: github.event.ref == 'refs/heads/master'
     needs: deploy_staging
     runs-on: self-hosted
     environment:
@@ -256,21 +257,21 @@ jobs:
     runs-on: self-hosted
     needs: deploy_stage
     steps:
-      - name: Remove all related images from github-runner except latest
+      - name: Github-runner - remove all related images except latest
         run: |
           docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1, $2); print image}' | xargs) || true
           docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO_DEV }} | grep -v latest | awk '{image = sprintf("%s:%s", $1, $2); print image}' | xargs) || true
-      - name: Remove Dangling Docker Images
+      - name: Github-runner - remove dangling docker images
         run: docker system prune -f
       - name: Keep 2 deployments available for rollback
         run: |
           kubectl delete deployments \
             $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
-      - name: Remove all dangling images from staging kubernetes cluster worker nodes
+      - name: Staging worker nodes - remove all dangling images
         if: github.event.ref == 'refs/heads/develop'
         run: |
           for server in $(echo ${{ env.STAGING_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
-      - name: Remove all dangling images from production kubernetes cluster worker nodes
+      - name: Production worker nodes - remove all dangling images
         if: github.event.ref == 'refs/heads/master'
         run: |
           for server in $(echo ${{ env.PRODUCTION_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
