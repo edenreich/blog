@@ -15,9 +15,11 @@ env:
   DOCKER_BUILDKIT: 1
   DOCKER_REPO: edenr/blog-admin 
   DOCKER_REPO_DEV: edenr/blog-admin-devtools
-  STAGE_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
+  STAGING_SERVERS: k8s-master k8s-node1 k8s-node2 k8s-node3 k8s-node4 k8s-node5 k8s-node6
+  PRODUCTION_SERVERS: k4s-master k4s-node1 k4s-node2 k4s-node3 k4s-node4
   DEPLOYMENT_NAME: admin
   DEPLOYMENT_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
+  DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.sha }} | cut -c1-8)
 
 jobs:
   build:
@@ -54,6 +56,14 @@ jobs:
           docker push ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
           docker push ${{ env.DOCKER_REPO }}:latest
           docker push ${{ env.DOCKER_REPO_DEV }}:latest
+  update_secrets:
+    runs-on: self-hosted
+    needs: push
+    steps:
+      - name: Update secrets in the cluster
+        run: |
+          ADMIN_DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
+          envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
   lint:
     runs-on: self-hosted
     needs: push
@@ -74,23 +84,24 @@ jobs:
           REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
           envsubst < ops/on-premises/kubernetes/backend/admin/jobs/analyse.yaml | kubectl apply -f -
           ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-code-analysis-${{ env.DEPLOYMENT_VERSION }}
-  migrations:
-    runs-on: self-hosted
+  deploy_staging:
+    name: Deploy to staging
+    if: github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/master' 
     needs: [lint, analyse]
+    runs-on: self-hosted
+    environment:
+      name: staging
+      url: https://stage-admin.eden-reich.com
     steps:
-      - name: Run database migrations
+      - uses: actions/checkout@master
+      - name: Kubernetes - switch to staging context
+        run: kubectl config use-context staging
+      - name: Kubernetes - run database migrations
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
           envsubst < ops/on-premises/kubernetes/backend/admin/jobs/migrations.yaml | kubectl apply -f -
           ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-migration-${{ env.DEPLOYMENT_VERSION }}
-  deploy:
-    runs-on: self-hosted
-    needs: migrations
-    steps:
-      - uses: actions/checkout@master
-      - name: Kubernetes - switch to stage context
-        run: kubectl config use-context stage
       - name: Kubernetes - create a new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
@@ -121,9 +132,86 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
+      - name: Kubernetes - remove completed jobs
+        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
+  # deploy_production:
+  #   name: Deploy to production
+  #   needs: deploy_staging
+  #   runs-on: self-hosted
+  #   environment:
+  #     name: production
+  #     url: https://admin.eden-reich.com
+  #   steps:
+  #     - name: Check
+  #       run: echo checking manuell trigger on github actions..
+  #     - uses: actions/checkout@master
+  #     - name: Kubernetes - switch to production context
+  #       run: kubectl config use-context production
+  #     - name: Kubernetes - run database migrations
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
+  #         REPOSITORY=${{ env.DOCKER_REPO }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/jobs/migrations.yaml | kubectl apply -f -
+  #         ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-migration-${{ env.DEPLOYMENT_VERSION }}
+  #     - name: Kubernetes - create a new deployment
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
+  #         REPOSITORY=${{ env.DOCKER_REPO }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/deployment.yaml | kubectl apply -f -
+  #     - name: Kubernetes - wait for new deployment to be successfully rolled out
+  #       run: |
+  #         max_count=60
+  #         count=0
+  #         while [ true ]; do
+  #           if [[ $count -gt $max_count ]]; then
+  #             echo "===> Waited for too long for a successful rolled out green version, but something went wrong. Aborting..."
+  #             exit 1
+  #           fi
+  #           if [[ $(kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} --timeout=5s 2>/dev/null | grep 'successfully rolled out') ]]; then
+  #             echo "=====> Green deployment has been successfully rolled out. Continuing..."
+  #             break
+  #           fi
+  #           count=$((count+1))
+  #           echo "===> Green deployment ${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }} is being rolled out...Waiting..."
+  #           sleep 1
+  #         done
+  #     - name: Kubernetes - apply horizontal pods autoscaling to new deployment
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/hpa.yaml | kubectl apply -f -
+  #     - name: Kubernetes - switch LB to green deployment
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
+  #     - name: Kubernetes - remove completed jobs
+  #       run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
+  # revert_production:
+  #   name: Revert production
+  #   needs: deploy_production
+  #   runs-on: self-hosted
+  #   environment:
+  #     name: production
+  #     url: https://admin.eden-reich.com
+  #   steps:
+  #     - name: Kubernetes - revert database migrations to previous version
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
+  #         REPOSITORY=${{ env.DOCKER_REPO }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/jobs/revert_migrations.yaml | kubectl apply -f -
+  #         ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-revert-migration-${{ env.DEPLOYMENT_PREVIOUS_VERSION }}
+  #     - name: Kubernetes - apply horizontal pods autoscaling to previous deployment
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/hpa.yaml | kubectl apply -f -
+  #     - name: Kubernetes - switch LB to previous deployment
+  #       run: |
+  #         VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
+  #         envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
+  #     - name: Kubernetes - remove completed jobs
+  #       run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   cleanup:
     runs-on: self-hosted
-    needs: deploy
+    needs: deploy_stage
     steps:
       - name: Remove all related images from github-runner except latest
         run: |
@@ -135,8 +223,11 @@ jobs:
         run: |
           kubectl delete deployments \
             $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
-      - name: Remove all dangling images from kubernetes worker nodes
+      - name: Remove all dangling images from staging kubernetes cluster worker nodes
+        if: github.event.ref == 'refs/heads/develop'
         run: |
-          for server in $(echo ${{ env.STAGE_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
-      - name: Remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
+          for server in $(echo ${{ env.STAGING_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
+      - name: Remove all dangling images from production kubernetes cluster worker nodes
+        if: github.event.ref == 'refs/heads/master'
+        run: |
+          for server in $(echo ${{ env.PRODUCTION_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
