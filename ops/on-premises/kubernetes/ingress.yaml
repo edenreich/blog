@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
@@ -11,21 +11,30 @@ spec:
     - host: eden-reich.com
       http:
         paths:
-        - path: /
+        - pathType: Prefix
+          path: /
           backend:
-            serviceName: blog-frontend
-            servicePort: 8080
-    - host: www.eden-reich.com
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: blog-frontend
-            servicePort: 8080
+            service:
+              name: frontend
+              port:
+                number: 8080
     - host: admin.eden-reich.com
       http:
         paths:
-        - path: /
+        - pathType: Prefix
+          path: /
           backend:
-            serviceName: blog-admin
-            servicePort: 8080
+            service:
+              name: admin
+              port:
+                number: 8080
+    - host: api.eden-reich.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: api
+              port: 
+                number: 8080
