@@ -23,13 +23,13 @@ spec:
               key: test_database_url
         resources:
           requests:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
           limits:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
         command: [ "bin/console", "doctrine:fixtures:load", "--no-interaction" ]
       restartPolicy: Never
       imagePullSecrets:
-      - name: regcred
+      - name: container-registry
   backoffLimit: 1

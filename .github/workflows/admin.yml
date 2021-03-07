@@ -240,7 +240,7 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/revert_migrations.yaml | kubectl apply -f -
+          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/migrations.yaml | kubectl apply -f -
           ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-revert-migration-${{ env.DEPLOYMENT_PREVIOUS_VERSION }}
       - name: Kubernetes - apply horizontal pods autoscaling to previous deployment
         run: |
