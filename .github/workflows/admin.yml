@@ -251,7 +251,6 @@ jobs:
       - name: Kubernetes - remove completed jobs
         run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   revert_production:
-    name: Revert production
     needs: deploy_production
     runs-on: self-hosted
     environment:
