@@ -26,17 +26,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 EXPOSE 3000
 CMD [ "yarn", "dev" ]
 
-FROM node:15.2.1-buster-slim AS stage
-WORKDIR /app
-ENV PORT=3000
-ENV APP_ENV=stage
-ENV NODE_ENV=production
-COPY src/frontend .
-COPY --from=frontend-artifacts /tmp/node_modules node_modules
-COPY --from=builder /tmp/.next .next
-EXPOSE 3000
-CMD [ "yarn", "start" ]
-
 FROM node:15.2.1-buster-slim AS production
 WORKDIR /app
 ENV PORT=3000
