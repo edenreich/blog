@@ -13,4 +13,4 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: admin-${VERSION}
-  targetCPUUtilizationPercentage: 50
+  targetCPUUtilizationPercentage: 80

@@ -14,11 +14,21 @@ spec:
       - name: admin-database-migration
         image: ${REPOSITORY}:${VERSION}
         env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: environment
+              key: app_env
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: admin
               key: database_url
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: admin
+              key: api_url
         resources:
           requests:
             cpu: 499m
