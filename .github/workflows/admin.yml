@@ -10,6 +10,7 @@ on:
       - "src/backend/admin/**"
       - "ops/on-premises/docker/backend/admin/**"
       - "ops/on-premises/kubernetes/backend/admin/**"
+      - "ops/on-premises/kubernetes/config/admin.yaml"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -29,6 +30,30 @@ jobs:
         run: |
           echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > ~/.docker/config.json
           docker login
+  update_configuration_staging:
+    runs-on: self-hosted
+    environment:
+      name: staging
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - switch to staging context
+        run: |
+          kubectl config use-context staging
+      - name: Kubernetes - update configmap in the cluster
+        run: |
+          kubectl apply -f ops/on-premises/kubernetes/config/admin.yaml 
+  update_configuration_production:
+    runs-on: self-hosted
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - switch to production context
+        run: |
+          kubectl config use-context production
+      - name: Kubernetes - update configmap in the cluster
+        run: |
+          kubectl apply -f ops/on-premises/kubernetes/config/admin.yaml 
   update_secrets_staging:
     runs-on: self-hosted
     environment:
