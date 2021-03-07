@@ -38,17 +38,3 @@ spec:
               name: api
               port: 
                 number: 8080
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ingress-nginx-controller
-  labels:
-    app: ingress-nginx-controller
-  namespace: kube-system
-data:
-  use-forwarded-headers: "true"
-  compute-full-forwarded-for: "true"
-  use-proxy-protocol: "false"
-  server-snippet: |
-    real_ip_header CF-Connecting-IP;
