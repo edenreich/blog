@@ -214,6 +214,8 @@ jobs:
       - name: Kubernetes - remove completed jobs
         run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   deploy_production:
+    if: github.event.ref == 'refs/heads/master'
+    needs: deploy_staging
     runs-on: self-hosted
     environment:
       name: production
