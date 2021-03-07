@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: ingress-staging
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
   namespace: blog
 spec:
   rules:  
-    - host: eden-reich.com
+    - host: stage.eden-reich.com
       http:
         paths:
         - pathType: Prefix
@@ -18,7 +18,7 @@ spec:
               name: frontend
               port:
                 number: 8080
-    - host: admin.eden-reich.com
+    - host: stage-admin.eden-reich.com
       http:
         paths:
         - pathType: Prefix
@@ -28,7 +28,7 @@ spec:
               name: admin
               port:
                 number: 8080
-    - host: api.eden-reich.com
+    - host: stage-api.eden-reich.com
       http:
         paths:
         - pathType: Prefix

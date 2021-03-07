@@ -1,0 +1,38 @@
+name: on-premises-infrastructure
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - ".github/workflows/on-premises-infrastructure.yml"
+      - "ops/on-premises/kubernetes/ingress.yaml"
+      - "ops/on-premises/kubernetes/ingress-staging.yaml"
+
+jobs:
+  ingress-staging:
+    runs-on: self-hosted
+    environment:
+      name: staging
+    steps:
+    - uses: actions/checkout@master
+    - name: Kubernetes - switch to staging context
+      run: |
+        kubectl config use-context staging
+    - name: Kubernetes - Apply changes to ingress on staging
+      run: |
+        kubectl apply -f ops/on-premises/kubernetes/ingress-staging.yaml
+  ingress:
+    if: github.event.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    environment:
+      name: production
+    steps:
+    - uses: actions/checkout@master
+    - name: Kubernetes - switch to production context
+      run: |
+        kubectl config use-context production
+    - name: Kubernetes - Apply changes to ingress on production
+      run: |
+        kubectl apply -f ops/on-premises/kubernetes/ingress.yaml

@@ -1,11 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: blog-environment
+  name: environment
   namespace: blog
   labels:
-    app: blog-environment
+    app: environment
 data:
-  app_env: XXX
-  database_url: XXX
-  test_database_url: XXX
+  app_env: <STRING>

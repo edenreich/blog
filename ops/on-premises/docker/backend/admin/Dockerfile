@@ -23,15 +23,15 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install pdo_pgsql intl && \
     apk del .build-deps
 RUN mkdir /run/nginx
-COPY ops/on-premises/docker/backend/api/php/php.ini-development /usr/local/etc/php/php.ini-development
-COPY ops/on-premises/docker/backend/api/php/php.ini-production /usr/local/etc/php/php.ini-production
+COPY ops/on-premises/docker/backend/admin/php/php.ini-development /usr/local/etc/php/php.ini-development
+COPY ops/on-premises/docker/backend/admin/php/php.ini-production /usr/local/etc/php/php.ini-production
+COPY ops/on-premises/docker/backend/admin/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY ops/on-premises/docker/backend/admin/supervisor.d/programs /etc/supervisor.d
 COPY ops/on-premises/docker/backend/admin/supervisor.d/supervisord.conf /etc/supervisord.conf
 COPY ops/on-premises/docker/backend/admin/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ops/on-premises/docker/backend/admin/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
 RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
-RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf
 USER www-data
 WORKDIR /var/www/admin
 EXPOSE 8080
@@ -63,9 +63,11 @@ COPY --chown=www-data:www-data src/backend/admin .
 FROM src AS src-with-devtools
 ENV NODE_ENV=dev
 ENV APP_ENV=dev
-COPY --from=composer:1.9 /usr/bin/composer /usr/bin/composer
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+USER root
 RUN apk add --no-cache nodejs npm && npm install --global yarn
+COPY --from=composer:1.9 /usr/bin/composer /usr/bin/composer
+USER www-data
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 RUN yarn install && yarn build
 RUN composer install
 

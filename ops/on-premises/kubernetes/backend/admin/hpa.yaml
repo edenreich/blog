@@ -1,12 +1,16 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: blog-admin
+  name: admin
+  namespace: blog
+  labels:
+    app: admin
+    version: "${VERSION}"
 spec:
   minReplicas: 2
   maxReplicas: 10
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: blog-admin-{{VERSION}}
-  targetCPUUtilizationPercentage: 50
+    name: admin-${VERSION}
+  targetCPUUtilizationPercentage: 80

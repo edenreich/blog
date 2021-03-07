@@ -108,7 +108,7 @@ class ContentController extends NavigationAwareController
                 sprintf('Article %s has been successfully saved!', $payload['title'])
             );
 
-            return $this->redirectToRoute('content_edit_submit', [ 'id' => $id ]);
+            return $this->redirectToRoute('content_edit_submit', ['id' => $id]);
         } catch (ClientException $exception) {
             $this->addFlash(
                 'danger',
