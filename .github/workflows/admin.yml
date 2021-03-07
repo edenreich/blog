@@ -3,8 +3,8 @@ name: admin
 on:
   push:
     branches:
+      - master
       - develop
-      - add-workflow-for-admin 
     paths:
       - ".github/workflows/admin.yml"
       - "src/backend/admin/**"
