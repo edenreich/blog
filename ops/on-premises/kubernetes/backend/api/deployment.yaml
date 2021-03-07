@@ -62,11 +62,11 @@ spec:
               key: google_application_credentials_path
         resources:
           requests:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
           limits:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
         ports:
         - containerPort: 8080
         readinessProbe:
@@ -80,4 +80,4 @@ spec:
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
-      - name: regcred
+      - name: container-registry

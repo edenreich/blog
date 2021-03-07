@@ -54,13 +54,13 @@ spec:
               key: google_application_credentials_path
         resources:
           requests:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
           limits:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
         command: [ "/bin/sh", "-c", "supervisord -c /etc/supervisord.conf & bin/phpunit" ]
       restartPolicy: Never
       imagePullSecrets:
-      - name: regcred
+      - name: container-registry
   backoffLimit: 1
