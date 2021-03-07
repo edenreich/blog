@@ -15,11 +15,11 @@ spec:
         image: ${REPOSITORY}:${VERSION}
         resources:
           requests:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
           limits:
-            cpu: "200m"
-            memory: "499Mi"
+            cpu: 499m
+            memory: 499Mi
         command: [ "/bin/sh", "-c", "bin/console lint:yaml config && ./vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run --verbose" ]
       restartPolicy: Never
       imagePullSecrets:
