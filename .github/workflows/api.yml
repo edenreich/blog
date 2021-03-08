@@ -44,6 +44,7 @@ jobs:
           APP_ENV=staging \
           envsubst < ops/on-premises/kubernetes/config/api.yaml | kubectl apply -f -
   update_configuration_production:
+    if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
     environment:
       name: production
@@ -79,6 +80,7 @@ jobs:
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
           envsubst < ops/on-premises/kubernetes/secrets/container_registry.yaml | kubectl apply -f -
   update_secrets_production:
+    if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
     environment:
       name: production

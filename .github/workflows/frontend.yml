@@ -43,6 +43,7 @@ jobs:
           APP_ENV=staging \
           envsubst < ops/on-premises/kubernetes/config/frontend.yaml | kubectl apply -f -
   update_configuration_production:
+    if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
     environment:
       name: production
@@ -74,6 +75,7 @@ jobs:
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
           envsubst < ops/on-premises/kubernetes/secrets/container_registry.yaml | kubectl apply -f -
   update_secrets_production:
+    if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
     environment:
       name: production
@@ -122,7 +124,7 @@ jobs:
             -t frontend-artifacts:latest \
             -f ops/on-premises/docker/frontend/artifacts/Dockerfile .
   build:
-    needs: [build-artifacts, docker_login]
+    needs: [build-artifacts]
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
@@ -135,7 +137,7 @@ jobs:
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -f ops/on-premises/docker/frontend/Dockerfile .
   push:
-    needs: build
+    needs: [build, docker_login]
     runs-on: self-hosted
     steps:
       - name: Docker - push container image to registry
