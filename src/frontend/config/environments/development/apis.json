@@ -1,8 +1,8 @@
 {
-  "admin": {
-    "url": "http://admin:3000"
+  "api": {
+    "url": "https://dev-api.eden-reich.com/api"
   },
   "frontend": {
-    "url": "http://127.0.0.1:3000/api"
+    "url": "https://dev.eden-reich.com/api"
   }
 }

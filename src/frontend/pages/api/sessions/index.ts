@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.admin.url}/sessions`, { ip_address: ipAddress }, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.api.url}/sessions`, { ip_address: ipAddress }, { headers: { 'Content-Type': 'application/json' } });
     res.status(200).json(response.data);
   } catch (error) {
     console.error(error);

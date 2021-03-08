@@ -8,9 +8,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { session_id } = req.query;
   try {
     const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/notifications/${session_id}`, { headers: { 'Content-Type': 'application/json' } });
-    res.status(200).json(response.data);
+    res.status(200).json(response?.data);
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error.response?.data);
     res.status(404).json({ message: 'could not find a notification.' });
   }
 };
