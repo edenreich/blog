@@ -9,7 +9,7 @@ COPY src/frontend/config/environments/production config/environments/production
 COPY src/frontend/interfaces interfaces
 COPY src/frontend/components components
 COPY src/frontend/pages pages
-COPY src/frontend/assets assets
+COPY src/frontend/styles styles
 COPY src/frontend/utils utils
 COPY --from=frontend-artifacts /tmp/development_node_modules node_modules
 RUN apt-get update && \
