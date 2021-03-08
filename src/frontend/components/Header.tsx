@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import './Header.scss';
+import './Header.module.scss';
 
 interface IProps {
   className: string;

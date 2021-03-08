@@ -4,7 +4,7 @@ import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
 import axios, { AxiosResponse } from 'axios';
 import { IVisitor } from '@/interfaces/visitor';
 
-import './Reactions.scss';
+import './Reactions.module.scss';
 
 type selection = 'like' | 'love' | 'dislike' | null;
 

@@ -11,7 +11,7 @@ import Reactions from '@/components/Reactions';
 import { IVisitor } from '@/interfaces/visitor';
 import { asset } from '@/utils/asset';
 
-import './article.scss';
+import './article.module.scss';
 
 interface IProps {
   visitor?: IVisitor;

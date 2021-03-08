@@ -11,7 +11,7 @@ import { INotification } from '@/interfaces/notification';
 import PublishedArticles from '@/components/PublishedArticles';
 import UpcomingArticles from '@/components/UpcomingArticles';
 
-import './index.scss';
+import './index.module.scss';
 
 interface IProps {
   visitor?: IVisitor;

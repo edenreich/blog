@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import './Layout.scss';
+import './Layout.module.scss';
 
 class Layout extends React.Component {
 

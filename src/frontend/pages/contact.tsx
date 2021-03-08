@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
 import { FaEnvelope } from 'react-icons/fa';
 
-import './contact.scss';
+import './contact.module.scss';
 
 interface FieldsInterface {
   name?: string;

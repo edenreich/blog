@@ -2,7 +2,7 @@ import * as React from 'react';
 import { asset } from '@/utils/asset';
 import { Article } from '@/interfaces/article';
 
-import './UpcomingArticles.scss';
+import './UpcomingArticles.module.scss';
 
 interface IProps {
   children?: React.ReactNode[];

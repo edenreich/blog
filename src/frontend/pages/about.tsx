@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 import ProgressBar from '../components/ProgressBar';
 
-import './about.scss';
+import './about.module.scss';
 
 interface IProps {
   children?: React.ReactNode;

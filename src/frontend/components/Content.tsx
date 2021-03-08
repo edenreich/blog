@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import './Content.scss';
+import './Content.module.scss';
 
 interface IProps {
   className: string;

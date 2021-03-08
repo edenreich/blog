@@ -3,7 +3,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
-import './Footer.scss';
+import './Footer.module.scss';
 
 interface IProps {
   className: string;

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { asset } from '@/utils/asset';
 import { Article } from '@/interfaces/article';
 
-import './PublishedArticles.scss';
+import './PublishedArticles.module.scss';
 
 interface IProps {
   children?: React.ReactNode[];

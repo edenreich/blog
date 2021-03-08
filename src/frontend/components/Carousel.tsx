@@ -3,7 +3,7 @@ import Slider, { Settings } from 'react-slick';
 
 import 'slick-carousel/slick/slick-theme.scss';
 import 'slick-carousel/slick/slick.scss';
-import './Carousel.scss';
+import './Carousel.module.scss';
 
 interface IProps {
   children?: React.ReactNode[];

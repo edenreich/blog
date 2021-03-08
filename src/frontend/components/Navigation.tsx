@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 
-import './Navigation.scss';
+import './Navigation.module.scss';
 
 interface LinkInterface {
   id: number;

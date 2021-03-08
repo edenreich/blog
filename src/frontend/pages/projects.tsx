@@ -2,7 +2,7 @@ import * as React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import './projects.scss';
+import './projects.module.scss';
 
 interface IProps {
   children?: React.ReactNode;
