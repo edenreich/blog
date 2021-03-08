@@ -41,7 +41,8 @@ jobs:
           kubectl config use-context staging
       - name: Kubernetes - update configmap in the cluster
         run: |
-          kubectl apply -f ops/on-premises/kubernetes/config/api.yaml 
+          APP_ENV=staging \
+          envsubst < ops/on-premises/kubernetes/config/api.yaml | kubectl apply -f -
   update_configuration_production:
     runs-on: self-hosted
     environment:
@@ -53,7 +54,8 @@ jobs:
           kubectl config use-context production
       - name: Kubernetes - update configmap in the cluster
         run: |
-          kubectl apply -f ops/on-premises/kubernetes/config/api.yaml 
+          APP_ENV=prod \
+          envsubst < ops/on-premises/kubernetes/config/api.yaml | kubectl apply -f -
   update_secrets_staging:
     runs-on: self-hosted
     environment:

@@ -35,6 +35,11 @@ spec:
             mountPath: /etc/gcp
             readOnly: true
         env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: api
+              key: app_env
         - name: JWT_PASSPHRASE
           valueFrom:
             secretKeyRef:

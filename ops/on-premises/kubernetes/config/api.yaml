@@ -4,4 +4,5 @@ metadata:
   name: api
   namespace: blog
 data:
+  app_env: ${APP_ENV}
   google_application_credentials_path: /etc/gcp/service_account.json
