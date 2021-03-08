@@ -9,6 +9,7 @@ COPY src/backend/api/composer.* ./
 RUN composer install --no-dev
 
 FROM php:7.4.14-fpm-alpine3.12 AS common
+USER root
 RUN apk update
 RUN apk add --no-cache bash nginx supervisor postgresql-dev
 RUN apk add --no-cache tzdata && \
@@ -21,13 +22,13 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
 RUN mkdir /run/nginx
 COPY ops/on-premises/docker/backend/api/php/php.ini-development /usr/local/etc/php/php.ini-development
 COPY ops/on-premises/docker/backend/api/php/php.ini-production /usr/local/etc/php/php.ini-production
+COPY ops/on-premises/docker/backend/api/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY ops/on-premises/docker/backend/api/supervisor.d/programs /etc/supervisor.d
 COPY ops/on-premises/docker/backend/api/supervisor.d/supervisord.conf /etc/supervisord.conf
 COPY ops/on-premises/docker/backend/api/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ops/on-premises/docker/backend/api/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
 RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
-RUN echo 'access.format = "[%t] %m %{REQUEST_SCHEME}e://%{HTTP_HOST}e%{REQUEST_URI}e %f pid:%p took:%ds mem:%{mega}Mmb cpu:%C%% status:%s {%{REMOTE_ADDR}e|%{HTTP_USER_AGENT}e}"' >> /usr/local/etc/php-fpm.d/www.conf
 USER www-data
 WORKDIR /var/www/api
 EXPOSE 8080
