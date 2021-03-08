@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { NextPageContext } from 'next';
-import getConfig from 'next/config';
 import Head from 'next/head';
 import moment from 'moment';
 import Prism from 'prismjs';
@@ -11,8 +10,6 @@ import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
 import { IVisitor } from '@/interfaces/visitor';
 import { asset } from '@/utils/asset';
-
-const { publicRuntimeConfig } = getConfig();
 
 import './article.scss';
 
@@ -27,7 +24,7 @@ class Article extends React.Component<IProps> {
     let article: IArticle | null;
 
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.frontend.url}/articles/${ctx.query.article}`, { headers:  ctx?.req?.headers });
+      const response: AxiosResponse = await axios.get('/api/articles/${ctx.query.article}', { headers:  ctx?.req?.headers });
       article = response.data;
     } catch (error) {
       article = null;

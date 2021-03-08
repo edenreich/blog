@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { GrClose } from 'react-icons/gr';
 import { IoMdNotificationsOff, IoMdNotificationsOutline } from 'react-icons/io';
 import Modal from 'react-modal';
-import getConfig from 'next/config';
 import axios, { AxiosResponse } from 'axios';
 import { IVisitor } from '@/interfaces/visitor';
 import { INotification } from '@/interfaces/notification';
@@ -13,8 +12,6 @@ import PublishedArticles from '@/components/PublishedArticles';
 import UpcomingArticles from '@/components/UpcomingArticles';
 
 import './index.scss';
-
-const { publicRuntimeConfig } = getConfig();
 
 interface IProps {
   visitor?: IVisitor;
@@ -34,7 +31,7 @@ class IndexPage extends React.Component<IProps, IState> {
   static async getInitialProps(): Promise<any> {
     let publishedArticles: Article[];
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.frontend.url}/articles`);
+      const response: AxiosResponse = await axios.get('/api/articles');
       publishedArticles = response.data;
     } catch (error) {
       publishedArticles = [];
@@ -42,7 +39,7 @@ class IndexPage extends React.Component<IProps, IState> {
 
     let upcomingArticles: Article[];
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.frontend.url}/articles/upcoming`);
+      const response: AxiosResponse = await axios.get('/api/articles/upcoming');
       upcomingArticles = response.data;
     } catch (error) {
       upcomingArticles = [];
@@ -69,7 +66,7 @@ class IndexPage extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     Modal.setAppElement('#home');
     try {
-      const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.frontend.url}/notifications/get?session_id=${this.props.visitor.uuid}`);
+      const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props.visitor.uuid}`);
       const notification: INotification = response.data;
       await this.setState({ notification });
     } catch (error) {
@@ -83,7 +80,7 @@ class IndexPage extends React.Component<IProps, IState> {
 
     if (this.state.notification?.is_enabled) {
       try {
-        const notification: INotification = await axios.put(`${publicRuntimeConfig.apis.frontend.url}/notifications/remove`, {
+        const notification: INotification = await axios.put('/api/notifications/remove', {
           session: this.props.visitor?.uuid,
           email: this.state.email,
           is_enabled: false,
@@ -118,7 +115,7 @@ class IndexPage extends React.Component<IProps, IState> {
     }
 
     try {
-      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.frontend.url}/notifications/add`, {
+      const response: AxiosResponse = await axios.post('/api/notifications/add', {
         session: this.props.visitor.uuid,
         email: this.state.email,
       }, { headers: { 'Content-Type': 'application/json' } });
@@ -184,7 +181,7 @@ class IndexPage extends React.Component<IProps, IState> {
               id="notification-form"
               ref="notification-form"
               method="POST"
-              action={`${publicRuntimeConfig.apis.frontend.url}/notifications`}
+              action={'/api/notifications'}
               onSubmit={this.submitNotificationForm}
             >
               <br />
