@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import '@/assets/scss/colors.scss';
 import './ProgressBar.module.scss';
 
 interface IProps {

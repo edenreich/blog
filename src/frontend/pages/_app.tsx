@@ -12,8 +12,7 @@ import Footer from '@/components/Footer';
 import { Article } from '@/interfaces/article';
 import { IVisitor } from '@/interfaces/visitor';
 
-import '@/assets/scss/reset.scss';
-import '@/assets/scss/global.scss';
+import '../styles/scss/globals.scss';
 
 interface IProps extends AppInitialProps {
   session: IVisitor;
@@ -28,12 +27,19 @@ class Blog extends App<IProps, IState> {
 
   static async getInitialProps({ Component, ctx }: AppContext): Promise<any> {
     let pageProps = {};
-    let session;
+    const anonymouse: IVisitor = {
+      id: '53f36322-9b5b-46db-8a2d-f53d85a09352',
+      uuid: '53f36322-9b5b-46db-8a2d-f53d85a09351',
+      ip_address: '127.0.0.1',
+      updated_at: new Date(),
+      created_at: new Date()
+    };
+    let session: IVisitor;
     try {
       const response: AxiosResponse = await axios.post('/api/sessions', {} ,{ headers:  ctx?.req?.headers });
       session = response.data;
     } catch (error) {
-      session = null;
+      session = anonymouse;
       console.error(error);
     }
     if (Component.getInitialProps) {

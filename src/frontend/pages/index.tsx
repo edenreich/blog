@@ -66,9 +66,9 @@ class IndexPage extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     Modal.setAppElement('#home');
     try {
-      const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props.visitor.uuid}`);
-      const notification: INotification = response.data;
-      await this.setState({ notification });
+      // const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props?.visitor.uuid}`);
+      // const notification: INotification = response.data;
+      // await this.setState({ notification });
     } catch (error) {
       console.error(error);
       await this.setState({});
