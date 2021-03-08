@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 
-import './Navigation.module.scss';
+import styles from './Navigation.module.scss';
 
 interface LinkInterface {
   id: number;
@@ -10,7 +10,6 @@ interface LinkInterface {
 }
 
 interface IProps {
-  className: string;
   brand?: string;
   links?: LinkInterface[];
   current: string;
@@ -57,21 +56,21 @@ class Navigation extends React.Component<IProps, IState> {
     });
 
     return (
-      <nav role="navigation" className={this.props.className + (this.state.opened ? ' navigation--opened' : ' navigation')}>
-        <button type="button" className="grid-button navigation__button" onClick={() => this.toggleMenu()}>
-          <i className="navigation__button--line"></i>
-          <i className="navigation__button--line"></i>
-          <i className="navigation__button--line"></i>
+      <nav role="navigation" className={this.state.opened ? styles.navigation__opened : styles.navigation}>
+        <button type="button" className={styles.navigation__button} onClick={() => this.toggleMenu()}>
+          <i className={styles.navigation__button__line}></i>
+          <i className={styles.navigation__button__line}></i>
+          <i className={styles.navigation__button__line}></i>
         </button>
-        <div className="grid-brand navigation__brand">
+        <div className={styles.navigation__brand}>
           <Link href={'/'}>
             <a>{this.props.brand}</a>
           </Link>
         </div>
-        <ul className="grid-links navigation__links">
+        <ul className={this.state.opened ? styles.navigation__opened__links : styles.navigation__links}>
           {linkFragments}
         </ul>
-        <div className={this.state.opened ? 'navigation__overlay--show' : 'navigation__overlay'} onClick={() => this.closeMenu()}></div>
+        <div className={this.state.opened ? styles.navigation__overlay__show : styles.navigation__overlay} onClick={() => this.closeMenu()}></div>
       </nav>
     );
   }

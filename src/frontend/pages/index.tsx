@@ -11,7 +11,7 @@ import { INotification } from '@/interfaces/notification';
 import PublishedArticles from '@/components/PublishedArticles';
 import UpcomingArticles from '@/components/UpcomingArticles';
 
-import './index.module.scss';
+import styles from './index.module.scss';
 
 interface IProps {
   visitor?: IVisitor;
@@ -66,9 +66,9 @@ class IndexPage extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     Modal.setAppElement('#home');
     try {
-      // const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props?.visitor.uuid}`);
-      // const notification: INotification = response.data;
-      // await this.setState({ notification });
+      const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props?.visitor.uuid}`);
+      const notification: INotification = response.data;
+      await this.setState({ notification });
     } catch (error) {
       console.error(error);
       await this.setState({});
@@ -132,7 +132,7 @@ class IndexPage extends React.Component<IProps, IState> {
     const description = 'Welcome to my blog, I\'ll be posting about web app development, native apps, DevOps and more.';
 
     return (
-      <div id="home" className="home">
+      <div id="home" className={styles.home}>
         <Head>
           <title>{title}</title>
           <meta charSet="utf-8" />
@@ -160,18 +160,18 @@ class IndexPage extends React.Component<IProps, IState> {
           }}
           contentLabel="Notifications"
         >
-          <div className="modal__header">
+          <div className={styles.modal__header}>
             <h2>Notifications</h2>
             <Link href="/#">
               <a
-                className="modal__close"
+                className={styles.modal__close}
                 onClick={this.closeModal}
               >
                 <GrClose size="20px" />
               </a>
             </Link>
           </div>
-          <div className="modal__content">
+          <div className={styles.modal__content}>
             <div>
               <p>
                 Stay up to date when a new article is being published.
@@ -202,9 +202,9 @@ class IndexPage extends React.Component<IProps, IState> {
             </form>
           </div>
         </Modal>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
+        <section className={styles.content__section}>
+          <div className={styles.content__wrapper}>
+            <div className={styles.content_column}>
               <h2>Welcome</h2>
               <p>
                 Welcome to my blog, I'll be posting about web app development, native apps, DevOps and more.
@@ -213,10 +213,10 @@ class IndexPage extends React.Component<IProps, IState> {
             </div>
           </div>
         </section>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <div className="home__notifications">
+        <section className={styles.content__section}>
+          <div className={styles.content__wrapper}>
+            <div className={styles.content_column}>
+              <div className={styles.home__notifications}>
                 <Link href="/#">
                   <a onClick={(event: React.MouseEvent) => this.openModal(event)}>
                     {!this.state.notification && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
@@ -231,9 +231,9 @@ class IndexPage extends React.Component<IProps, IState> {
             </div>
           </div>
         </section>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
+        <section className={styles.content__section}>
+          <div className={styles.content__wrapper}>
+            <div className={styles.content_column}>
               <h2>Upcoming articles</h2>
               <UpcomingArticles articles={this.props.upcomingArticles} />
             </div>

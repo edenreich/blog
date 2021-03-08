@@ -1,25 +1,10 @@
 @import '../styles/scss/colors.module.scss';
 @import '../styles/scss/breakpoints.module.scss';
 
-.grid-content {
+.content {
   display: grid;
   grid-area: content;
   grid-template-columns: 1fr;
-  
-  .grid-content-wrapper {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-areas: 
-      "... column column column column column column column column column column ...";
-  }
-
-  .grid-column {
-    display: grid;
-    grid-area: column;
-  }
-}
-
-.content {
   width: 100%;
   max-width: 100%;
 
@@ -31,11 +16,23 @@
     padding-top: 60px;
     padding-bottom: 60px;
   }
+
+  &__wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-areas: 
+      "... column column column column column column column column column column ...";
+  }
+
+  &__column {
+    display: grid;
+    grid-area: column;
+  }
 }
 
 @media (min-width: $breakpoint-desktop) {
-  .grid-content {    
-    .grid-content-wrapper {
+  .content {    
+    &__wrapper {
       grid-template-areas: 
         "... ... ... column column column column column column ... ... ...";
     }

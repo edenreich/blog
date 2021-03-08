@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import App, { AppContext } from 'next/app';
 import { AppInitialProps } from 'next/dist/next-server/lib/utils';
+import getConfig from 'next/config';
 
 import Layout from '@/components/Layout';
 import NextNProgress from 'nextjs-progressbar';
@@ -12,7 +13,9 @@ import Footer from '@/components/Footer';
 import { Article } from '@/interfaces/article';
 import { IVisitor } from '@/interfaces/visitor';
 
-import '../styles/scss/globals.scss';
+const { publicRuntimeConfig } = getConfig();
+
+import '@/styles/scss/globals.scss';
 
 interface IProps extends AppInitialProps {
   session: IVisitor;
@@ -36,7 +39,7 @@ class Blog extends App<IProps, IState> {
     };
     let session: IVisitor;
     try {
-      const response: AxiosResponse = await axios.post('/api/sessions', {} ,{ headers:  ctx?.req?.headers });
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.frontend.url}/sessions`, {} ,{ headers:  ctx?.req?.headers });
       session = response.data;
     } catch (error) {
       session = anonymouse;
@@ -58,9 +61,8 @@ class Blog extends App<IProps, IState> {
           options={{ trickleSpeed: 50 }}
           showAfterMs={300}
           spinner />
-        <Header className="grid-header">
+        <Header>
           <Navigation
-            className="grid-navigation"
             brand={brand}
             links={[{
               id: 1,
@@ -85,10 +87,10 @@ class Blog extends App<IProps, IState> {
             current={this.props.router.pathname}
           />
         </Header>
-        <Content className="grid-content">
+        <Content>
           <this.props.Component visitor={this.props.session} {...this.props.pageProps} />
         </Content>
-        <Footer className="grid-footer" />
+        <Footer />
       </Layout>
     );
   }

@@ -1,7 +1,7 @@
 
 @import '../styles/scss/colors.module.scss';
 
-.grid-footer {
+.footer {
   display: grid;
   grid-area: footer;
   grid-template-columns: repeat(12, 1fr);
@@ -10,16 +10,12 @@
     "........... ........... ........... ........... ........... ........... ........... ........... ........... ........... ........... ..........."
     "..........  socialmedia socialmedia socialmedia socialmedia socialmedia socialmedia socialmedia socialmedia socialmedia socialmedia ..........."
     "      copyrights copyrights copyrights copyrights copyrights copyrights copyrights copyrights copyrights copyrights copyrights copyrights      "
-    "........... ........... ........... ........... ........... ........... ........... ........... ........... ........... ........... ..........."
-}
-
-.footer {
-
+    "........... ........... ........... ........... ........... ........... ........... ........... ........... ........... ........... ...........";
   justify-items: center;
   align-items: center;
   background: $color-dark;
 
-  .social-media {
+  &__social_media {
     grid-area: socialmedia;
 
     ul {
@@ -29,9 +25,9 @@
     }
   }
 
-  .copy-rights {
+  &__copy_rights {
     grid-area: copyrights;
     color: $color-white;
   }
 
-} 
+}

@@ -1,18 +1,14 @@
 
 import * as React from 'react';
 
-import './Header.module.scss';
+import styles from './Header.module.scss';
 
-interface IProps {
-  className: string;
-}
-
-class Header extends React.Component<IProps> {
+class Header extends React.Component {
 
   render(): JSX.Element {
     return (
-      <header className={'header ' + this.props.className}>
-          {this.props.children}
+      <header className={styles.header}>
+        {this.props.children}
       </header>
     );
   }

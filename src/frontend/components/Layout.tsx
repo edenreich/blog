@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import './Layout.module.scss';
+import styles from './Layout.module.scss';
 
 class Layout extends React.Component {
 
   render(): JSX.Element {
     return (
-      <div className="grid-layout">
+      <div className={styles.layout}>
         {this.props.children}
       </div>
     );

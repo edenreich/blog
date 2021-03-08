@@ -1,7 +1,7 @@
 @import '../styles/scss/colors.module.scss';
 @import '../styles/scss/breakpoints.module.scss';
 
-.grid-navigation {
+.navigation {
   display: grid;
   position: fixed;
   background-color: $color-green;
@@ -12,32 +12,12 @@
   grid-template-areas:
     "... button brand brand brand brand brand brand brand brand brand ..."
     "links links links links links links links links links links links links";
-
-  .grid-button {
-    display: grid;
-    grid-area: button;
-  }
-
-  .grid-brand {
-    display: grid;
-    grid-area: brand;
-  }
-
-  .grid-links {
-    display: grid;
-    grid-area: links;
-    grid-template-rows: repeat(12, auto);
-  }
-
-}
-
-.navigation {
   z-index: 2;
 
-  &--opened {
+  &__opened {
     z-index: 2;
 
-    .navigation__links {
+    &__links {
       transform: translateX(0%);
     }
   }
@@ -53,7 +33,7 @@
     width: 100%;
     height: 100%;
 
-    &--show {
+    &__show {
       display: block;
       background: $color-black-transparent;
       z-index: 1;
@@ -68,6 +48,8 @@
   }
 
   &__button {
+    display: grid;
+    grid-area: button;
     position: relative;
     height: 50px;
     width: 50px;
@@ -79,7 +61,7 @@
       background-color: $color-black-transparent;
     }
 
-    &--line {
+    &__line {
       height: 2px;
       margin: 5px auto;
       width: 50%;
@@ -88,6 +70,8 @@
   }
 
   &__brand {
+    display: grid;
+    grid-area: brand;
     font-weight: 700;
     font-size: 1.5em;
     justify-self: center;
@@ -100,6 +84,9 @@
   }
 
   &__links {
+    display: grid;
+    grid-area: links;
+    grid-template-rows: repeat(12, auto);
     z-index: 4;
     position: absolute;
     top: 0;
@@ -152,30 +139,22 @@
 
 @media (min-width: $breakpoint-tablet) {
 
-  .grid-navigation {
-
+  .navigation {
     grid-template-areas: 
       "... ... ... brand brand links links links links links ... ... ...";
+    position: relative;
 
-    .grid-button {
+    &__button {
       display: none;
     }
-
-    .grid-links {
-      grid-template-columns: repeat(12, auto);
-      grid-template-rows: auto;
-    }
-  
-  }
-
-  .navigation {
-    position: relative;
 
     &__brand {
       justify-self: start;
     }
 
     &__links {
+      grid-template-columns: repeat(12, auto);
+      grid-template-rows: auto;
       position: relative;
       transform: translateX(0%);
 

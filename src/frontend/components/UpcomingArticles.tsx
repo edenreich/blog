@@ -2,7 +2,7 @@ import * as React from 'react';
 import { asset } from '@/utils/asset';
 import { Article } from '@/interfaces/article';
 
-import './UpcomingArticles.module.scss';
+import styles from './UpcomingArticles.module.scss';
 
 interface IProps {
   children?: React.ReactNode[];
@@ -15,8 +15,8 @@ class UpcomingArticles extends React.Component<IProps> {
     return (
       this.props.articles?.map((article: Article, key: number) => {
         return (
-          <article className="article" key={key}>
-            <div className="article__title">
+          <article className={styles.article} key={key}>
+            <div className={styles.article__title}>
               <img src={`${asset(article.meta_thumbnail.formats.thumbnail?.url)}`} />
               <h3>{article.title}</h3>
             </div>

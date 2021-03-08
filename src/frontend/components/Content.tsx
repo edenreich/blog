@@ -1,17 +1,13 @@
 
 import * as React from 'react';
 
-import './Content.module.scss';
+import styles from './Content.module.scss';
 
-interface IProps {
-  className: string;
-}
-
-class Content extends React.Component<IProps> {
+class Content extends React.Component {
 
   render(): JSX.Element {
     return (
-      <main className={'content ' + this.props.className}>
+      <main className={styles.content}>
         {this.props.children}
       </main>
     );
