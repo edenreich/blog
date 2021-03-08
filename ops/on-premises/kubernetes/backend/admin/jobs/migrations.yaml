@@ -17,7 +17,7 @@ spec:
         - name: APP_ENV
           valueFrom:
             configMapKeyRef:
-              name: environment
+              name: admin
               key: app_env
         - name: DATABASE_URL
           valueFrom:
