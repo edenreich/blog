@@ -1,15 +1,12 @@
 import * as React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import getConfig from 'next/config';
 
 import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
 import { FaEnvelope } from 'react-icons/fa';
 
 import './contact.scss';
-
-const { publicRuntimeConfig } = getConfig();
 
 interface FieldsInterface {
   name?: string;
