@@ -1,10 +1,8 @@
-const withSass = require('@zeit/next-sass');
-const withCss = require('@zeit/next-css');
 const path = require('path');
 const fs = require('fs');
 const env = process.env.APP_ENV || 'production'; 
 
-module.exports = withSass(withCss({
+module.exports = {
   webpack(config) {
     config.resolve.alias['@'] = path.resolve(__dirname);
 
@@ -25,4 +23,4 @@ module.exports = withSass(withCss({
     app: JSON.parse(fs.readFileSync(path.join('config', 'environments', env, 'app.json'), { encoding: 'utf-8' })),
     apis: JSON.parse(fs.readFileSync(path.join('config', 'environments', env, 'apis.json'), { encoding: 'utf-8' }))
   }
-}));
+};
