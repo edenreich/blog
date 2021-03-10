@@ -42,7 +42,7 @@ spec:
               key: app_env
         - name: APP_SECRET
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: api
               key: app_secret
         - name: JWT_PASSPHRASE
