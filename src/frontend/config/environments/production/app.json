@@ -1,5 +1,5 @@
 {
   "env": "production",
   "url": "https://www.eden-reich.com",
-  "assets_url": "https://admin.eden-reich.com"
+  "assets_url": "https://storage.googleapis.com/eden-reich-com-assets"
 }

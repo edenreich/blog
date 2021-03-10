@@ -1,8 +1,8 @@
 {
-  "admin": {
-    "url": "http://blog-admin:8080"
+  "api": {
+    "url": "http://api:8080"
   },
   "frontend": {
-    "url": "http://127.0.0.1:3000/api"
+    "url": "https://stage.eden-reich.com/api"
   }
 }
