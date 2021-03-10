@@ -66,7 +66,7 @@ class IndexPage extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     Modal.setAppElement('#home');
     try {
-      const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props?.visitor.uuid}`);
+      const response: AxiosResponse = await axios.get(`/api/notifications/get?session_id=${this.props?.visitor.id}`);
       const notification: INotification = response.data;
       await this.setState({ notification });
     } catch (error) {
@@ -116,7 +116,7 @@ class IndexPage extends React.Component<IProps, IState> {
 
     try {
       const response: AxiosResponse = await axios.post('/api/notifications/add', {
-        session: this.props.visitor.uuid,
+        session: this.props.visitor.id,
         email: this.state.email,
       }, { headers: { 'Content-Type': 'application/json' } });
       const notification: INotification = response.data;
