@@ -32,7 +32,6 @@ class Blog extends App<IProps, IState> {
     let pageProps = {};
     const anonymouse: IVisitor = {
       id: '53f36322-9b5b-46db-8a2d-f53d85a09352',
-      uuid: '53f36322-9b5b-46db-8a2d-f53d85a09351',
       ip_address: '127.0.0.1',
       updated_at: new Date(),
       created_at: new Date()

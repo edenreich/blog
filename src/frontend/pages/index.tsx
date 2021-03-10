@@ -81,7 +81,7 @@ class IndexPage extends React.Component<IProps, IState> {
     if (this.state.notification?.is_enabled) {
       try {
         const notification: INotification = await axios.put('/api/notifications/remove', {
-          session: this.props.visitor?.uuid,
+          session: this.props.visitor?.id,
           email: this.state.email,
           is_enabled: false,
         }, { headers: { 'Content-Type': 'application/json' } });
