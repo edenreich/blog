@@ -40,7 +40,7 @@ class Reactions extends React.Component<IProps, IState> {
         selected: null
       });
     }).catch((error) => {
-      console.error(error);
+      console.error(`[components][reactions][constructor] ${JSON.stringify(error)}`);
     });
   }
 
@@ -69,7 +69,7 @@ class Reactions extends React.Component<IProps, IState> {
         selected: reactionType
       });
     } catch (error) {
-      console.error(error);
+      console.error(`[components][reactions][handleReaction] ${JSON.stringify(error)}`);
     }
   }
 

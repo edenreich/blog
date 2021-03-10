@@ -10,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/articles/${article}`, { headers: { 'Content-Type': 'application/json' } });
     res.status(200).json(response.data);
   } catch (error) {
-    console.error(error);
+    console.error(`[api/article] ${JSON.stringify(error)}`);
     res.status(404).json({ message: 'could not fetch articles.' });
   }
 };

@@ -9,7 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/likes/count?article=${req.query.article}`);
     res.status(200).json(response.data);
   } catch (error) {
-    console.error(error);
+    console.error(`[api/likes/count] ${JSON.stringify(error)}`);
     res.status(error.response.status).json(error.response.data);
   }
 };

@@ -28,7 +28,7 @@ class Article extends React.Component<IProps> {
       article = response.data;
     } catch (error) {
       article = null;
-      console.error(error);
+      console.error(`[pages][article] ${JSON.stringify(error)}`);
     }
 
     return { article };

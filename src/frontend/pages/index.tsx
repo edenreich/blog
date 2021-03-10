@@ -70,7 +70,7 @@ class IndexPage extends React.Component<IProps, IState> {
       const notification: INotification = response.data;
       await this.setState({ notification });
     } catch (error) {
-      console.error(error);
+      console.error(`[pages][index][componentDidMount] ${JSON.stringify(error)}`);
       await this.setState({});
     }
   }
@@ -87,7 +87,7 @@ class IndexPage extends React.Component<IProps, IState> {
         }, { headers: { 'Content-Type': 'application/json' } });
         this.setState({ notification });
       } catch (error) {
-        console.error(error);
+        console.error(`[pages][index][openModal] ${JSON.stringify(error)}`);
       }
 
       return;
@@ -122,7 +122,7 @@ class IndexPage extends React.Component<IProps, IState> {
       const notification: INotification = response.data;
       this.setState({ notification, modalIsOpen: false });
     } catch (error) {
-      console.error(error);
+      console.error(`[pages][index][submitNotificationForm] ${JSON.stringify(error)}`);
       this.setState({ modalIsOpen: false });
     }
   }
