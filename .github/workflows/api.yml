@@ -68,6 +68,7 @@ jobs:
           kubectl config use-context staging
       - name: Kubernetes - update secrets in the cluster
         run: |
+          API_APP_SECRET=${{ secrets.API_APP_SECRET }} \
           API_DATABASE_URL=${{ secrets.API_DATABASE_URL }} \
           API_TEST_DATABASE_URL=${{ secrets.API_TEST_DATABASE_URL }} \
           API_JWT_PASSPHRASE=${{ secrets.API_JWT_PASSPHRASE }} \
