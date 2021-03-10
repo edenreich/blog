@@ -25,9 +25,7 @@ services:
       target: development
       context: .
       dockerfile: ops/on-premises/docker/frontend/Dockerfile
-    environment:
-      MAILGUN_DOMAIN: ${MAILGUN_DOMAIN}
-      MAILGUN_API_KEY: ${MAILGUN_API_KEY}
+    env_file: ./src/frontend/.env
     volumes:
       - ./src/frontend:/app:rw
     networks:

@@ -1,6 +1,10 @@
 const path = require('path');
 const fs = require('fs');
-const env = process.env.APP_ENV || 'production'; 
+const env = process.env.APP_ENV || 'production';
+const apiCredentials = {
+  username: process.env.API_USERNAME,
+  password: process.env.API_PASSWORD,
+};
 
 module.exports = {
   webpack(config) {
@@ -18,6 +22,9 @@ module.exports = {
     });
 
     return config;
+  },
+  serverRuntimeConfig: {
+    apiCredentials
   },
   publicRuntimeConfig: {
     app: JSON.parse(fs.readFileSync(path.join('config', 'environments', env, 'app.json'), { encoding: 'utf-8' })),
