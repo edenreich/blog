@@ -1,6 +1,6 @@
 {
   "api": {
-    "url": "http://api:8080"
+    "url": "http://api:8080/api"
   },
   "frontend": {
     "url": "https://stage.eden-reich.com/api"
