@@ -33,6 +33,16 @@ spec:
             configMapKeyRef:
               name: frontend
               key: app_env
+        - name: API_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: frontend
+              key: api_username
+        - name: API_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: frontend
+              key: api_password
         - name: MAILGUN_DOMAIN
           valueFrom:
             secretKeyRef:
