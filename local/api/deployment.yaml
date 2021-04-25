@@ -78,10 +78,10 @@ spec:
             path: /healthcheck
         imagePullPolicy: Always
         volumeMounts:
-          - name: api-volume
-            mountPath: /app
+        - name: api-volume
+          mountPath: /var/www/api
       terminationGracePeriodSeconds: 60
       volumes:
-        - name: api-volume
-          hostPath:
-            path: /app/api
+      - name: api-volume
+        hostPath:
+          path: /app/api

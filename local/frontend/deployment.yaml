@@ -65,10 +65,10 @@ spec:
             path: /healthcheck
         imagePullPolicy: Always
         volumeMounts:
-          - name: frontend-volume
-            mountPath: /app
+        - name: frontend-volume
+          mountPath: /app
       terminationGracePeriodSeconds: 60
       volumes:
-        - name: frontend-volume
-          hostPath:
-            path: /app/frontend
+      - name: frontend-volume
+        hostPath:
+          path: /app/frontend

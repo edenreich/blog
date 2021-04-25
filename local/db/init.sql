@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS blog_api;
-DROP DATABASE IF EXISTS blog_api_test;
-DROP DATABASE IF EXISTS blog_admin;
-
 CREATE DATABASE blog_api;
 CREATE DATABASE blog_api_test;
 CREATE DATABASE blog_admin;

@@ -19,9 +19,9 @@ k3d registry create registry.internal --port 5000
 2. Create development cluster:
 ```sh
 k3d cluster create local-cluster \
-    --volume ${PWD}/src/frontend:/app/frontend@agent\[\*\] \
-    --volume ${PWD}/src/backend/api:/app/api@agent\[\*\] \
-    --volume ${PWD}/src/backend/admin:/app/admin@agent\[\*\] \
+    --volume ${PWD}/src/frontend:/app/frontend \
+    --volume ${PWD}/src/backend/api:/app/api \
+    --volume ${PWD}/src/backend/admin:/app/admin \
     --registry-use k3d-registry.internal \
     --k3s-server-arg "--no-deploy=traefik" \
     --agents 3 \
@@ -48,13 +48,12 @@ docker push k3d-registry.internal:5000/admin:latest
 docker run -d \
     --name postgres \
     -e POSTGRES_PASSWORD=secret \
-    -v ${PWD}/data/:/var/lib/postgresql/data \
     -v ${PWD}/local/db/:/docker-entrypoint-initdb.d \
     -p 5432:5432 \
     --network k3d-local-cluster \
     postgres
 ```
-7. Deploy NGINX-ingress:
+7. Deploy NGINX-Ingress:
 ```sh
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
@@ -82,5 +81,5 @@ k3d cluster delete local-cluster
 k3d registry delete k3d-registry.internal
 docker rm -f postgres
 sudo rm -rf data
-docker system prune --volumes
+docker system prune -f --volumes
 ```
