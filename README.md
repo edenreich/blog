@@ -47,9 +47,11 @@ docker push k3d-registry.internal:5000/admin:latest
 ```sh
 docker run -d \
     --name postgres \
-    --network app-net \
     -e POSTGRES_PASSWORD=secret \
-    -v $(PWD)/data/:/var/lib/postgresql/data \
+    -v ${PWD}/data/:/var/lib/postgresql/data \
+    -v ${PWD}/local/db/:/docker-entrypoint-initdb.d \
+    -p 5432:5432 \
+    --network k3d-local-cluster \
     postgres
 ```
 7. Deploy NGINX-ingress:
@@ -78,4 +80,7 @@ Cleanup:
 ```sh
 k3d cluster delete local-cluster
 k3d registry delete k3d-registry.internal
+docker rm -f postgres
+sudo rm -rf data
+docker system prune --volumes
 ```
