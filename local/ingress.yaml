@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  namespace: blog
+spec:
+  rules:  
+    - host: eden-reich.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 8080
+    - host: dev.eden-reich.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 8080
+    - host: dev-admin.eden-reich.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: admin
+              port:
+                number: 8080
+    - host: dev-api.eden-reich.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: api
+              port: 
+                number: 8080
