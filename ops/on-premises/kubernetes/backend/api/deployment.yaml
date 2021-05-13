@@ -45,11 +45,6 @@ spec:
             secretKeyRef:
               name: api
               key: app_secret
-        - name: JWT_PASSPHRASE
-          valueFrom:
-            secretKeyRef:
-              name: api
-              key: jwt_passphrase
         - name: JWT_SECRET_KEY
           valueFrom:
             secretKeyRef:

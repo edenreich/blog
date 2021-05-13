@@ -9,7 +9,39 @@
 My blog for posting interesting content.
 
 
+### Prerequisite
+
+* docker
+* helm
+* kubectl
+* k3d
+
 ### Quick Start
+
+Generate API RSA keys without passphrase for local development:
+```sh
+mkdir -p src/api/config/jwt
+openssl genrsa -out src/api/config/jwt/private.pem 4096
+openssl rsa -in src/api/config/jwt/private.pem -out src/api/config/jwt/public.pem -pubout
+```
+
+To startup a cluster run:
+```sh
+./up.sh
+```
+
+To cleanup the local cluster, run:
+```sh
+./down.sh
+```
+
+Enter one of the pods of the api deployment and run:
+```sh
+bin/console doctrine:migration:migrate
+bin/console doctrine:fixtures:load
+```
+
+### Long Start
 
 1. Create container image registry:
 ```sh
@@ -33,15 +65,15 @@ kubectl create ns blog && kubectl config set-context --current --namespace=blog
 ```
 4. Build container images:
 ```sh
-docker build --target development -t k3d-registry.internal:5000/frontend:latest -f ops/on-premises/docker/frontend/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/api:latest -f ops/on-premises/docker/backend/api/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f ops/on-premises/docker/backend/admin/Dockerfile .
+docker build --target development -t k3d-registry.internal:5000/frontend:latest -f ops/on-premises/docker/frontend/Dockerfile .
 ```
 5. Push container images to local registry:
 ```sh
-docker push k3d-registry.internal:5000/frontend:latest
 docker push k3d-registry.internal:5000/api:latest
 docker push k3d-registry.internal:5000/admin:latest
+docker push k3d-registry.internal:5000/frontend:latest
 ```
 6. Create local database:
 ```sh
@@ -80,6 +112,6 @@ Cleanup:
 k3d cluster delete local-cluster
 k3d registry delete k3d-registry.internal
 docker rm -f postgres
-sudo rm -rf data
 docker system prune -f --volumes
+sudo rm -rf data
 ```

@@ -13,7 +13,7 @@ export const getJWT = async (): Promise<string> => {
     const response: AxiosResponse = await axios.post(`${api.url}/authorize`, apiCredentials, config);
     return response.data.token;
   } catch (error) {
-    console.error(`[utils][getJWT] could not fetch access token!`);
+    console.error(`[utils][getJWT] could not fetch access token!`, error);
     return null;
   }
 };

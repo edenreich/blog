@@ -71,7 +71,6 @@ jobs:
           API_APP_SECRET=${{ secrets.API_APP_SECRET }} \
           API_DATABASE_URL=${{ secrets.API_DATABASE_URL }} \
           API_TEST_DATABASE_URL=${{ secrets.API_TEST_DATABASE_URL }} \
-          API_JWT_PASSPHRASE=${{ secrets.API_JWT_PASSPHRASE }} \
           API_JWT_PUBLIC_KEY=${{ secrets.API_JWT_PUBLIC_KEY }} \
           API_JWT_SECRET_KEY=${{ secrets.API_JWT_SECRET_KEY }} \
           API_GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.API_GOOGLE_APPLICATION_CREDENTIALS }} \
@@ -95,7 +94,6 @@ jobs:
           API_APP_SECRET=${{ secrets.API_APP_SECRET }} \
           API_DATABASE_URL=${{ secrets.API_DATABASE_URL }} \
           API_TEST_DATABASE_URL=${{ secrets.API_TEST_DATABASE_URL }} \
-          API_JWT_PASSPHRASE=${{ secrets.API_JWT_PASSPHRASE }} \
           API_JWT_PUBLIC_KEY=${{ secrets.API_JWT_PUBLIC_KEY }} \
           API_JWT_SECRET_KEY=${{ secrets.API_JWT_SECRET_KEY }} \
           API_GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.API_GOOGLE_APPLICATION_CREDENTIALS }} \
