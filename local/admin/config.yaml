@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admin
+  namespace: blog
+data:
+  app_env: dev
+  api_url: 'http://api:8080'
