@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Head from 'next/head';
 
-import ProgressBar from '../components/ProgressBar';
+import ProgressBar from '@/components/ProgressBar';
 
 import './about.module.scss';
 
