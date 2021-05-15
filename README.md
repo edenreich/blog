@@ -35,7 +35,7 @@ To cleanup the local cluster, run:
 ./down.sh
 ```
 
-Enter one of the pods of the api deployment and run:
+Enter one of the pods of the admin and api deployment and run:
 ```sh
 bin/console doctrine:migration:migrate
 bin/console doctrine:fixtures:load
@@ -83,16 +83,26 @@ docker run -d \
     -v ${PWD}/local/db/:/docker-entrypoint-initdb.d \
     -p 5432:5432 \
     --network k3d-local-cluster \
+    --restart unless-stopped \
     postgres
+POSTGRES_IP=$(docker inspect postgres --format '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}') envsubst < ./local/db/service.yaml | kubectl apply -f - 
 ```
-7. Deploy NGINX-Ingress:
+7. Install node_modules and composer artifacts:
+```sh
+docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/api:/app -w /app composer:1.9 /bin/sh -c "composer install"
+docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app composer:1.9 /bin/sh -c "composer install"
+docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install && yarn dev"
+docker run --rm -it --user 1000:1000 -v ${PWD}/src/frontend:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install"
+```
+
+8. Deploy NGINX-Ingress:
 ```sh
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 helm -n kube-system install ingress-nginx ingress-nginx/ingress-nginx --set controller.service.enableHttps=false
 ```
 
-8. Deploy the services to the local cluster:
+9. Deploy the services to the local cluster:
 ```sh
 // Ingress
 kubectl apply -f local/ingress.yaml
