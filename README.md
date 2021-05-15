@@ -20,9 +20,9 @@ My blog for posting interesting content.
 
 Generate API RSA keys without passphrase for local development:
 ```sh
-mkdir -p src/api/config/jwt
-openssl genrsa -out src/api/config/jwt/private.pem 4096
-openssl rsa -in src/api/config/jwt/private.pem -out src/api/config/jwt/public.pem -pubout
+mkdir -p src/backend/api/config/jwt
+openssl genrsa -out src/backend/api/config/jwt/private.pem 4096
+openssl rsa -in src/backend/api/config/jwt/private.pem -out src/backend/api/config/jwt/public.pem -pubout
 ```
 
 To startup a cluster run:
