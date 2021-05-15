@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import axios, { AxiosResponse } from 'axios';
 import { IVisitor } from '@/interfaces/visitor';
 import { INotification } from '@/interfaces/notification';
+import Section from '@/components/Section';
 import PublishedArticles from '@/components/PublishedArticles';
 import UpcomingArticles from '@/components/UpcomingArticles';
 
@@ -202,43 +203,31 @@ class IndexPage extends React.Component<IProps, IState> {
             </form>
           </div>
         </Modal>
-        <section className={styles.content__section}>
-          <div className={styles.content__wrapper}>
-            <div className={styles.content_column}>
+        <Section>
               <h2>Welcome</h2>
               <p>
                 Welcome to my blog, I'll be posting about web app development, native apps, DevOps and more.
                 So if you are a developer or you just happened to visit this website randomly and want to bring your web experience to the next level, stay tuned ;)
               </p>
-            </div>
+        </Section>
+        <Section>
+          <div className={styles.home__notifications}>
+            <Link href="/#">
+              <a onClick={(event: React.MouseEvent) => this.openModal(event)}>
+                {!this.state.notification && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
+                {this.state.notification && !this.state.notification.is_enabled && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
+                {this.state.notification && this.state.notification.is_enabled && <IoMdNotificationsOff title="Disable notifications" size="30px" />}
+              </a>
+            </Link>
           </div>
-        </section>
-        <section className={styles.content__section}>
-          <div className={styles.content__wrapper}>
-            <div className={styles.content_column}>
-              <div className={styles.home__notifications}>
-                <Link href="/#">
-                  <a onClick={(event: React.MouseEvent) => this.openModal(event)}>
-                    {!this.state.notification && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
-                    {this.state.notification && !this.state.notification.is_enabled && <IoMdNotificationsOutline title="Enable notifications" size="30px" />}
-                    {this.state.notification && this.state.notification.is_enabled && <IoMdNotificationsOff title="Disable notifications" size="30px" />}
-                  </a>
-                </Link>
-              </div>
-              <h2>Blog Feed</h2>
-              <p>Latest published articles:</p>
-              <PublishedArticles articles={this.props.publishedArticles} />
-            </div>
-          </div>
-        </section>
-        <section className={styles.content__section}>
-          <div className={styles.content__wrapper}>
-            <div className={styles.content_column}>
-              <h2>Upcoming articles</h2>
-              <UpcomingArticles articles={this.props.upcomingArticles} />
-            </div>
-          </div>
-        </section>
+          <h2>Blog Feed</h2>
+          <p>Latest published articles:</p>
+          <PublishedArticles articles={this.props.publishedArticles} />
+        </Section>
+        <Section>
+          <h2>Upcoming articles</h2>
+          <UpcomingArticles articles={this.props.upcomingArticles} />
+        </Section>
       </div>
     );
   }
