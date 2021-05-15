@@ -31,6 +31,7 @@ postgresContainerId=$(docker run -d \
     -v ${PWD}/local/db/:/docker-entrypoint-initdb.d \
     -p 5432:5432 \
     --network k3d-local-cluster \
+    --restart unless-stopped \
     postgres)
 postgresIP=$(docker inspect $postgresContainerId --format '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
 POSTGRES_IP=$postgresIP envsubst < ./local/db/service.yaml | kubectl apply -f - 
