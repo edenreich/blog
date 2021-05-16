@@ -14,6 +14,9 @@ kubectl config use-context k3d-local-cluster
 kubectl cluster-info
 kubectl create ns blog && kubectl config set-context --current --namespace=blog
 
+# Build php system image
+docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
+
 # Build container images
 docker build --target development -t k3d-registry.internal:5000/api:latest -f ops/on-premises/docker/backend/api/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f ops/on-premises/docker/backend/admin/Dockerfile .
