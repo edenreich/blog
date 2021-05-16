@@ -59,7 +59,7 @@ spec:
         imagePullPolicy: Always
         volumeMounts:
         - name: admin-volume
-          mountPath: /var/www/admin
+          mountPath: /app
       terminationGracePeriodSeconds: 60
       volumes:
       - name: admin-volume

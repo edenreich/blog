@@ -13,7 +13,7 @@ RUN yarn install && yarn build
 
 FROM php-common AS development
 USER root
-WORKDIR /var/www/admin
+WORKDIR /app
 ENV APP_ENV=dev
 RUN apk add --update --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     pecl install xdebug && \
@@ -29,7 +29,7 @@ RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/
     echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.log_level=0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-VOLUME [ "/var/www/admin" ]
+VOLUME [ "/app" ]
 
 FROM php-common AS src
 COPY --chown=www-data:www-data src/backend/admin .
