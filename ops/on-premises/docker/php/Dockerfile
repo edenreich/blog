@@ -20,6 +20,6 @@ COPY ops/on-premises/docker/php/nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
 RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
 USER www-data
-WORKDIR /app/public
+WORKDIR /app
 EXPOSE 8080
 CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
