@@ -16,11 +16,11 @@ class PublishedArticles extends React.Component<IProps> {
 
   render(): JSX.Element[] {
     return (
-      this.props.articles?.map((article: Article, key: number) => {
+      this.props.articles?.map((article: Article) => {
         return (
-          <article className="article" key={key}>
+          <article className="article" key={article.id}>
             <div className="article__title">
-              <img src={`${asset(article.meta_thumbnail.formats.thumbnail?.url)}`} />
+              <img src={`${asset('')}`} />
               <h3>{article.title}</h3>
               <span className="article__date"><small>{moment(article.published_at).fromNow()}</small></span>
             </div>

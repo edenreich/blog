@@ -71,7 +71,7 @@ class IndexPage extends React.Component<IProps, IState> {
       const notification: INotification = response.data;
       await this.setState({ notification });
     } catch (error) {
-      console.error(`[pages][index][componentDidMount] ${JSON.stringify(error)}`);
+      console.warn(`[pages][index][componentDidMount] ${JSON.stringify(error)}`);
       await this.setState({});
     }
   }
