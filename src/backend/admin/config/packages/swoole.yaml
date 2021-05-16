@@ -70,17 +70,17 @@ swoole:
         # swoole http server settings
         # see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
         settings:
-            reactor_count: 2
-            worker_count: 8
+            reactor_count: 16
+            worker_count: 16
             # when not set, swoole sets these are automatically set based on count of host CPU cores
-            task_worker_count: 2 # one of: positive number, "auto", or null to disable creation of task worker processes (default: null)
+            task_worker_count: 16 # one of: positive number, "auto", or null to disable creation of task worker processes (default: null)
 
-            log_level: debug
+            log_level: info
             # can be one of: (default) auto, debug, trace, info, notice, warning, error
             #   - auto: when debug set to debug, when not set to notice
             #   - {debug,trace,info,notice,warning,error}: see swoole configuration
 
-            log_file: '%kernel.logs_dir%/swoole_%kernel.environment%.log'
+            log_file: php://stdout
             # pid_file: /var/run/swoole_http_server.pid
 
             buffer_output_size: 2097152
@@ -89,7 +89,7 @@ swoole:
             package_max_length: 8388608
             # in bytes, 8388608b = 8 MiB
         
-            worker_max_request: 0
+            worker_max_request: 200
             # integer >= 0, indicates the number of requests after which a worker reloads automatically
             # This can be useful to limit memory leaks
             worker_max_request_grace: ~

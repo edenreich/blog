@@ -56,10 +56,10 @@ spec:
               key: google_application_credentials_path
         resources:
           requests:
-            cpu: 499m
+            cpu: '1'
             memory: 499Mi
           limits:
-            cpu: 499m
+            cpu: '1'
             memory: 499Mi
         ports:
         - containerPort: 8080

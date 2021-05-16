@@ -9,4 +9,4 @@ monolog:
         nested:
             type: stream
             path: php://stdout
-            level: debug
+            level: info
