@@ -11,35 +11,9 @@ COPY src/backend/admin/webpack.config.js .
 COPY src/backend/admin/assets assets
 RUN yarn install && yarn build
 
-FROM php:7.4.14-fpm-alpine3.12 AS common
+FROM php-common AS development
 USER root
-RUN apk update
-RUN apk add --no-cache bash nginx supervisor postgresql-dev
-RUN apk add --no-cache tzdata && \
-    cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-    echo "Europe/Berlin" > /etc/timezone && \
-    apk del tzdata
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
-    docker-php-ext-install pdo_pgsql intl && \
-    apk del .build-deps
-RUN mkdir /run/nginx
-COPY ops/on-premises/docker/backend/admin/php/php.ini-development /usr/local/etc/php/php.ini-development
-COPY ops/on-premises/docker/backend/admin/php/php.ini-production /usr/local/etc/php/php.ini-production
-COPY ops/on-premises/docker/backend/admin/php/www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY ops/on-premises/docker/backend/admin/supervisor.d/programs /etc/supervisor.d
-COPY ops/on-premises/docker/backend/admin/supervisor.d/supervisord.conf /etc/supervisord.conf
-COPY ops/on-premises/docker/backend/admin/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ops/on-premises/docker/backend/admin/nginx/nginx.conf /etc/nginx/nginx.conf
-RUN chown www-data:www-data /etc/supervisord.conf /etc/supervisor.d
-RUN chown -R www-data:www-data /run /var/lib/nginx /usr/local/etc/php /var/log
-USER www-data
-WORKDIR /var/www/admin
-EXPOSE 8080
-CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
-
-FROM common AS development
-USER root
-WORKDIR /var/www/admin
+WORKDIR /app
 ENV APP_ENV=dev
 RUN apk add --update --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     pecl install xdebug && \
@@ -55,9 +29,9 @@ RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/
     echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.log_level=0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-VOLUME [ "/var/www/admin" ]
+VOLUME [ "/app" ]
 
-FROM common AS src
+FROM php-common AS src
 COPY --chown=www-data:www-data src/backend/admin .
 
 FROM src AS src-with-devtools
