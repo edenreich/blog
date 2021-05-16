@@ -40,8 +40,8 @@ postgresIP=$(docker inspect $postgresContainerId --format '{{range.NetworkSettin
 POSTGRES_IP=$postgresIP envsubst < ./local/db/service.yaml | kubectl apply -f - 
 
 # Install node_modules and composer artifacts
-docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/api:/app -w /app composer:1.9 /bin/sh -c "composer install"
-docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app composer:1.9 /bin/sh -c "composer install"
+docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/api:/app -w /app php-common:latest /bin/sh -c "composer install"
+docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app php-common:latest /bin/sh -c "composer install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install && yarn dev"
 docker run --rm -it --user 1000:1000 -v ${PWD}/src/frontend:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install"
 
