@@ -1,8 +1,8 @@
 {
   "api": {
-    "url": "https://dev-api.eden-reich.com/api"
+    "url": "http://api:8080/api"
   },
   "frontend": {
-    "url": "https://dev.eden-reich.com/api"
+    "url": "http://:3000/api"
   }
 }

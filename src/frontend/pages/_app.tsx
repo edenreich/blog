@@ -42,7 +42,7 @@ class Blog extends App<IProps, IState> {
       session = response.data;
     } catch (error) {
       session = anonymouse;
-      console.error(`[app] ${JSON.stringify(error)}`);
+      console.error(`[app][session] ${JSON.stringify(error)}`);
     }
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);

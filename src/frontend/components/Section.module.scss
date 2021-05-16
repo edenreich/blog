@@ -1,0 +1,32 @@
+@import '../styles/scss/colors.module.scss';
+@import '../styles/scss/breakpoints.module.scss';
+
+.section {
+  &:nth-child(odd) {
+    background-color: $color-gray;
+  }
+
+  padding-top: 60px;
+  padding-bottom: 60px;
+
+  &__wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-areas: 
+      "... column column column column column column column column column column ...";
+  }
+
+  &__column {
+    display: grid;
+    grid-area: column;
+  }
+}
+
+@media (min-width: $breakpoint-desktop) {
+  .section {    
+    &__wrapper {
+      grid-template-areas: 
+        "... ... ... column column column column column column ... ... ...";
+    }
+  }
+}

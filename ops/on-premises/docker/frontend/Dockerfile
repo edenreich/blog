@@ -18,6 +18,7 @@ RUN apt-get update && \
 
 FROM node:15.2.1-buster-slim AS development
 WORKDIR /app
+VOLUME [ "/app" ]
 ENV PORT=3000
 ENV APP_ENV=development
 ENV NODE_ENV=development

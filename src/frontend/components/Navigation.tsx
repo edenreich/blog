@@ -46,7 +46,7 @@ class Navigation extends React.Component<IProps, IState> {
       return (
         <li
           key={link.id}
-          className={this.props.current === link.href ? 'active' : ''}
+          className={this.props.current === link.href ? styles.navigation__links__active : ''}
         >
           <Link href={link.href}>
             <a>{link.name}</a>
@@ -56,7 +56,7 @@ class Navigation extends React.Component<IProps, IState> {
     });
 
     return (
-      <nav role="navigation" className={this.state.opened ? styles.navigation__opened : styles.navigation}>
+      <nav role="navigation" className={this.state.opened ? `${styles.navigation} ${styles.navigation__opened}` : styles.navigation}>
         <button type="button" className={styles.navigation__button} onClick={() => this.toggleMenu()}>
           <i className={styles.navigation__button__line}></i>
           <i className={styles.navigation__button__line}></i>
@@ -67,10 +67,10 @@ class Navigation extends React.Component<IProps, IState> {
             <a>{this.props.brand}</a>
           </Link>
         </div>
-        <ul className={this.state.opened ? styles.navigation__opened__links : styles.navigation__links}>
+        <ul className={this.state.opened ? `${styles.navigation__links} ${styles.navigation__opened__links}` : styles.navigation__links}>
           {linkFragments}
         </ul>
-        <div className={this.state.opened ? styles.navigation__overlay__show : styles.navigation__overlay} onClick={() => this.closeMenu()}></div>
+        <div className={this.state.opened ? `${styles.navigation__overlay} ${styles.navigation__overlay__show}` : styles.navigation__overlay} onClick={() => this.closeMenu()}></div>
       </nav>
     );
   }
