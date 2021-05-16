@@ -1,3 +1,7 @@
 .vscode
 **/.env
+**/var
+**/vendor
+**/node_modules
 data/
+

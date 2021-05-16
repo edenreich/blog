@@ -1,4 +1,7 @@
 {
+    "beberlei/assert": {
+        "version": "v3.3.1"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.1"
     },
@@ -140,6 +143,9 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.7.0"
+    },
+    "k911/swoole-bundle": {
+        "version": "v0.10.0"
     },
     "laminas/laminas-code": {
         "version": "3.5.1"
@@ -402,6 +408,24 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/monolog-bridge": {
+        "version": "v5.2.7"
+    },
+    "symfony/monolog-bundle": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.7",
+            "ref": "329f6a5ef2e7aa033f802be833ef8d1268dd0848"
+        },
+        "files": [
+            "config/packages/dev/monolog.yaml",
+            "config/packages/prod/deprecations.yaml",
+            "config/packages/prod/monolog.yaml",
+            "config/packages/test/monolog.yaml"
+        ]
     },
     "symfony/options-resolver": {
         "version": "v5.2.1"
