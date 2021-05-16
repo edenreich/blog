@@ -22,11 +22,11 @@ spec:
         image: k3d-registry.internal:5000/frontend:latest
         resources:
           requests:
-            cpu: "1"
-            memory: 499Mi
+            cpu: "2"
+            memory: 1499Mi
           limits:
-            cpu: "1"
-            memory: 499Mi
+            cpu: "2"
+            memory: 1499Mi
         env:
         - name: APP_ENV
           valueFrom:
