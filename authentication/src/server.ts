@@ -8,7 +8,7 @@ const app: Koa = new Koa();
 
 app.use(Logger());
 app.use(BodyParser({
-  onerror: (err: Error, ctx: Context) => {
+  onerror: (_err: Error, ctx: Context) => {
     ctx.throw('Invalid JSON!', 422);
   }
 }));
