@@ -1,18 +1,17 @@
 import Koa from 'koa';
-import Router from 'koa-router';
 import Logger from 'koa-logger';
+import { router } from './api/jwt';
 
 const app: Koa = new Koa();
-const router: Router = new Router();
 const port = process.env.PORT || 3000;
 
 app.use(Logger());
 
-router.get('/', (ctx: Koa.Context) => {
-  ctx.body = 'Hello World';
-});
-
 app.use(router.routes());
 app.listen(port, () => {
+  console.info('Route\t\tPath\n------\t\t------');
+  for (const route of router.stack) {
+    console.info(`${route.name}\t\t${route.path}\n`);
+  }
   console.info(`Listening to http://0.0.0.0:${port} 🚀`);
 });
