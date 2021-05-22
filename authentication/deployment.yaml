@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: authentication
+  name: authentication
+  namespace: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+      - image: edenr/blog-authentication:latest
+        name: blog-authentication
+        resources:
+          requests:
+            cpu: 499m
+            memory: 499Mi
+          limits:
+            cpu: 499m
+            memory: 499Mi
+        ports:
+          - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        livenessProbe:
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: authentication
+              key: app_env
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: app_secret
+        imagePullPolicy: Always
