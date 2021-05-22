@@ -2,9 +2,11 @@
   "name": "authentication-service",
   "version": "1.0.0",
   "description": "Authentication Service",
-  "main": "./build/index.js",
+  "main": "./server.js",
   "scripts": {
-    "start": "ts-node ./src/server.ts",
+    "start": "node ./server.js",
+    "build": "tsc",
+    "dev": "ts-node ./src/server.ts",
     "test": "jest"
   },
   "keywords": [
