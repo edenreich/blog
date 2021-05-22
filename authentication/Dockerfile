@@ -9,7 +9,6 @@ COPY --chown=node:node *.json .
 
 FROM src AS builder
 RUN npm install && npm run build
-RUN chmod +x ./build/server.js
 
 FROM base AS development
 USER 1000:1000
