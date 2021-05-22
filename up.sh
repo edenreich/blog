@@ -9,7 +9,8 @@ k3d cluster create local-cluster \
     --registry-use k3d-registry.internal \
     --k3s-server-arg "--no-deploy=traefik" \
     --agents 3 \
-    --port 80:80@loadbalancer
+    --port 80:80@loadbalancer \
+    --port 443:443@loadbalancer
 kubectl config use-context k3d-local-cluster
 kubectl cluster-info
 kubectl create ns blog && kubectl config set-context --current --namespace=blog
