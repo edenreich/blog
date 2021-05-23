@@ -10,7 +10,12 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "tslint './src/**/*.ts' './__tests__/**/*.ts'",
-    "lint:fix": "tslint --fix './src/**/*.ts' './__tests__/**/*.ts'"
+    "lint:fix": "tslint --fix './src/**/*.ts' './__tests__/**/*.ts'",
+    "typeorm": "ts-node -r module-alias/register ./node_modules/.bin/typeorm --config src/database/ormconfig.ts",
+    "migration": "ts-node -r module-alias/register ./node_modules/.bin/typeorm --config src/database/ormconfig.ts migration:run",
+    "migration:create": "ts-node -r module-alias/register ./node_modules/.bin/typeorm --config src/database/ormconfig.ts --name",
+    "migration:generate": "ts-node -r module-alias/register ./node_modules/.bin/typeorm --config src/database/ormconfig.ts migration:generate --name",
+    "migration:revert": "ts-node -r module-alias/register ./node_modules/.bin/typeorm --config src/database/ormconfig.ts migration:revert"
   },
   "keywords": [
     "authentication-service"
@@ -19,19 +24,24 @@
   "license": "MIT",
   "dependencies": {
     "@types/koa-bodyparser": "^4.3.0",
+    "bcrypt": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
     "koa-router": "^10.0.0",
-    "module-alias": "^2.2.2"
+    "module-alias": "^2.2.2",
+    "pg": "^8.6.0",
+    "typeorm": "^0.2.32"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/jest": "^26.0.23",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/koa": "^2.13.1",
     "@types/koa-logger": "^3.1.1",
     "@types/koa-router": "^7.4.2",
+    "@types/pg": "^8.6.0",
     "@types/supertest": "^2.0.11",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
