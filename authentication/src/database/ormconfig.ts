@@ -7,7 +7,7 @@ import { join } from 'path';
 
 const connectionOptions: ConnectionOptions = {
   type: 'postgres',
-  url: config.db_url,
+  url: config.database_url,
   entities: [
     User,
     Role,

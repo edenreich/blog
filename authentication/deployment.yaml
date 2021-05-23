@@ -1,24 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: authentication-${VERSION}
+  namespace: blog
   labels:
     app: authentication
-  name: authentication
-  namespace: blog
+    version: "${VERSION}"
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: authentication
+      version: "${VERSION}"
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: authentication
+        version: "${VERSION}"
     spec:
       containers:
-      - image: edenr/blog-authentication:latest
+      - image: edenr/blog-authentication:${VERSION}
         name: blog-authentication
         resources:
           requests:
@@ -48,4 +51,9 @@ spec:
             secretKeyRef:
               name: authentication
               key: app_secret
-        imagePullPolicy: Always
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: database_url
+        imagePullPolicy: IfNotPresent
