@@ -10,7 +10,8 @@ spec:
   selector:
     matchLabels:
       app: authentication
-  strategy: {}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
