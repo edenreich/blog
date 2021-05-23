@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - create-authentication-service
     paths:
       - ".github/workflows/authentication.yml"
       - "authentication/**"
@@ -20,28 +19,19 @@ env:
   DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.event.before }} | cut -c1-8)
 
 jobs:
-  debug:
-    runs-on: self-hosted
-    env:
-      KUBECONFIG: /home/pi/.kube/config_staging
-    steps:
-      - name: Checking env variables per job
-        run: |
-          echo $KUBECONFIG
-          kubectl get pods
   # docker_login:
   #   runs-on: self-hosted
   #   steps:
   #     - name: Add docker login credentials to github-runner server
   #       run: |
-  #         echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > ~/.docker/config.json
+  #         echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > /home/pi/.docker/config.json
   #         docker login
   # update_configuration_staging:
   #   runs-on: self-hosted
   #   environment:
   #     name: staging
   #   env:
-  #     KUBECONFIG: ~/.kube/config_staging
+  #     KUBECONFIG: /home/pi/.kube/config_staging
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - update configmap in the cluster
@@ -54,7 +44,7 @@ jobs:
   #   environment:
   #     name: production
   #   env:
-  #     KUBECONFIG: ~/.kube/config_production
+  #     KUBECONFIG: /home/pi/.kube/config_production
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - update configmap in the cluster
@@ -66,7 +56,7 @@ jobs:
   #   environment:
   #     name: staging
   #   env:
-  #     KUBECONFIG: ~/.kube/config_staging
+  #     KUBECONFIG: /home/pi/.kube/config_staging
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - update secrets in the cluster
@@ -80,7 +70,7 @@ jobs:
   #   environment:
   #     name: production
   #   env:
-  #     KUBECONFIG: ~/.kube/config_production
+  #     KUBECONFIG: /home/pi/.kube/config_production
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - update secrets in the cluster
@@ -147,7 +137,7 @@ jobs:
   #     name: staging
   #     url: https://stage-api.eden-reich.com
   #   env:
-  #     KUBECONFIG: ~/.kube/config_staging
+  #     KUBECONFIG: /home/pi/.kube/config_staging
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - create a new deployment
@@ -169,7 +159,7 @@ jobs:
   #     name: production
   #     url: https://api.eden-reich.com
   #   env:
-  #     KUBECONFIG: ~/.kube/config_production
+  #     KUBECONFIG: /home/pi/.kube/config_production
   #   steps:
   #     - uses: actions/checkout@master
   #     - name: Kubernetes - create a new deployment
@@ -190,7 +180,7 @@ jobs:
   #     name: production
   #     url: https://api.eden-reich.com
   #   env:
-  #     KUBECONFIG: ~/.kube/config_production
+  #     KUBECONFIG: /home/pi/.kube/config_production
   #   steps:
   #     - name: Kubernetes - switch LB to previous deployment
   #       run: |
