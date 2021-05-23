@@ -19,191 +19,191 @@ env:
   DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.event.before }} | cut -c1-8)
 
 jobs:
-  # docker_login:
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Add docker login credentials to github-runner server
-  #       run: |
-  #         echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > /home/pi/.docker/config.json
-  #         docker login
-  # update_configuration_staging:
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: staging
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_staging
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kubernetes - update configmap in the cluster
-  #       run: |
-  #         APP_ENV=staging \
-  #         envsubst < authentication/config.yaml | kubectl apply -f -
-  # update_configuration_production:
-  #   if: github.event.ref == 'refs/heads/master'
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: production
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_production
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kubernetes - update configmap in the cluster
-  #       run: |
-  #         APP_ENV=production \
-  #         envsubst < authentication/config.yaml | kubectl apply -f -
-  # update_secrets_staging:
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: staging
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_staging
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kubernetes - update secrets in the cluster
-  #       run: |
-  #         AUTHENTICATION_APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
-  #         AUTHENTICATION_DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
-  #         envsubst < authentication/secret.yaml | kubectl apply -f -
-  # update_secrets_production:
-  #   if: github.event.ref == 'refs/heads/master'
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: production
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_production
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kubernetes - update secrets in the cluster
-  #       run: |
-  #         AUTHENTICATION_APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
-  #         AUTHENTICATION_DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
-  #         envsubst < authentication/secret.yaml | kubectl apply -f -
-  # build:
-  #   runs-on: self-hosted
-  #   needs: docker_login
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Docker - build container image
-  #       run: |
-  #         docker build \
-  #           --target production \
-  #           --cache-from ${{ env.DOCKER_REPO }}:latest \
-  #           -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
-  #           -t ${{ env.DOCKER_REPO }}:latest \
-  #           -f authentication/Dockerfile .
-  # push:
-  #   needs: build
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Docker - push image to registry
-  #       run: |
-  #         docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-  #         docker push ${{ env.DOCKER_REPO }}:latest
-  # test:
-  #   needs: push
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: staging
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Docker - run local database container
-  #       run: |
-  #         docker run -d \
-  #           --name postgres \
-  #           -e POSTGRES_PASSWORD=secret \
-  #           -e POSTGRES_DB=blog_authentication \
-  #           -e APP_ENV=test \
-  #           -e APP_SECRET=secret \
-  #           postgres
-  #     - name: Docker - build and run tests
-  #       run: |
-  #         cd authentication && docker build \
-  #           --name blog-authentication-test \
-  #           --target development \
-  #           -v ${PWD}:/app \
-  #           -w /app \
-  #           -e DATABASE_URL='postgres://postgres:secret@postgres:5432/blog_authentication'
-  #           -t blog-authentication-test \
-  #           .
-  #         docker run --rm -it blog-authentication-test /bin/sh -c 'npm run test'
-  #     - name: Docker - cleanup docker containers and container images
-  #       run: |
-  #         docker rmi blog-authentication-test
-  #         docker rm -f postgres
-  # deploy_staging:
-  #   needs: test
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: staging
-  #     url: https://stage-api.eden-reich.com
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_staging
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kubernetes - create a new deployment
-  #       run: |
-  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
-  #         envsubst < authentication/deployment.yaml | kubectl apply -f -
-  #     - name: Kubernetes - wait for new deployment to be successfully rolled out
-  #       run: |
-  #         kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }}
-  #     - name: Kubernetes - switch LB to green deployment
-  #       run: |
-  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
-  #         envsubst < authentication/service.yaml | kubectl apply -f -
-  # deploy_production:
-  #   if: github.event.ref == 'refs/heads/master'
-  #   needs: deploy_staging
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: production
-  #     url: https://api.eden-reich.com
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_production
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kubernetes - create a new deployment
-  #       run: |
-  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
-  #         envsubst < authentication/deployment.yaml | kubectl apply -f -
-  #     - name: Kubernetes - wait for new deployment to be successfully rolled out
-  #       run: |
-  #         kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }}
-  #     - name: Kubernetes - switch LB to green deployment
-  #       run: |
-  #         VERSION=${{ env.DEPLOYMENT_VERSION }} \
-  #         envsubst < authentication/service.yaml | kubectl apply -f -
-  # revert_production:
-  #   needs: deploy_production
-  #   runs-on: self-hosted
-  #   environment:
-  #     name: production
-  #     url: https://api.eden-reich.com
-  #   env:
-  #     KUBECONFIG: /home/pi/.kube/config_production
-  #   steps:
-  #     - name: Kubernetes - switch LB to previous deployment
-  #       run: |
-  #         VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-  #         envsubst < authentication/service.yaml | kubectl apply -f -
-  # cleanup:
-  #   runs-on: self-hosted
-  #   needs: deploy_staging
-  #   steps:
-  #     - name: Github-runner - remove all related images except latest
-  #       run: |
-  #         docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1, $2); print image}' | xargs) || true
-  #     - name: Github-runner - remove dangling docker images
-  #       run: docker system prune -f
-  #     - name: Keep 2 deployments available for rollback
-  #       run: |
-  #         kubectl delete deployments \
-  #           $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
-  #     - name: Staging worker nodes - remove all dangling images
-  #       if: github.event.ref == 'refs/heads/develop'
-  #       run: |
-  #         for server in $(echo ${{ env.STAGING_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
-  #     - name: Production worker nodes - remove all dangling images
-  #       if: github.event.ref == 'refs/heads/master'
-  #       run: |
-  #         for server in $(echo ${{ env.PRODUCTION_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
+  docker_login:
+    runs-on: self-hosted
+    steps:
+      - name: Add docker login credentials to github-runner server
+        run: |
+          echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > /home/pi/.docker/config.json
+          docker login
+  update_configuration_staging:
+    runs-on: self-hosted
+    environment:
+      name: staging
+    env:
+      KUBECONFIG: /home/pi/.kube/config_staging
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - update configmap in the cluster
+        run: |
+          APP_ENV=staging \
+          envsubst < authentication/config.yaml | kubectl apply -f -
+  update_configuration_production:
+    if: github.event.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    environment:
+      name: production
+    env:
+      KUBECONFIG: /home/pi/.kube/config_production
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - update configmap in the cluster
+        run: |
+          APP_ENV=production \
+          envsubst < authentication/config.yaml | kubectl apply -f -
+  update_secrets_staging:
+    runs-on: self-hosted
+    environment:
+      name: staging
+    env:
+      KUBECONFIG: /home/pi/.kube/config_staging
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - update secrets in the cluster
+        run: |
+          AUTHENTICATION_APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
+          AUTHENTICATION_DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
+          envsubst < authentication/secret.yaml | kubectl apply -f -
+  update_secrets_production:
+    if: github.event.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    environment:
+      name: production
+    env:
+      KUBECONFIG: /home/pi/.kube/config_production
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - update secrets in the cluster
+        run: |
+          AUTHENTICATION_APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
+          AUTHENTICATION_DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
+          envsubst < authentication/secret.yaml | kubectl apply -f -
+  build:
+    runs-on: self-hosted
+    needs: docker_login
+    steps:
+      - uses: actions/checkout@master
+      - name: Docker - build container image
+        run: |
+          docker build \
+            --target production \
+            --cache-from ${{ env.DOCKER_REPO }}:latest \
+            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+            -t ${{ env.DOCKER_REPO }}:latest \
+            -f authentication/Dockerfile .
+  push:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Docker - push image to registry
+        run: |
+          docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
+          docker push ${{ env.DOCKER_REPO }}:latest
+  test:
+    needs: push
+    runs-on: self-hosted
+    environment:
+      name: staging
+    steps:
+      - uses: actions/checkout@master
+      - name: Docker - run local database container
+        run: |
+          docker run -d \
+            --name postgres \
+            -e POSTGRES_PASSWORD=secret \
+            -e POSTGRES_DB=blog_authentication \
+            -e APP_ENV=test \
+            -e APP_SECRET=secret \
+            postgres
+      - name: Docker - build and run tests
+        run: |
+          cd authentication && docker build \
+            --name blog-authentication-test \
+            --target development \
+            -v ${PWD}:/app \
+            -w /app \
+            -e DATABASE_URL='postgres://postgres:secret@postgres:5432/blog_authentication'
+            -t blog-authentication-test \
+            .
+          docker run --rm -it blog-authentication-test /bin/sh -c 'npm run test'
+      - name: Docker - cleanup docker containers and container images
+        run: |
+          docker rmi blog-authentication-test
+          docker rm -f postgres
+  deploy_staging:
+    needs: test
+    runs-on: self-hosted
+    environment:
+      name: staging
+      url: https://stage-api.eden-reich.com
+    env:
+      KUBECONFIG: /home/pi/.kube/config_staging
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - create a new deployment
+        run: |
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          envsubst < authentication/deployment.yaml | kubectl apply -f -
+      - name: Kubernetes - wait for new deployment to be successfully rolled out
+        run: |
+          kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }}
+      - name: Kubernetes - switch LB to green deployment
+        run: |
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          envsubst < authentication/service.yaml | kubectl apply -f -
+  deploy_production:
+    if: github.event.ref == 'refs/heads/master'
+    needs: deploy_staging
+    runs-on: self-hosted
+    environment:
+      name: production
+      url: https://api.eden-reich.com
+    env:
+      KUBECONFIG: /home/pi/.kube/config_production
+    steps:
+      - uses: actions/checkout@master
+      - name: Kubernetes - create a new deployment
+        run: |
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          envsubst < authentication/deployment.yaml | kubectl apply -f -
+      - name: Kubernetes - wait for new deployment to be successfully rolled out
+        run: |
+          kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }}
+      - name: Kubernetes - switch LB to green deployment
+        run: |
+          VERSION=${{ env.DEPLOYMENT_VERSION }} \
+          envsubst < authentication/service.yaml | kubectl apply -f -
+  revert_production:
+    needs: deploy_production
+    runs-on: self-hosted
+    environment:
+      name: production
+      url: https://api.eden-reich.com
+    env:
+      KUBECONFIG: /home/pi/.kube/config_production
+    steps:
+      - name: Kubernetes - switch LB to previous deployment
+        run: |
+          VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
+          envsubst < authentication/service.yaml | kubectl apply -f -
+  cleanup:
+    runs-on: self-hosted
+    needs: deploy_staging
+    steps:
+      - name: Github-runner - remove all related images except latest
+        run: |
+          docker rmi -f $(docker images | grep ${{ env.DOCKER_REPO }} | grep -v latest | awk '{image = sprintf("%s:%s", $1, $2); print image}' | xargs) || true
+      - name: Github-runner - remove dangling docker images
+        run: docker system prune -f
+      - name: Keep 2 deployments available for rollback
+        run: |
+          kubectl delete deployments \
+            $(kubectl get deployments --sort-by=.metadata.creationTimestamp | grep ${{ env.DEPLOYMENT_NAME }} | awk '{ print $1 }' | head -n -2 | xargs) || true
+      - name: Staging worker nodes - remove all dangling images
+        if: github.event.ref == 'refs/heads/develop'
+        run: |
+          for server in $(echo ${{ env.STAGING_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
+      - name: Production worker nodes - remove all dangling images
+        if: github.event.ref == 'refs/heads/master'
+        run: |
+          for server in $(echo ${{ env.PRODUCTION_SERVERS }} | xargs); do ssh $server ./scripts/cleanup.sh; done
