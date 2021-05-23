@@ -2,7 +2,7 @@ import { server } from '@app/server';
 import request from 'supertest';
 import { connection } from '@app/database/connection';
 import { IUser, User } from '@app/entities/User';
-import { Connection, Repository } from 'typeorm';
+import { Connection } from 'typeorm';
 import { IRole, Role } from '@app/entities/Role';
 
 describe('GET /api/authentication/healthcheck', () => {
