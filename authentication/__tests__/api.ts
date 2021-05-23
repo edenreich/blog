@@ -5,16 +5,16 @@ import { IUser, User } from '@app/entities/User';
 import { Connection, Repository } from 'typeorm';
 import { IRole, Role } from '@app/entities/Role';
 
-describe('GET /api/healthcheck', () => {
+describe('GET /api/authentication/healthcheck', () => {
   it('Returns 200 with status OK', async (done): Promise<void> => {
-    const response = await request(server.callback()).get('/api/healthcheck');
+    const response = await request(server.callback()).get('/api/authentication/healthcheck');
     expect(response.body).toEqual({ status: 'OK.' });
     expect(response.statusCode).toEqual(200);
     done();
   });
 });
 
-describe('POST /api/jwt and /api/authorize', () => {
+describe('POST /api/authentication/jwt and /api/authentication/authorize', () => {
   let user: IUser;
   let conn: Connection;
 
@@ -42,7 +42,7 @@ describe('POST /api/jwt and /api/authorize', () => {
 
   it('Returns 401 for invalid credentials', async (done): Promise<void> => {
     const response = await request(server.callback())
-      .post('/api/jwt')
+      .post('/api/authentication/jwt')
       .send({username: 'invalid', password: 'invalid'});
     expect(response.body.error).toBeDefined();
     expect(response.status).toEqual(401);
@@ -51,7 +51,7 @@ describe('POST /api/jwt and /api/authorize', () => {
 
   it('Returns 200 with a JWT if credentials are valid', async (done): Promise<void> => {
     const response = await request(server.callback())
-      .post('/api/jwt')
+      .post('/api/authentication/jwt')
       .send({username: 'test', password: 'somepassword'});
     expect(response.body.token).toBeDefined();
     expect(response.status).toEqual(200);
@@ -60,11 +60,11 @@ describe('POST /api/jwt and /api/authorize', () => {
 
   it('Can authenticate using the fetched JWT', async (done): Promise<void> => {
     const response = await request(server.callback())
-      .post('/api/jwt')
+      .post('/api/authentication/jwt')
       .send({username: 'test', password: 'somepassword'});
     const jwt: string = response.body.token;
     const response2 = await request(server.callback())
-      .post('/api/authorize')
+      .post('/api/authentication/authorize')
       .set('Authorization', `Bearer ${jwt}`);
     expect(response2.status).toEqual(200);
     done();
@@ -72,7 +72,7 @@ describe('POST /api/jwt and /api/authorize', () => {
 
   it('Throw an http error if request without content type application/json', async (done): Promise<void> => {
     const response = await request(server.callback())
-      .post('/api/jwt')
+      .post('/api/authentication/jwt')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({ username: 'test', password: 'somepassword' });
     expect(response.status).toEqual(422);

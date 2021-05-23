@@ -9,7 +9,7 @@ import { compare } from 'bcrypt';
 
 const router: Router = new Router();
 
-router.post('api.jwt', '/api/jwt', async (ctx: Context) => {
+router.post('api.authentication.jwt', '/api/authentication/jwt', async (ctx: Context) => {
   const conn: Connection = await connection;
   const repository: Repository<User> = conn.getRepository(User);
   const user: IUser | undefined = await repository.findOne({username: ctx.request.body.username});
@@ -51,7 +51,7 @@ router.post('api.jwt', '/api/jwt', async (ctx: Context) => {
   ctx.status = 200;
 });
 
-router.post('api.authorize', '/api/authorize', (ctx: Context) => {
+router.post('api.authentication.authorize', '/api/authentication/authorize', (ctx: Context) => {
   const token: string[] | undefined = ctx.headers.authorization?.split(' ');
   if (!token) {
     ctx.body = {
@@ -82,7 +82,7 @@ router.post('api.authorize', '/api/authorize', (ctx: Context) => {
   }
 });
 
-router.get('api.healthcheck', '/api/healthcheck', (ctx: Context) => {
+router.get('api.authentication.healthcheck', '/api/authentication/healthcheck', (ctx: Context) => {
   ctx.body = {
     status: 'OK.'
   };
