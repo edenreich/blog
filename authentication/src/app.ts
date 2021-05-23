@@ -1,6 +1,6 @@
 import config from './config';
 import { server } from './server';
-import router from './routes/api';
+import router from '@app/routes/api';
 
 server.listen(config.port, () => {
   for (const route of router.stack) {

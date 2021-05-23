@@ -17,14 +17,10 @@ CMD [ "npm", "run", "dev" ]
 
 FROM base AS staging
 ENV NODE_ENV=prod
-COPY --chown=node:node package*.json .
 COPY --chown=node:node --from=builder /app/build .
-RUN npm install
 CMD [ "npm", "start" ]
 
 FROM base AS production
 ENV NODE_ENV=prod
-COPY --chown=node:node package*.json .
 COPY --chown=node:node --from=builder /app/build .
-RUN npm install
 CMD [ "npm", "start" ]

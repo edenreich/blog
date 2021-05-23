@@ -4,11 +4,11 @@
   "description": "Authentication Service",
   "main": "./server.js",
   "scripts": {
-    "start": "node ./app.js",
-    "build": "tsc",
-    "dev": "nodemon --watch 'src/**' --ext 'ts' --exec 'ts-node src/app.ts'",
+    "start": "node -r module-alias/register ./src/app.js",
+    "build": "tsc && cp package* build/ && cd build && npm install --production",
+    "dev": "nodemon --watch 'src/**' --ext 'ts' --exec 'ts-node -r module-alias/register src/app.ts'",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watchAll"
   },
   "keywords": [
     "authentication-service"
@@ -21,7 +21,8 @@
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
-    "koa-router": "^10.0.0"
+    "koa-router": "^10.0.0",
+    "module-alias": "^2.2.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
@@ -47,6 +48,12 @@
     },
     "testMatch": [
       "**/__tests__/*.+(ts)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^@app/(.*)$": "<rootDir>/src/$1"
+    }
+  },
+  "_moduleAliases": {
+    "@app"      : "./src"
   }
 }
