@@ -33,7 +33,7 @@ describe('POST /api/jwt and /api/authorize', () => {
     const response = await request(server.callback())
       .post('/api/jwt')
       .send({ username: 'test', password: 'somepassword' });
-    const jwt: string = response.body.token; 
+    const jwt: string = response.body.token;
     const response2 = await request(server.callback())
       .post('/api/authorize')
       .set('Authorization', `Bearer ${jwt}`);

@@ -9,7 +9,8 @@
     "dev": "nodemon --watch 'src/**' --ext 'ts' --exec 'ts-node -r module-alias/register src/app.ts'",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "lint": "tslint './src/**/*.ts' './__tests__/**/*.ts'"
+    "lint": "tslint './src/**/*.ts' './__tests__/**/*.ts'",
+    "lint:fix": "tslint --fix './src/**/*.ts' './__tests__/**/*.ts'"
   },
   "keywords": [
     "authentication-service"

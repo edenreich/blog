@@ -10,12 +10,6 @@ interface User {
   password: string;
 }
 
-interface Payload {
-  data: User;
-  iat: number;
-  exp: number;
-}
-
 const mockedUser: User = {
   username: 'test',
   password: 'somepassword'
@@ -50,7 +44,7 @@ router.post('api.authorize', '/api/authorize', (ctx: Context) => {
     ctx.status = 422;
     return;
   }
-  
+
   if (token[0] !== 'Bearer' && !token[1]) {
     ctx.body = {
       error: 'Invalid token.',
@@ -60,7 +54,7 @@ router.post('api.authorize', '/api/authorize', (ctx: Context) => {
   }
 
   try {
-    jwt.verify(token[1], config.app_secret) as Payload;
+    jwt.verify(token[1], config.app_secret);
     ctx.status = 200;
     return;
   } catch (_err) {
