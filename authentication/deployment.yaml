@@ -57,3 +57,5 @@ spec:
               name: authentication
               key: database_url
         imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+      - name: container-registry
