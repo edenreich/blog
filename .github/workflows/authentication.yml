@@ -119,7 +119,6 @@ jobs:
       - name: Docker - build and run tests
         run: |
           cd authentication && docker build \
-            --name blog-authentication-test \
             --target development \
             -v ${PWD}:/app \
             -w /app \
