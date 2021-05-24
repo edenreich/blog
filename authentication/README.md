@@ -4,7 +4,6 @@
 
 A JWT authentication service written in typescript.
 
-
 ### Endpoints
 
 | Method  | Path | Description |
