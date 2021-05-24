@@ -112,6 +112,7 @@ jobs:
           docker rm -f postgres
           docker run -d \
             --name postgres \
+            --hostname postgres \
             -e POSTGRES_PASSWORD=secret \
             -e POSTGRES_DB=blog_authentication \
             -e APP_ENV=test \
