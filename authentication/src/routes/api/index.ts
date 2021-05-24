@@ -5,7 +5,7 @@ import config from '@app/config';
 import { IUser, User } from '@app/entities/User';
 import { connection } from '@app/database/connection';
 import { Connection, Repository } from 'typeorm';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 
 const router: Router = new Router();
 
