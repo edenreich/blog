@@ -1,4 +1,4 @@
-FROM node:16.2.0-alpine3.12 AS base
+FROM node:16.2.0-buster-slim AS base
 USER node
 ENV NODE_ENV=dev
 WORKDIR /app
