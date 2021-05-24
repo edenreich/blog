@@ -55,6 +55,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Kubernetes - update configmap in the cluster
         run: |-
@@ -70,6 +72,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Kubernetes - update secrets in the cluster
         run: |-
@@ -87,6 +91,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Kubernetes - update secrets in the cluster
         run: |-
@@ -100,6 +106,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Docker - build container image
         run: |-
@@ -126,6 +134,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Docker - run local database container
         run: |-
@@ -174,6 +184,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Kubernetes - create a new deployment
         run: |-
@@ -201,6 +213,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Kubernetes - create a new deployment
         run: |-
@@ -227,6 +241,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Kubernetes - switch LB to previous deployment
         run: |-
