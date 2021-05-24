@@ -91,7 +91,7 @@ jobs:
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f authentication/Dockerfile .
+            .
   push:
     needs: build
     runs-on: self-hosted
