@@ -86,7 +86,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Docker - build container image
         run: |
-          docker build \
+          cd authentication && docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
