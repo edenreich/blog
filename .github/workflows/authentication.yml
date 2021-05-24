@@ -120,12 +120,9 @@ jobs:
         run: |
           cd authentication && docker build \
             --target development \
-            -v ${PWD}:/app \
-            -w /app \
-            -e DATABASE_URL='postgres://postgres:secret@postgres:5432/blog_authentication'
             -t blog-authentication-test \
             .
-          docker run --rm -it blog-authentication-test /bin/sh -c 'npm run test'
+          docker run --rm -it -e DATABASE_URL='postgres://postgres:secret@postgres:5432/blog_authentication' -v ${PWD}:/app -w /app blog-authentication-test /bin/sh -c 'npm run test'
       - name: Docker - cleanup docker containers and container images
         run: |
           docker rmi blog-authentication-test
