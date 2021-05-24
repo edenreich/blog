@@ -3,19 +3,14 @@ import { resolve } from 'path';
 
 const router: Router = new Router();
 
-interface Assets {
-  css: string[];
-  js: string[];
-};
+type EntryPoint = { css: string[], js: string[] };
 
-type EntryPoint = Assets;
-
-interface EntryPointManifest {
+interface IEntryPointManifest {
   entrypoints: { [key: string]: EntryPoint };
 }
 
 router.get('web.login', '/login', async (ctx: any) => {
-  const manifest: EntryPointManifest = await import(resolve(__dirname, '../static/entrypoints.json'));
+  const manifest: IEntryPointManifest = await import(resolve(__dirname, '../static/entrypoints.json'));
 
   // todo - find a way to implement this function for all views
   // maybe also use standard webpack instead of encore

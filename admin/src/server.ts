@@ -9,10 +9,7 @@ import { resolve } from 'path';
 export const server: Koa = new Koa();
 
 server.use(Logger());
-server.use(KoaStatic(resolve(__dirname, 'static'), {
-  root: '/static',
-  index: '/static',
-}));
+server.use(KoaStatic(resolve(__dirname, 'static')));
 server.use(KoaViews(resolve(__dirname, 'templates'), {
   options: {
     namespaces: { admin: resolve(__dirname, 'templates') },
