@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - create-authentication-service
     paths:
       - ".github/workflows/authentication.yml"
       - "authentication/**"
