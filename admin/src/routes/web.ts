@@ -1,13 +1,32 @@
-import { Context } from 'koa';
 import Router from 'koa-router';
+import { resolve } from 'path';
 
 const router: Router = new Router();
 
-router.get('web.login', '/admin/login', async (ctx: Context) => {
-  ctx.body = {
-    error: 'Hello World.',
-  };
-  ctx.status = 200;
+interface Assets {
+  css: string[];
+  js: string[];
+};
+
+type EntryPoint = Assets;
+
+interface EntryPointManifest {
+  entrypoints: { [key: string]: EntryPoint };
+}
+
+router.get('web.login', '/login', async (ctx: any) => {
+  const manifest: EntryPointManifest = await import(resolve(__dirname, '../static/entrypoints.json'));
+
+  // todo - find a way to implement this function for all views
+  // maybe also use standard webpack instead of encore
+  await ctx.render('security/login.html.twig', {
+    encore_entry_link_tags: (entry: string) => {
+      return manifest.entrypoints[entry]?.css.map((path: string) => `<link href="${path}" rel="stylesheet">`).join('\n');
+    },
+    encore_entry_script_tags: (entry: string) => {
+      return manifest.entrypoints[entry]?.js.map((path: string) => `<script src="${path}"></script>`).join('\n');
+    },
+  });
 });
 
 export default router;
