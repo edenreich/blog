@@ -35,7 +35,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_staging
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - update configmap in the cluster
         run: |-
@@ -50,7 +51,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_production
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - update configmap in the cluster
         run: |-
@@ -64,7 +66,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_staging
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - update secrets in the cluster
         run: |-
@@ -80,7 +83,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_production
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - update secrets in the cluster
         run: |-
@@ -92,7 +96,8 @@ jobs:
     runs-on: self-hosted
     needs: docker_login
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Docker - build container image
         run: |-
@@ -117,7 +122,8 @@ jobs:
     environment:
       name: staging
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Docker - run local database container
         run: |-
@@ -164,7 +170,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_staging
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - create a new deployment
         run: |-
@@ -190,7 +197,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_production
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - create a new deployment
         run: |-
@@ -215,7 +223,8 @@ jobs:
     env:
       KUBECONFIG: /home/pi/.kube/config_production
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Kubernetes - switch LB to previous deployment
         run: |-
