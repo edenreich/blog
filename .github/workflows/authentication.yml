@@ -109,10 +109,12 @@ jobs:
       - uses: actions/checkout@master
       - name: Docker - run local database container
         run: |
-          docker rm -f postgres
+          docker rm -f postgres || true
+          docker network create test-app || true
           docker run -d \
             --name postgres \
             --hostname postgres \
+            --network test-app \
             -e POSTGRES_PASSWORD=secret \
             -e POSTGRES_DB=blog_authentication \
             -e APP_ENV=test \
@@ -129,12 +131,15 @@ jobs:
             -e DATABASE_URL='postgres://postgres:secret@postgres:5432/blog_authentication' \
             -v ${PWD}:/app \
             -w /app \
+            --name blog-authentication-test \
+            --network test-app \
             blog-authentication-test \
             /bin/sh -c 'npm install && npm run test'
       - name: Docker - cleanup docker containers and container images
         run: |
           docker rmi blog-authentication-test
           docker rm -f postgres
+          docker network rm test-app
   deploy_staging:
     needs: test
     runs-on: self-hosted
