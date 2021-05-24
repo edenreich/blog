@@ -53,14 +53,14 @@ spec:
       http:
         paths:
         - pathType: Prefix
-          path: /api/jwt
+          path: /api/authentication/jwt
           backend:
             service:
               name: authentication
               port: 
                 number: 8080
         - pathType: Prefix
-          path: /api/authorize
+          path: /api/authentication/authorize
           backend:
             service:
               name: authentication
