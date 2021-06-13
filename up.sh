@@ -29,7 +29,7 @@ docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
 # Build container images
 docker build --target development -t k3d-registry.internal:5000/api:latest -f ops/on-premises/docker/backend/api/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f ops/on-premises/docker/backend/admin/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/frontend:latest -f ops/on-premises/docker/frontend/Dockerfile .
+docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
 
 # Push container images to local registry
 docker push k3d-registry.internal:5000/api:latest
@@ -55,9 +55,19 @@ docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app no
 docker run --rm -it --user 1000:1000 -v ${PWD}/frontend:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install"
 
 # Deploy api, admin and frontend
-kubectl apply -f local/api/
-kubectl apply -f local/admin/
-# kubectl apply -f local/frontend/
+# kubectl apply -f local/api/
+# kubectl apply -f local/admin/
+for manifest in `ls frontend/*.yaml | xargs`;
+do
+    VERSION=latest \
+    REPOSITORY=k3d-registry.internal:5000/frontend \
+    APP_ENV=development \
+    API_USERNAME=`echo -n admin@gmail.com | base64` \
+    API_PASSWORD=`echo -n admin | base64` \
+    MAILGUN_API_KEY=`echo -n test | base64`  \
+    MAILGUN_DOMAIN=`echo -n mg.eden-reich.com | base64` \
+    envsubst < $manifest | kubectl apply -f -
+done
 
 # Deploy Nginx Ingress
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
