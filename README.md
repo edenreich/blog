@@ -11,6 +11,7 @@ My blog for posting interesting content.
 
 - [Blog](#README.md)
   - [Authentication](authentication/#README.md)
+  - [API](api/#README.md)
   - [Frontend](frontend/#README.md)
 
 
@@ -71,9 +72,9 @@ kubectl create ns blog && kubectl config set-context --current --namespace=blog
 4. Build container images:
 ```sh
 docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/api:latest -f ops/on-premises/docker/backend/api/Dockerfile .
+docker build --target development -t k3d-registry.internal:5000/api:latest -f api/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f ops/on-premises/docker/backend/admin/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/frontend:latest -f ops/on-premises/docker/frontend/Dockerfile .
+docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
 ```
 5. Push container images to local registry:
 ```sh
