@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
 
 k3d cluster delete local-cluster
 k3d registry delete k3d-registry.internal
