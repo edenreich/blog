@@ -26,7 +26,6 @@ jobs:
         run: |-
           echo ${{ secrets.DOCKER_CONFIG_JSON }} | base64 -d > /home/pi/.docker/config.json
           docker login
-
   update_configuration_staging:
     runs-on: self-hosted
     environment:
@@ -38,12 +37,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Kubernetes - update configmap in the cluster
         run: |-
           APP_ENV=staging \
           envsubst < authentication/config.yaml | kubectl apply -f -
-
   update_configuration_production:
     if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
@@ -56,12 +53,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Kubernetes - update configmap in the cluster
         run: |-
           APP_ENV=production \
           envsubst < authentication/config.yaml | kubectl apply -f -
-
   update_secrets_staging:
     runs-on: self-hosted
     environment:
@@ -73,13 +68,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Kubernetes - update secrets in the cluster
         run: |-
           APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
           DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
           envsubst < authentication/secret.yaml | kubectl apply -f -
-
   update_secrets_production:
     if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
@@ -92,13 +85,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Kubernetes - update secrets in the cluster
         run: |-
           APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
           DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
           envsubst < authentication/secret.yaml | kubectl apply -f -
-
   build:
     runs-on: self-hosted
     needs: docker_login
@@ -107,7 +98,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Docker - build container image
         run: |-
           cd authentication && docker build \
@@ -116,7 +106,6 @@ jobs:
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             -t ${{ env.DOCKER_REPO }}:latest \
             .
-
   push:
     needs: build
     runs-on: self-hosted
@@ -135,7 +124,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Docker - run local database container
         run: |-
           docker rm -f postgres || true
@@ -149,7 +137,6 @@ jobs:
             -e APP_ENV=test \
             -e APP_SECRET=secret \
             postgres
-
       - name: Docker - build and run tests
         run: |-
           cd authentication && docker build \
@@ -165,13 +152,11 @@ jobs:
             --network test-app \
             blog-authentication-test \
             /bin/sh -c 'npm install && npm run test'
-
       - name: Docker - cleanup docker containers and container images
         run: |-
           docker rmi blog-authentication-test
           docker rm -f postgres
           docker network rm test-app
-
   deploy_staging:
     needs: test
     runs-on: self-hosted
@@ -185,22 +170,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Kubernetes - create a new deployment
         run: |-
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
           envsubst < authentication/deployment.yaml | kubectl apply -f -
-
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |-
           kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }}
-
       - name: Kubernetes - switch LB to green deployment
         run: |-
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           envsubst < authentication/service.yaml | kubectl apply -f -
-
   deploy_production:
     if: github.event.ref == 'refs/heads/master'
     needs: deploy_staging
@@ -215,22 +196,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Kubernetes - create a new deployment
         run: |-
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
           envsubst < authentication/deployment.yaml | kubectl apply -f -
-
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |-
           kubectl rollout status deploy/${{ env.DEPLOYMENT_NAME }}-${{ env.DEPLOYMENT_VERSION }}
-
       - name: Kubernetes - switch LB to green deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           envsubst < authentication/service.yaml | kubectl apply -f -
-
   revert_production:
     needs: deploy_production
     runs-on: self-hosted
@@ -249,7 +226,6 @@ jobs:
         run: |-
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
           envsubst < authentication/service.yaml | kubectl apply -f -
-
   cleanup:
     runs-on: self-hosted
     needs: deploy_staging

@@ -32,7 +32,10 @@ jobs:
     environment:
       name: staging
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
@@ -59,7 +62,10 @@ jobs:
     environment:
       name: staging
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
@@ -78,7 +84,10 @@ jobs:
     environment:
       name: production
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
@@ -95,7 +104,10 @@ jobs:
     runs-on: self-hosted
     needs: docker_login
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Docker - build container image
         run: |
           docker build \
@@ -161,7 +173,10 @@ jobs:
       name: staging
       url: https://stage-admin.eden-reich.com
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
@@ -211,7 +226,10 @@ jobs:
       name: production
       url: https://admin.eden-reich.com
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
