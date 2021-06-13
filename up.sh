@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
+
+function cleanup() {
+    echo -e "\033[0;31m[Error]\033[0m something went wrong, cleaning up.."
+    exec ./down.sh
+}
+trap cleanup ERR INT
 
 # Create a local cluster
 k3d registry create registry.internal --port 5000
@@ -49,7 +57,7 @@ docker run --rm -it --user 1000:1000 -v ${PWD}/src/frontend:/app -w /app node:15
 # Deploy api, admin and frontend
 kubectl apply -f local/api/
 kubectl apply -f local/admin/
-kubectl apply -f local/frontend/
+# kubectl apply -f local/frontend/
 
 # Deploy Nginx Ingress
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
