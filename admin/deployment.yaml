@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-${VERSION}
+  namespace: blog
+  labels:
+    app: admin
+    version: "${VERSION}"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: admin
+      version: "${VERSION}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: admin
+        version: "${VERSION}"
+    spec:
+      containers:
+      - name: admin
+        image: ${REPOSITORY}:${VERSION}
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: admin
+              key: app_env
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: admin
+              key: database_url
+        - name: AUTHENTICATION_URL
+          valueFrom:
+            configMapKeyRef:
+              name: admin
+              key: authentication_url
+        resources:
+          requests:
+            cpu: 499m
+            memory: 499Mi
+          limits:
+            cpu: 499m
+            memory: 499Mi
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /healthcheck
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /healthcheck
+        imagePullPolicy: Always
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+      - name: container-registry

@@ -12,7 +12,8 @@ const router: Router = new Router();
 router.post('api.authentication.jwt', '/api/authentication/jwt', async (ctx: Context) => {
   const conn: Connection = await connection;
   const repository: Repository<User> = conn.getRepository(User);
-  const user: IUser | undefined = await repository.findOne({username: ctx.request.body.username});
+  const body: any = ctx.request.body;
+  const user: IUser | undefined = await repository.findOne({username: body.username});
   if (!user) {
     ctx.body = {
       error: 'Invalid credentails.',
@@ -22,7 +23,7 @@ router.post('api.authentication.jwt', '/api/authentication/jwt', async (ctx: Con
   }
 
   try {
-    const validCredentials: boolean = await compare(ctx.request.body.password, user.password);
+    const validCredentials: boolean = await compare(body.password, user.password);
     if (!validCredentials) {
       ctx.body = {
         error: 'Invalid credentails.',

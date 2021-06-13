@@ -62,8 +62,7 @@ POSTGRES_IP=$postgresIP envsubst < ./local/db/service.yaml | kubectl apply -f -
 # Install node_modules and composer artifacts
 docker run --rm -it --user 1000:1000 -v ${PWD}/authentication:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c "yarn install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/api:/app -w /app php-common:latest /bin/sh -c "composer install"
-docker run --rm -it --user 1000:1000 -v ${PWD}/admin:/app -w /app php-common:latest /bin/sh -c "composer install"
-docker run --rm -it --user 1000:1000 -v ${PWD}/admin:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install && yarn dev"
+docker run --rm -it --user 1000:1000 -v ${PWD}/admin:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c "yarn install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/frontend:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install"
 
 # Deploy authentication, api, admin and frontend
@@ -99,8 +98,7 @@ do
     log_info "Applying manifest ${manifest}"
     VERSION=latest \
     REPOSITORY=k3d-registry.internal:5000/admin \
-    APP_ENV=dev \
-    APP_SECRET=`echo -n '875e1d50e3365aa7f4445fe71c0de8f3' | base64 -w0` \
+    APP_ENV=development \
     DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_admin?serverVersion=13&charset=utf8' | base64 -w0` \
     envsubst < $manifest | kubectl apply -f -
 done

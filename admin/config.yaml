@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admin
+  namespace: blog
+  labels:
+    app: admin
+data:
+  app_env: ${APP_ENV}
+  authentication_url: 'http://authentication:8080'
