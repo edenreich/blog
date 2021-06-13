@@ -21,8 +21,8 @@ spec:
         version: "${VERSION}"
     spec:
       containers:
-      - image: edenr/blog-authentication:${VERSION}
-        name: blog-authentication
+      - name: authentication
+        image: ${REPOSITORY}:${VERSION}
         resources:
           requests:
             cpu: 499m

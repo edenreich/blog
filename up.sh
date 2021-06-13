@@ -2,8 +2,16 @@
 
 set -e
 
+function log_info() {
+    echo -e "\e[36m[INFO]\033[0m ${1}"
+}
+
+function log_error() {
+    echo -e "\033[0;31m[ERROR]\033[0m ${1}"
+}
+
 function cleanup() {
-    echo -e "\033[0;31m[ERROR]\033[0m something went wrong, cleaning up.."
+    log_error "Something went wrong, cleaning up.."
     exec ./down.sh
 }
 trap cleanup ERR INT
@@ -11,6 +19,7 @@ trap cleanup ERR INT
 # Create a local cluster
 k3d registry create registry.internal --port 5000
 k3d cluster create local-cluster \
+    --volume ${PWD}/authentication:/app/authentication \
     --volume ${PWD}/api:/app/api \
     --volume ${PWD}/src/backend/admin:/app/admin \
     --volume ${PWD}/frontend:/app/frontend \
@@ -27,11 +36,13 @@ kubectl create ns blog && kubectl config set-context --current --namespace=blog
 docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
 
 # Build container images
+docker build --target development -t k3d-registry.internal:5000/authentication:latest -f authentication/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/api:latest -f api/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f ops/on-premises/docker/backend/admin/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
 
 # Push container images to local registry
+docker push k3d-registry.internal:5000/authentication:latest
 docker push k3d-registry.internal:5000/api:latest
 docker push k3d-registry.internal:5000/admin:latest
 docker push k3d-registry.internal:5000/frontend:latest
@@ -49,15 +60,28 @@ postgresIP=$(docker inspect $postgresContainerId --format '{{range.NetworkSettin
 POSTGRES_IP=$postgresIP envsubst < ./local/db/service.yaml | kubectl apply -f - 
 
 # Install node_modules and composer artifacts
+docker run --rm -it --user 1000:1000 -v ${PWD}/authentication:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c "yarn install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/api:/app -w /app php-common:latest /bin/sh -c "composer install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app php-common:latest /bin/sh -c "composer install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/src/backend/admin:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install && yarn dev"
 docker run --rm -it --user 1000:1000 -v ${PWD}/frontend:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install"
 
-# Deploy api, admin and frontend
+# Deploy authentication, api, admin and frontend
+log_info "Deploying the authentication service.."
+for manifest in `ls authentication/*.yaml | xargs`;
+do
+    log_info "Applying manifest ${manifest}"
+    VERSION=latest \
+    REPOSITORY=k3d-registry.internal:5000/authentication \
+    APP_ENV=development \
+    APP_SECRET=`echo -n 'secret' | base64 -w0` \
+    DATABASE_URL=`echo -n 'postgres://postgres:secret@postgres:5432/blog_authentication?serverVersion=13&charset=utf8' | base64 -w0` \
+    envsubst < $manifest | kubectl apply -f -
+done
+log_info "Deploying the api.."
 for manifest in `ls api/*.yaml | xargs`;
 do
-    echo "[INFO] Applying manifest ${manifest}"
+    log_info "Applying manifest ${manifest}"
     VERSION=latest \
     REPOSITORY=k3d-registry.internal:5000/api \
     APP_ENV=dev \
@@ -70,9 +94,10 @@ do
     envsubst < $manifest | kubectl apply -f -
 done
 # kubectl apply -f local/admin/
+log_info "Deploying the frontend.."
 for manifest in `ls frontend/*.yaml | xargs`;
 do
-    echo "[INFO] Applying manifest ${manifest}"
+    log_info "Applying manifest ${manifest}"
     VERSION=latest \
     REPOSITORY=k3d-registry.internal:5000/frontend \
     APP_ENV=development \
@@ -84,6 +109,7 @@ do
 done
 
 # Mount volumes for local development
+kubectl patch deploy authentication-latest -p '{"metadata":{"name":"authentication-latest"},"spec":{"template":{"spec":{"containers":[{"name":"authentication","volumeMounts":[{"name":"authentication-volume","mountPath":"/app"}]}],"volumes":[{"name":"authentication-volume","hostPath":{"path":"/app/authentication"}}]}}}}'
 kubectl patch deploy api-latest -p '{"metadata":{"name":"api-latest"},"spec":{"template":{"spec":{"containers":[{"name":"api","volumeMounts":[{"name":"api-volume","mountPath":"/app"}]}],"volumes":[{"name":"api-volume","hostPath":{"path":"/app/api"}}]}}}}'
 kubectl patch deploy frontend-latest -p '{"metadata":{"name":"frontend-latest"},"spec":{"template":{"spec":{"containers":[{"name":"frontend","volumeMounts":[{"name":"frontend-volume","mountPath":"/app"}]}],"volumes":[{"name":"frontend-volume","hostPath":{"path":"/app/frontend"}}]}}}}'
 

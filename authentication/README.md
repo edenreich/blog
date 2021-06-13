@@ -4,6 +4,13 @@
 
 A JWT authentication service written in typescript.
 
+### Quick Start
+
+Just run:
+```
+yarn run dev
+```
+
 ### Endpoints
 
 | Method  | Path | Description |
