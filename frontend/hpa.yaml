@@ -2,6 +2,10 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: blog-frontend
+  namespace: blog
+  labels:
+    app: frontend
+    version: "${VERSION}"
 spec:
   minReplicas: 2
   maxReplicas: 10

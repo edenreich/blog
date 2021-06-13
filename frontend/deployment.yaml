@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: frontend-${VERSION}
   namespace: blog
+  labels:
+    app: frontend
+    version: "${VERSION}"
 spec:
   replicas: 2
   selector:

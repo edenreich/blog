@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: frontend
   namespace: blog
+  labels:
+    app: frontend
+    version: "${VERSION}"
 spec:
   selector:
     app: frontend

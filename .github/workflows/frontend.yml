@@ -65,10 +65,10 @@ jobs:
           kubectl config use-context staging
       - name: Kubernetes - update secrets in the cluster
         run: |
-          FRONTEND_API_USERNAME=${{ secrets.FRONTEND_API_USERNAME }} \
-          FRONTEND_API_PASSWORD=${{ secrets.FRONTEND_API_PASSWORD }} \
-          FRONTEND_MAILGUN_API_KEY=${{ secrets.FRONTEND_MAILGUN_API_KEY }} \
-          FRONTEND_MAILGUN_DOMAIN=${{ secrets.FRONTEND_MAILGUN_DOMAIN }} \
+          API_USERNAME=${{ secrets.FRONTEND_API_USERNAME }} \
+          API_PASSWORD=${{ secrets.FRONTEND_API_PASSWORD }} \
+          MAILGUN_API_KEY=${{ secrets.FRONTEND_MAILGUN_API_KEY }} \
+          MAILGUN_DOMAIN=${{ secrets.FRONTEND_MAILGUN_DOMAIN }} \
           envsubst < frontend/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
@@ -86,10 +86,10 @@ jobs:
           kubectl config use-context production
       - name: Kubernetes - update secrets in the cluster
         run: |
-          FRONTEND_API_USERNAME=${{ secrets.FRONTEND_API_USERNAME }} \
-          FRONTEND_API_PASSWORD=${{ secrets.FRONTEND_API_PASSWORD }} \
-          FRONTEND_MAILGUN_API_KEY=${{ secrets.FRONTEND_MAILGUN_API_KEY }} \
-          FRONTEND_MAILGUN_DOMAIN=${{ secrets.FRONTEND_MAILGUN_DOMAIN }} \
+          API_USERNAME=${{ secrets.FRONTEND_API_USERNAME }} \
+          API_PASSWORD=${{ secrets.FRONTEND_API_PASSWORD }} \
+          MAILGUN_API_KEY=${{ secrets.FRONTEND_MAILGUN_API_KEY }} \
+          MAILGUN_DOMAIN=${{ secrets.FRONTEND_MAILGUN_DOMAIN }} \
           envsubst < frontend/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
