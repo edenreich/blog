@@ -9,16 +9,16 @@
   <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  {# {{ encore_entry_link_tags('app') }} #}
+  {{ encore_entry_link_tags('app') }}
   {% block stylesheets %}{% endblock %}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <!-- Site wrapper -->
 <div class="wrapper">
 
-  {% include 'includes/topbar.html.twig' %}
+  {% include 'admin::includes/topbar.html.twig' %}
 
-  {% include 'includes/sidebar.html.twig' %}
+  {% include 'admin::includes/sidebar.html.twig' %}
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -43,7 +43,7 @@
 </div>
 <!-- ./wrapper -->
 
-{# {{ encore_entry_script_tags('app') }} #}
+{{ encore_entry_script_tags('app') }}
 {% block javascripts %}{% endblock %}
 </body>
 </html>

@@ -1,11 +1,11 @@
-{% extends 'admin.layout.twig' %}
+{% extends 'admin::admin.layout.twig' %}
 {% block title %}Admin - Dashboard{% endblock %}
 {% block header %}
 <div class="row mb-2">
   <div class="col-sm-6">
     <h1>Dashboard</h1>
   </div>
-  {% include 'includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Dashboard','link':'/dashboard'}]} %}
+  {% include 'admin::includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Dashboard','link':'/dashboard'}]} %}
 </div>
 {% endblock %}
 {% block body %}
