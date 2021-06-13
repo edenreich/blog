@@ -7,7 +7,7 @@ on:
       - develop 
     paths:
       - ".github/workflows/frontend.yml"
-      - "src/frontend/**"
+      - "frontend/**"
       - "ops/on-premises/docker/frontend/**"
       - "ops/on-premises/kubernetes/frontend/**"
 
@@ -19,7 +19,7 @@ env:
   DEPLOYMENT_NAME: frontend
   DEPLOYMENT_VERSION: $(echo ${{ github.event.after }} | cut -c1-8)
   DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.event.before }} | cut -c1-8)
-  ARTIFACT_FILES: src/frontend/package.json src/frontend/yarn.lock ops/on-premises/docker/frontend/artifacts/Dockerfile
+  ARTIFACT_FILES: frontend/package.json frontend/yarn.lock ops/on-premises/docker/frontend/artifacts/Dockerfile
 
 jobs:
   docker_login:

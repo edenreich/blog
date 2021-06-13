@@ -1,16 +1,16 @@
 FROM node:15.2.1-buster-slim AS builder
 WORKDIR /tmp
-COPY src/frontend/yarn.lock .
-COPY src/frontend/package.json .
-COPY src/frontend/next.config.js .
-COPY src/frontend/tsconfig.json .
-COPY src/frontend/*.d.ts ./
-COPY src/frontend/config/environments/production config/environments/production
-COPY src/frontend/interfaces interfaces
-COPY src/frontend/components components
-COPY src/frontend/pages pages
-COPY src/frontend/styles styles
-COPY src/frontend/utils utils
+COPY frontend/yarn.lock .
+COPY frontend/package.json .
+COPY frontend/next.config.js .
+COPY frontend/tsconfig.json .
+COPY frontend/*.d.ts ./
+COPY frontend/config/environments/production config/environments/production
+COPY frontend/interfaces interfaces
+COPY frontend/components components
+COPY frontend/pages pages
+COPY frontend/styles styles
+COPY frontend/utils utils
 COPY --from=frontend-artifacts /tmp/development_node_modules node_modules
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential python && \
@@ -32,7 +32,7 @@ WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=production
 ENV NODE_ENV=production
-COPY src/frontend .
+COPY frontend .
 COPY --from=frontend-artifacts /tmp/node_modules node_modules
 COPY --from=builder /tmp/.next .next
 EXPOSE 3000

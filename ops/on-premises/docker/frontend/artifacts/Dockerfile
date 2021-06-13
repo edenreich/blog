@@ -1,16 +1,16 @@
 FROM node:15.2.1-buster-slim AS frontend-artifacts
 WORKDIR /tmp
-COPY src/frontend/yarn.lock .
-COPY src/frontend/package.json .
-COPY src/frontend/next.config.js .
-COPY src/frontend/tsconfig.json .
-COPY src/frontend/*.d.ts ./
-COPY src/frontend/config/environments/production config/environments/production
-COPY src/frontend/interfaces interfaces
-COPY src/frontend/components components
-COPY src/frontend/pages pages
-COPY src/frontend/styles styles
-COPY src/frontend/utils utils
+COPY frontend/yarn.lock .
+COPY frontend/package.json .
+COPY frontend/next.config.js .
+COPY frontend/tsconfig.json .
+COPY frontend/*.d.ts ./
+COPY frontend/config/environments/production config/environments/production
+COPY frontend/interfaces interfaces
+COPY frontend/components components
+COPY frontend/pages pages
+COPY frontend/styles styles
+COPY frontend/utils utils
 RUN apt-get update && \
     apt-get install -y build-essential python && \
     yarn upgrade && yarn install && \
