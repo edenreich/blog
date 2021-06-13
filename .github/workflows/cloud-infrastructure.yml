@@ -18,22 +18,20 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
+      with:
+        fetch-depth: 0
     - name: Download terraform plugins
       run: |
         cd ops/cloud/terraform
         terraform init
-
     - name: Linting check
       run: |
         cd ops/cloud/terraform
         terraform fmt -check -diff
-
     - name: Execute terraform plan
       run: |
         cd ops/cloud/terraform
         terraform plan
-
     - name: Apply terraform plan
       run: |
         cd ops/cloud/terraform

@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: frontend
   namespace: blog
+  labels:
+    app: frontend
 data:
-  app_env: development
+  app_env: ${APP_ENV}
