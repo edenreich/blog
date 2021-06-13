@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: admin
   namespace: blog
+  labels:
+    app: admin
 data:
   app_env: ${APP_ENV}
   api_url: 'http://api:8080'
