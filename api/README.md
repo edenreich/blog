@@ -1,3 +1,4 @@
+![api](https://github.com/edenreich/blog/workflows/api/badge.svg)
 
 ## API
 

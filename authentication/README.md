@@ -8,7 +8,7 @@ A JWT authentication service written in typescript.
 
 Just run:
 ```
-yarn run dev
+yarn dev
 ```
 
 ### Endpoints

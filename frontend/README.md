@@ -1,3 +1,4 @@
+![frontend](https://github.com/edenreich/blog/workflows/frontend/badge.svg)
 
 ## Frontend
 
