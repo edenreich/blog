@@ -9,6 +9,13 @@ interface IEntryPointManifest {
   entrypoints: { [key: string]: EntryPoint };
 }
 
+router.get('web.healthcheck', '/healthcheck', (ctx: any) => {
+  ctx.body = {
+    status: 'OK.'
+  };
+  ctx.status = 200;
+});
+
 router.get('web.login', '/login', async (ctx: any) => {
   const manifest: IEntryPointManifest = await import(resolve(__dirname, '../static/entrypoints.json'));
 
