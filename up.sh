@@ -69,6 +69,9 @@ do
     envsubst < $manifest | kubectl apply -f -
 done
 
+# Mount volumes for local development
+kubectl patch deploy frontend-latest -p '{"metadata":{"name":"frontend-latest"},"spec":{"template":{"spec":{"containers":[{"name":"frontend","volumeMounts":[{"name":"frontend-volume","mountPath":"/app"}]}],"volumes":[{"name":"frontend-volume","hostPath":{"path":"/app/frontend"}}]}}}}'
+
 # Deploy Nginx Ingress
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
