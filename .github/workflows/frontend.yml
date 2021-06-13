@@ -8,8 +8,6 @@ on:
     paths:
       - ".github/workflows/frontend.yml"
       - "frontend/**"
-      - "ops/on-premises/docker/frontend/**"
-      - "ops/on-premises/kubernetes/frontend/**"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -19,7 +17,7 @@ env:
   DEPLOYMENT_NAME: frontend
   DEPLOYMENT_VERSION: $(echo ${{ github.event.after }} | cut -c1-8)
   DEPLOYMENT_PREVIOUS_VERSION: $(echo ${{ github.event.before }} | cut -c1-8)
-  ARTIFACT_FILES: frontend/package.json frontend/yarn.lock ops/on-premises/docker/frontend/artifacts/Dockerfile
+  ARTIFACT_FILES: frontend/package.json frontend/yarn.lock frontend/Dockerfile
 
 jobs:
   docker_login:
@@ -41,7 +39,7 @@ jobs:
       - name: Kubernetes - update configmap in the cluster
         run: |
           APP_ENV=staging \
-          envsubst < ops/on-premises/kubernetes/config/frontend.yaml | kubectl apply -f -
+          envsubst < frontend/config.yaml | kubectl apply -f -
   update_configuration_production:
     if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
@@ -55,7 +53,7 @@ jobs:
       - name: Kubernetes - update configmap in the cluster
         run: |
           APP_ENV=production \
-          envsubst < ops/on-premises/kubernetes/config/frontend.yaml | kubectl apply -f -
+          envsubst < frontend/config.yaml | kubectl apply -f -
   update_secrets_staging:
     runs-on: self-hosted
     environment:
@@ -71,7 +69,7 @@ jobs:
           FRONTEND_API_PASSWORD=${{ secrets.FRONTEND_API_PASSWORD }} \
           FRONTEND_MAILGUN_API_KEY=${{ secrets.FRONTEND_MAILGUN_API_KEY }} \
           FRONTEND_MAILGUN_DOMAIN=${{ secrets.FRONTEND_MAILGUN_DOMAIN }} \
-          envsubst < ops/on-premises/kubernetes/secrets/frontend.yaml | kubectl apply -f -
+          envsubst < frontend/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
@@ -92,7 +90,7 @@ jobs:
           FRONTEND_API_PASSWORD=${{ secrets.FRONTEND_API_PASSWORD }} \
           FRONTEND_MAILGUN_API_KEY=${{ secrets.FRONTEND_MAILGUN_API_KEY }} \
           FRONTEND_MAILGUN_DOMAIN=${{ secrets.FRONTEND_MAILGUN_DOMAIN }} \
-          envsubst < ops/on-premises/kubernetes/secrets/frontend.yaml | kubectl apply -f -
+          envsubst < frontend/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
@@ -125,8 +123,9 @@ jobs:
         if: ${{ needs.check.outputs.run_job == 'true' }}
         run: |
           docker build \
+            --target frontend-artifacts \
             -t frontend-artifacts:latest \
-            -f ops/on-premises/docker/frontend/artifacts/Dockerfile .
+            -f frontend/Dockerfile .
   build:
     needs: [build-artifacts]
     runs-on: self-hosted
@@ -139,7 +138,7 @@ jobs:
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
-            -f ops/on-premises/docker/frontend/Dockerfile .
+            -f frontend/Dockerfile .
   push:
     needs: [build, docker_login]
     runs-on: self-hosted
@@ -163,7 +162,7 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/frontend/deployment.yaml | kubectl apply -f -
+          envsubst < frontend/deployment.yaml | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=60
@@ -184,11 +183,11 @@ jobs:
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/frontend/hpa.yaml | kubectl apply -f -
+          envsubst < frontend/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/frontend/service.yaml | kubectl apply -f -
+          envsubst < frontend/service.yaml | kubectl apply -f -
   deploy_production:
     needs: deploy_staging
     if: github.event.ref == 'refs/heads/master'
@@ -205,7 +204,7 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/frontend/deployment.yaml | kubectl apply -f -
+          envsubst < frontend/deployment.yaml | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=60
@@ -226,11 +225,11 @@ jobs:
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/frontend/hpa.yaml | kubectl apply -f -
+          envsubst < frontend/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/frontend/service.yaml | kubectl apply -f -
+          envsubst < frontend/service.yaml | kubectl apply -f -
   revert_production:
     needs: deploy_production
     runs-on: self-hosted
@@ -244,11 +243,11 @@ jobs:
       - name: Kubernetes - apply horizontal pods autoscaling to previous deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/frontend/hpa.yaml | kubectl apply -f -
+          envsubst < frontend/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to previous deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/frontend/service.yaml | kubectl apply -f -
+          envsubst < frontend/service.yaml | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy_staging
