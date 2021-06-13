@@ -60,7 +60,7 @@ do
     echo "[INFO] Applying manifest ${manifest}"
     VERSION=latest \
     REPOSITORY=k3d-registry.internal:5000/api \
-    APP_ENV=development \
+    APP_ENV=dev \
     APP_SECRET=`echo -n '875e1d50e3365aa7f4445fe71c0de8f3' | base64 -w0` \
     DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_api?serverVersion=13&charset=utf8' | base64 -w0` \
     TEST_DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_api_test?serverVersion=13&charset=utf8' | base64 -w0` \
