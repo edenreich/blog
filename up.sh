@@ -75,6 +75,8 @@ do
     APP_ENV=development \
     APP_SECRET=`echo -n 'secret' | base64 -w0` \
     DATABASE_URL=`echo -n 'postgres://postgres:secret@postgres:5432/blog_authentication?serverVersion=13&charset=utf8' | base64 -w0` \
+    APP_USERNAME=`echo -n 'admin@gmail.com' | base64 -w0` \
+    APP_PASSWORD=`echo -n 'admin' | base64 -w0` \
     envsubst < $manifest | kubectl apply -f -
 done
 log_info "Deploying the api.."
