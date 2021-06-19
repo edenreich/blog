@@ -1,26 +1,14 @@
-{% extends 'admin.layout.twig' %}
-{% block title %}Admin - Content{% endblock %}
-{% block header %}
 <div class="row mb-2">
   <div class="col-sm-6">
     <h1>Content</h1>
   </div>
-  {% include 'includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Content','link':'/content'},{'name':'List','link':'/content/list'}]} %}
+  <%- include('includes/breadcrumb', { breadcrumbs: [{ name: 'Content', link: '/content' }, { name: 'List', link: '/content/list' }]}); %>
 </div>
-{% endblock %}
-{% block body %}
 <section class="content">
   <div class="container-fluid">
     <div class="row">
       <!-- Primary table start -->
       <div class="col-12 mt-5">
-        {% for label, messages in app.flashes %}
-          {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-              {{ message }}
-            </div>
-          {% endfor %}
-        {% endfor %}
         <div class="card">
           <div class="card-body">
             <h4 class="header-title">Articles</h4>
@@ -51,8 +39,6 @@
     </div>
   </div>
 </section>
-{% endblock %}
-{% block javascripts %}
 <script defer>
   window.onload = function () {
     var table = $('#dataTable').DataTable({
@@ -90,4 +76,3 @@
     });
   };
 </script>
-{% endblock %}

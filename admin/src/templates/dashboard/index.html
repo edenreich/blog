@@ -1,14 +1,9 @@
-{% extends 'admin::admin.layout.twig' %}
-{% block title %}Admin - Dashboard{% endblock %}
-{% block header %}
 <div class="row mb-2">
   <div class="col-sm-6">
     <h1>Dashboard</h1>
   </div>
-  {% include 'admin::includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Dashboard','link':'/dashboard'}]} %}
+  <%- include('includes/breadcrumb', { breadcrumbs: [{ name:'Dashboard', link: '/dashboard' }]}); %>
 </div>
-{% endblock %}
-{% block body %}
 <section class="content">
   <div class="container-fluid">
     <div class="row">
@@ -38,4 +33,3 @@
     </div>
   </div>
 </section>
-{% endblock %}

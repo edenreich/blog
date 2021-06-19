@@ -24,31 +24,7 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        {% for name, category in navigation %}
-          <li class="nav-item {{ category.sub is defined ? 'has-treeview menu-open' : '' }}">
-            <a href="{{ category.path }}" class="nav-link {{ category.active ? 'active' : '' }}">
-              <i class="nav-icon {{ category.icon }}"></i>
-              <p>
-                {{ category.name }}
-                <i class="{{ category.sub is defined ? 'right fas fa-angle-left' : '' }}"></i>
-              </p>
-            </a>
-            {% if category.sub is defined %}
-            <ul class="nav nav-treeview">
-              {% for name, sub in category.sub %}
-              <li class="nav-item">
-                <a href="{{ sub.path }}" class="nav-link {{ sub.active ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                  {{ sub.name }}
-                  </p>
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          </li>
-          {% endif %}
-        {% endfor %}
+
         <li class="nav-item" style="margin-top: 50px">
           <a href="/logout" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>

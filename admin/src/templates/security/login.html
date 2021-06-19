@@ -1,15 +1,9 @@
-{% extends 'admin::auth.layout.twig' %}
-{% block title %}Login{% endblock %}
-{% block body %}
 <div class="card">
   <div class="card-body login-card-body">
     <p class="login-box-msg">Sign in to start your session</p>
-    <form method="POST">
-      {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-      {% endif %}
+    <form action="/login" method="POST">
       <div class="input-group mb-3">
-        <input type="email" name="username" class="form-control" value="{{ last_username }}" placeholder="Email" required autofocus>
+        <input type="email" name="username" class="form-control" value="" placeholder="Email" required autofocus>
         <div class="input-group-append">
           <div class="input-group-text">
             <span class="fas fa-envelope"></span>
@@ -43,4 +37,3 @@
   </div>
   <!-- /.login-card-body -->
 </div>
-{% endblock %}

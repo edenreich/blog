@@ -1,29 +1,17 @@
-{% extends 'admin.layout.twig' %}
-{% block title %}Admin - Content Edit{% endblock %}
-{% block header %}
 <div class="row mb-2">
   <div class="col-sm-6">
     <h1>Content</h1>
   </div>
-  {% include 'includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Content','link':'/content'},{'name':'Edit','link':'/content/edit'}]} %}
+  <%- include('includes/breadcrumb', { breadcrumbs: [{ name: 'Content', link: '/content' }, { name: 'Edit', link: '/content/1/edit' }]}); %>
 </div>
-{% endblock %}
-{% block body %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 mt-5">
-      {% for label, messages in app.flashes %}
-        {% for message in messages %}
-          <div class="alert alert-{{ label }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endfor %}
       <div class="card">
         <div class="card-body">
           <h4 class="header-title">Edit</h4>
           <div class="content-edit-form">
-            <form action="{{ path('content_edit_submit', { 'id': article.id }) }}" method="POST">
+            <form action="/content/1/edit" method="POST">
               <div class="form-group">
                 <label for="id">Id</label>
                 <input type="text" name="id" class="form-control" id="id" value="{{ article.id }}" disabled>
@@ -62,9 +50,6 @@
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
 <script>
   window.onload = () => {
     $(() => {
@@ -76,4 +61,3 @@
     });
   }
 </script>
-{% endblock %}

@@ -1,11 +1,8 @@
-{% extends 'admin.layout.twig' %}
-{% block title %}Admin - Media{% endblock %}
-{% block header %}
 <div class="row mb-2">
   <div class="col-sm-6">
     <h1>Media</h1>
   </div>
-  {% include 'includes/breadcrumb.html.twig' with {'breadcrumbs': [{'name':'Media','link':'/media'}]} %}
+  <%- include('includes/breadcrumb', { breadcrumbs: [{ name: 'Media', link: '/media' }]}); %>
 </div>
 {% endblock %}
 {% block body %}
@@ -32,13 +29,13 @@
         </form>
       </div>
       <div class="col-12 mt-5">
-        {% for label, messages in app.flashes %}
-          {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-              {{ message }}
+        <% for (let [index, messages] of app.flashes || []) { %>
+          <% for (let [index, message] of messages || []) { %>
+            <div class="alert alert-<%= label %>">
+              <%= message %>
             </div>
-          {% endfor %}
-        {% endfor %}
+          <% } %>
+        <% } %>
         <div class="card">
           <div class="card-body">
           <div>
@@ -57,13 +54,13 @@
           </div>
           <div>
             <div class="filter-container p-0 row">
-              {% for image in images %}
-              <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
-                <a href="{{ image.url }}" data-toggle="lightbox" data-title="-">
-                  <img src="{{ image.url }}" class="img-fluid mb-2" alt="white sample"/>
-                </a>
-              </div>
-              {% endfor %}
+              <% for(let [index, image] of images || []) { %>
+                <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
+                  <a href="<%= image.url %>" data-toggle="lightbox" data-title="-">
+                    <img src="<%= image.url %>" class="img-fluid mb-2" alt="white sample"/>
+                  </a>
+                </div>
+              <% } %>
             </div>
           </div>
         </div>
