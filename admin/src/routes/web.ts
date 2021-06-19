@@ -38,7 +38,8 @@ router.post('web.login', '/login', async (ctx: DefaultContext) => {
 });
 
 router.get('web.dashboard', '/dashboard', auth, async (ctx: DefaultContext) => {
-  await ctx.render('dashboard/index.html.twig', {
+  await ctx.render('dashboard/index', {
+    title: 'Admin - Dashboard',
     user: ctx.state.user.data,
   });
 });
