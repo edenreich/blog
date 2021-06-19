@@ -9,7 +9,7 @@ import { join } from 'path';
 export const server: Koa = new Koa();
 
 ejs(server, {
-  root: join(__dirname, 'templates'),
+  root: join(__dirname, 'views'),
   layout: 'admin.layout',
   viewExt: 'html',
   cache: false,
