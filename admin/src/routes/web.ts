@@ -132,6 +132,20 @@ router.get('web.content.edit', '/content/:id/edit', auth, async (ctx: IRouterPar
   });
 });
 
+router.post('web.content.edit', '/content/:id/edit', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  // @todo make an api call to edit the article
+  // @todo set flash message
+  ctx.response.redirect('/content/list');
+});
+
+router.get('web.content.delete', '/content/:id/delete', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  // @todo make an api call to soft delete the article
+  // @todo set flash message
+  ctx.response.redirect('/content/list');
+});
+
 router.get('web.media', '/media', auth, async (ctx: Context) => {
   const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
   const requestUrlSegments: string[] = ctx.req.url ? ctx.req.url.split('?')[0].split('/').slice(1) : ['/'];
