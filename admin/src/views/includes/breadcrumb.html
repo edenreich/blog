@@ -1,0 +1,7 @@
+<div class="col-sm-6">
+<ol class="breadcrumb float-sm-right">
+  <% for (breadcrumb of breadcrumbs || []) { %>
+    <li class="breadcrumb-item"><a href="<%- breadcrumb.link %>"><%- breadcrumb.name %></a></li>
+  <% } %>
+</ol>
+</div>

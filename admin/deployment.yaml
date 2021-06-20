@@ -34,11 +34,11 @@ spec:
             secretKeyRef:
               name: admin
               key: database_url
-        - name: API_URL
+        - name: AUTHENTICATION_URL
           valueFrom:
             configMapKeyRef:
               name: admin
-              key: api_url
+              key: authentication_url
         resources:
           requests:
             cpu: 499m
@@ -47,14 +47,14 @@ spec:
             cpu: 499m
             memory: 499Mi
         ports:
-        - containerPort: 8080
+        - containerPort: 3000
         readinessProbe:
           httpGet:
-            port: 8080
+            port: 3000
             path: /healthcheck
         livenessProbe:
           httpGet:
-            port: 8080
+            port: 3000
             path: /healthcheck
         imagePullPolicy: Always
       terminationGracePeriodSeconds: 60

@@ -39,8 +39,8 @@ docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
 ROOT_DIR=$PWD
 cd authentication && docker build --target development -t k3d-registry.internal:5000/authentication:latest . && cd $ROOT_DIR
 cd api && docker build --target development -t k3d-registry.internal:5000/api:latest . && cd $ROOT_DIR
-docker build --target development -t k3d-registry.internal:5000/admin:latest -f admin/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
+cd admin && docker build --target development -t k3d-registry.internal:5000/admin:latest . && cd $ROOT_DIR
+cd frontend && docker build --target development -t k3d-registry.internal:5000/frontend:latest . && cd $ROOT_DIR
 
 # Push container images to local registry
 docker push k3d-registry.internal:5000/authentication:latest
@@ -63,8 +63,7 @@ POSTGRES_IP=$postgresIP envsubst < ./local/db/service.yaml | kubectl apply -f -
 # Install node_modules and composer artifacts
 docker run --rm -it --user 1000:1000 -v ${PWD}/authentication:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c "yarn install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/api:/app -w /app php-common:latest /bin/sh -c "composer install"
-docker run --rm -it --user 1000:1000 -v ${PWD}/admin:/app -w /app php-common:latest /bin/sh -c "composer install"
-docker run --rm -it --user 1000:1000 -v ${PWD}/admin:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install && yarn dev"
+docker run --rm -it --user 1000:1000 -v ${PWD}/admin:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c "yarn install"
 docker run --rm -it --user 1000:1000 -v ${PWD}/frontend:/app -w /app node:15.2.1-buster-slim /bin/sh -c "yarn install"
 
 # Deploy authentication, api, admin and frontend
@@ -77,6 +76,8 @@ do
     APP_ENV=development \
     APP_SECRET=`echo -n 'secret' | base64 -w0` \
     DATABASE_URL=`echo -n 'postgres://postgres:secret@postgres:5432/blog_authentication?serverVersion=13&charset=utf8' | base64 -w0` \
+    APP_USERNAME=`echo -n 'admin@gmail.com' | base64 -w0` \
+    APP_PASSWORD=`echo -n 'admin' | base64 -w0` \
     envsubst < $manifest | kubectl apply -f -
 done
 log_info "Deploying the api.."
@@ -98,8 +99,7 @@ do
     log_info "Applying manifest ${manifest}"
     VERSION=latest \
     REPOSITORY=k3d-registry.internal:5000/admin \
-    APP_ENV=dev \
-    APP_SECRET=`echo -n '875e1d50e3365aa7f4445fe71c0de8f3' | base64 -w0` \
+    APP_ENV=development \
     DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_admin?serverVersion=13&charset=utf8' | base64 -w0` \
     envsubst < $manifest | kubectl apply -f -
 done

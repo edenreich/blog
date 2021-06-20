@@ -56,6 +56,16 @@ spec:
             secretKeyRef:
               name: authentication
               key: database_url
+        - name: APP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: app_username
+        - name: APP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: app_password
         imagePullPolicy: IfNotPresent
       imagePullSecrets:
       - name: container-registry

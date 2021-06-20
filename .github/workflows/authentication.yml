@@ -72,6 +72,8 @@ jobs:
         run: |-
           APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
           DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
+          APP_USERNAME=${{ secrets.AUTHENTICATION_APP_USERNAME }} \
+          APP_PASSWORD=${{ secrets.AUTHENTICATION_APP_PASSWORD }} \
           envsubst < authentication/secret.yaml | kubectl apply -f -
   update_secrets_production:
     if: github.event.ref == 'refs/heads/master'
@@ -89,6 +91,8 @@ jobs:
         run: |-
           APP_SECRET=${{ secrets.AUTHENTICATION_APP_SECRET }} \
           DATABASE_URL=${{ secrets.AUTHENTICATION_DATABASE_URL }} \
+          APP_USERNAME=${{ secrets.AUTHENTICATION_APP_USERNAME }} \
+          APP_PASSWORD=${{ secrets.AUTHENTICATION_APP_PASSWORD }} \
           envsubst < authentication/secret.yaml | kubectl apply -f -
   build:
     runs-on: self-hosted

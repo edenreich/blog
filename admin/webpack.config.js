@@ -1,36 +1,87 @@
-const Encore = require('@symfony/webpack-encore');
-const webpack = require('webpack');
 
-if (!Encore.isRuntimeEnvironmentConfigured()) {
-    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
-}
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
-Encore
-    .setOutputPath('public/build/')
-    .setPublicPath('/build')
-    .addEntry('app', './assets/app.js')
-    .splitEntryChunks()
-    .enableSingleRuntimeChunk()
-    .cleanupOutputBeforeBuild()
-    .enableBuildNotifications()
-    .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction())
-    .configureBabel((config) => {
-        config.plugins.push('@babel/plugin-proposal-class-properties');
-    })
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3;
-    })
-    .enableSassLoader()
-    .enableTypeScriptLoader()
-    .enableReactPreset()
-    .autoProvidejQuery()
-    .configureFilenames({
-        js: '[name].js?[chunkhash]',
-        css: '[name].css?[contenthash]',
-    })
-    .addPlugin(new webpack.IgnorePlugin(/^\.\/node_modules\/admin-lte\/plugins\/moment\/locale$/))
-;
-
-module.exports = Encore.getWebpackConfig();
+module.exports = {
+  entry: './src/assets/app.js',
+  mode: process.env.NODE_ENV || 'development',
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'app.css'
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/assets/images', to: 'images' },
+      ]
+    }),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: 'ts-loader',
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.svg?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images/'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(css)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+      },
+    ]
+  },
+  resolve: {
+    extensions: ['.ts', '.js', '.css'],
+  },
+  optimization: {
+    minimizer: [
+      new CssMinimizerPlugin(),
+    ],
+  },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
+  output: {
+    filename: 'app.js',
+    path: path.resolve(__dirname, 'src', 'static'),
+  },
+};

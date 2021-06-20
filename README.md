@@ -11,6 +11,7 @@ My blog for posting interesting content.
 
 - [Blog](#README.md)
   - [Authentication](authentication/#README.md)
+  - [Admin](admin/#README.md)
   - [API](api/#README.md)
   - [Frontend](frontend/#README.md)
 

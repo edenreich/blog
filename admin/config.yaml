@@ -7,4 +7,4 @@ metadata:
     app: admin
 data:
   app_env: ${APP_ENV}
-  api_url: 'http://api:8080'
+  authentication_url: 'http://authentication:8080'

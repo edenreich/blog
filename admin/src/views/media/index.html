@@ -1,0 +1,90 @@
+<div class="row mb-2">
+  <div class="col-sm-6">
+    <h1>Media</h1>
+  </div>
+  <%- include('../includes/breadcrumb', { breadcrumbs: [{ name: 'Media', link: '/media' }]}); %>
+</div>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-6">
+        <form method="POST" action="/media/upload" role="form" enctype="multipart/form-data">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="image">Image</label>
+              <div class="input-group">
+                <div class="custom-file">
+                  <input type="file" name="upload" class="custom-file-input" id="image">
+                  <label class="custom-file-label" for="image">Choose image</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-12 mt-5">
+        <% for (let [index, messages] of flashes || []) { %>
+          <% for (let [index, message] of messages || []) { %>
+            <div class="alert alert-<%= label %>">
+              <%= message %>
+            </div>
+          <% } %>
+        <% } %>
+        <div class="card">
+          <div class="card-body">
+          <div>
+            <div class="btn-group w-100 mb-2">
+              <a class="btn btn-info active" href="javascript:void(0)" data-filter="all"> All items </a>
+              <a class="btn btn-info" href="javascript:void(0)" data-filter="1"> Main </a>
+            </div>
+            <div class="mb-2">
+              <div class="float-right">
+                <div class="btn-group">
+                  <a class="btn btn-default" href="javascript:void(0)" data-sortAsc> Ascending </a>
+                  <a class="btn btn-default" href="javascript:void(0)" data-sortDesc> Descending </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="filter-container p-0 row">
+              <% for(let [index, image] of images || []) { %>
+                <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
+                  <a href="<%= image.url %>" data-toggle="lightbox" data-title="-">
+                    <img src="<%= image.url %>" class="img-fluid mb-2" alt="white sample"/>
+                  </a>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script defer>
+  window.onload = () => {
+    $(() => {
+      $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox({
+          alwaysShowClose: true
+        });
+      });
+
+      $('.filter-container').filterizr({gutterPixels: 3});
+      $('.btn[data-filter]').on('click', function() {
+        $('.btn[data-filter]').removeClass('active');
+        $(this).addClass('active');
+      });
+      $('#image').on('change', function() {
+        var filename = $(this).val().split('\\').pop();
+        $(this).next('label').text(filename);
+      });
+    });
+  };
+</script>
