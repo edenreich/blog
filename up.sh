@@ -88,9 +88,7 @@ do
     APP_SECRET=`echo -n '875e1d50e3365aa7f4445fe71c0de8f3' | base64 -w0` \
     DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_api?serverVersion=13&charset=utf8' | base64 -w0` \
     TEST_DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_api_test?serverVersion=13&charset=utf8' | base64 -w0` \
-    JWT_PUBLIC_KEY=`echo -n '%kernel.project_dir%/config/jwt/public.pem' | base64 -w0` \
-    JWT_SECRET_KEY=`echo -n '%kernel.project_dir%/config/jwt/private.pem' | base64 -w0` \
-    GOOGLE_APPLICATION_CREDENTIALS=`echo -n '/run/secrets/service_account.json' | base64 -w0` \
+    GOOGLE_APPLICATION_CREDENTIALS=`cat api/keys/service_account.json | base64 -w0` \
     envsubst < $manifest | kubectl apply -f -
 done
 log_info "Deploying the admin.."

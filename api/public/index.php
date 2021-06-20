@@ -9,8 +9,6 @@ require dirname(__DIR__).'/vendor/autoload.php';
 
 $_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? '0';
 $_SERVER['APP_ENV'] = $_SERVER['APP_ENV'] ?? 'dev';
-$_SERVER['JWT_SECRET_KEY'] = $_SERVER['JWT_SECRET_KEY'] ?? '%kernel.project_dir%/config/jwt/private.pem';
-$_SERVER['JWT_PUBLIC_KEY'] = $_SERVER['JWT_PUBLIC_KEY'] ?? '%kernel.project_dir%/config/jwt/public.pem';
 
 if (file_exists(dirname(__DIR__).'/.env.test.local') && file_exists(dirname(__DIR__).'/.env')) {
     if ('Test' === $_SERVER['HTTP_USER_AGENT']) {

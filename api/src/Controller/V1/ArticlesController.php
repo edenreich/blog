@@ -9,8 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Controller\TokenAuthenticatedController;
 
-class ArticlesController extends AbstractController
+class ArticlesController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * @Route("/articles", methods={"GET"}, name="articles.list")
