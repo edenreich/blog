@@ -117,6 +117,7 @@ jobs:
           fetch-depth: 0
       - name: Docker - build container image
         run: |
+          docker build -t php-common -f api/Dockerfile .
           docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
