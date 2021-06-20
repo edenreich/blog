@@ -24,7 +24,31 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
+        <% for (category of navigation || []) { %>
+          <li class="nav-item <%= category.children ? 'has-treeview menu-open' : '' %>">
+            <a href="<%- category.url %>" class="nav-link <%= (category.url.split('/')[1] === current_url[0]) ? 'active' : '' %>">
+              <i class="nav-icon <% category.icon %>"></i>
+              <p>
+                <%- category.name %>
+                <i class="<%= category.children ? 'right fas fa-angle-left' : '' %>"></i>
+              </p>
+            </a>
+            <% if (category.children) { %>
+            <ul class="nav nav-treeview">
+              <% for (child of category.children) { %>
+              <li class="nav-item">
+                <a href="<%- child.url %>" class="nav-link <%= (child.url.split('/')[2] === current_url[1]) ? 'active' : '' %>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    <%- child.name %>
+                  </p>
+                </a>
+              </li>
+              <% } %>
+            </ul>
+            <% } %>
+          </li>
+        <% } %>
         <li class="nav-item" style="margin-top: 50px">
           <a href="/logout" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>

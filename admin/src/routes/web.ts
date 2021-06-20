@@ -1,10 +1,11 @@
 import config from '@app/config';
+import { IArticle } from '@app/entities/article';
 import { IAuthenticateableDTO, IAuthenticatedUser } from '@app/entities/user';
 import { auth } from '@app/middlewares/auth';
 import { guest } from '@app/middlewares/guest';
 import axios, { AxiosResponse } from 'axios';
 import { Context } from 'koa';
-import Router from 'koa-router';
+import Router, { IRouterParamContext } from 'koa-router';
 
 const router: Router = new Router();
 
@@ -46,10 +47,110 @@ router.post('web.login', '/login', guest, async (ctx: Context) => {
 
 router.get('web.dashboard', '/dashboard', auth, async (ctx: Context) => {
   const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  const requestUrlSegments: string[] = ctx.req.url ? ctx.req.url.split('?')[0].split('/').slice(1) : ['/'];
   await ctx.render('dashboard/index', {
     title: 'Admin - Dashboard',
     user: user.data,
+    navigation: config.navigation,
+    current_url: requestUrlSegments,
   });
+});
+
+router.get('web.content', '/content', auth, async (ctx: Context) => {
+  ctx.response.redirect('/content/list');
+});
+
+router.get('web.content.list', '/content/list', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  const requestUrlSegments: string[] = ctx.req.url ? ctx.req.url.split('?')[0].split('/').slice(1) : ['/'];
+
+  if (ctx.request.get('X-Requested-With') === 'XMLHttpRequest') {
+    const articles: IArticle[] = [
+      {
+        id: 'fe12b93b-d22d-40f1-ab83-eb71f3cb8e05',
+        title: 'title',
+        slug: 'slug',
+        meta_keywords: 'meta_keywords',
+        meta_description: 'meta_description',
+        published_at: 'published_at',
+        updated_at: 'updated_at',
+        created_at: 'created_at',
+      }
+    ];
+    ctx.body = articles;
+    return;
+  } 
+
+  await ctx.render('content/list', {
+    title: 'Admin - Content > List',
+    user: user.data,
+    navigation: config.navigation,
+    current_url: requestUrlSegments,
+  });
+});
+
+router.get('web.content.create', '/content/create', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  const requestUrlSegments: string[] = ctx.req.url ? ctx.req.url.split('?')[0].split('/').slice(1) : ['/'];
+  await ctx.render('content/create', {
+    title: 'Admin - Content > Create',
+    user: user.data,
+    navigation: config.navigation,
+    current_url: requestUrlSegments,
+  });
+});
+
+router.post('web.content.create', '/content/create', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  const article: IArticle = ctx.request.body as unknown as IArticle;
+  // @todo - send an api call to create an article
+  // @todo - set a flash message of success or faliure
+  await ctx.redirect('/content/create');
+});
+
+router.get('web.content.edit', '/content/:id/edit', auth, async (ctx: IRouterParamContext & Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  const requestUrlSegments: string[] = ctx.req.url ? ctx.req.url.split('?')[0].split('/').slice(1) : ['/'];
+  const articleId: string = ctx.params.id;
+  // @todo - send an api call to fetch article information
+  const article: IArticle = {
+    id: articleId,
+    title: 'title',
+    slug: 'slug',
+    meta_keywords: 'meta_keywords',
+    meta_description: 'meta_description',
+    published_at: 'published_at',
+    updated_at: 'updated_at',
+    created_at: 'created_at',
+  };
+  await ctx.render('content/edit', {
+    title: 'Admin - Content > Edit',
+    user: user.data,
+    navigation: config.navigation,
+    current_url: requestUrlSegments,
+    article,
+  });
+});
+
+router.get('web.media', '/media', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  const requestUrlSegments: string[] = ctx.req.url ? ctx.req.url.split('?')[0].split('/').slice(1) : ['/'];
+  // @todo send an api call to fetch images
+  await ctx.render('media/index', {
+    title: 'Admin - Media',
+    user: user.data,
+    navigation: config.navigation,
+    current_url: requestUrlSegments,
+    flashes: [],
+    images: [],
+  });
+});
+
+router.post('web.media.upload', '/media/upload', auth, async (ctx: Context) => {
+  const user: IAuthenticatedUser = ctx.state.user as IAuthenticatedUser;
+  // @todo make an api call to upload an image
+  // @todo set flash message
+  ctx.response.redirect('/media');
 });
 
 router.get('web.logout', '/logout', auth, async (ctx: Context) => {
