@@ -130,10 +130,7 @@ jobs:
     environment:
       name: staging
     steps:
-      - name: Kubernetes - switch to staging context
-        run: |
-          kubectl config use-context staging
-      - name: Kubernetes - run linter
+      - name: Run linter
         run: |
           cd admin && docker run --rm --user node:node -v ${PWD}:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c 'yarn install && yarn lint'
   deploy_staging:
