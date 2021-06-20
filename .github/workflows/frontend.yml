@@ -138,10 +138,10 @@ jobs:
     - name: Docker - build artifacts
       if: ${{ needs.check.outputs.run_job == 'true' }}
       run: |
-        docker build \
+        cd frontend && docker build \
           --target frontend-artifacts \
           -t frontend-artifacts:latest \
-          -f frontend/Dockerfile .
+          .
   build:
     needs: [build-artifacts]
     runs-on: self-hosted
@@ -152,12 +152,12 @@ jobs:
         fetch-depth: 0
     - name: Docker - build container image
       run: |
-        docker build \
+        cd frontend && docker build \
           --target production \
           --cache-from ${{ env.DOCKER_REPO }}:latest \
           -t ${{ env.DOCKER_REPO }}:latest \
           -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
-          -f frontend/Dockerfile .
+          .
   push:
     needs: [build, docker_login]
     runs-on: self-hosted

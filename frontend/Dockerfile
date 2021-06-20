@@ -1,16 +1,16 @@
 FROM node:15.2.1-buster-slim AS frontend-artifacts
 WORKDIR /tmp
-COPY frontend/yarn.lock .
-COPY frontend/package.json .
-COPY frontend/next.config.js .
-COPY frontend/tsconfig.json .
-COPY frontend/*.d.ts ./
-COPY frontend/config/environments/production config/environments/production
-COPY frontend/interfaces interfaces
-COPY frontend/components components
-COPY frontend/pages pages
-COPY frontend/styles styles
-COPY frontend/utils utils
+COPY yarn.lock .
+COPY package.json .
+COPY next.config.js .
+COPY tsconfig.json .
+COPY *.d.ts ./
+COPY config/environments/production config/environments/production
+COPY interfaces interfaces
+COPY components components
+COPY pages pages
+COPY styles styles
+COPY utils utils
 RUN apt-get update && \
     apt-get install -y build-essential python && \
     yarn upgrade && yarn install && \
@@ -19,17 +19,17 @@ RUN apt-get update && \
 
 FROM node:15.2.1-buster-slim AS builder
 WORKDIR /tmp
-COPY frontend/yarn.lock .
-COPY frontend/package.json .
-COPY frontend/next.config.js .
-COPY frontend/tsconfig.json .
-COPY frontend/*.d.ts ./
-COPY frontend/config/environments/production config/environments/production
-COPY frontend/interfaces interfaces
-COPY frontend/components components
-COPY frontend/pages pages
-COPY frontend/styles styles
-COPY frontend/utils utils
+COPY yarn.lock .
+COPY package.json .
+COPY next.config.js .
+COPY tsconfig.json .
+COPY *.d.ts ./
+COPY config/environments/production config/environments/production
+COPY interfaces interfaces
+COPY components components
+COPY pages pages
+COPY styles styles
+COPY utils utils
 COPY --from=frontend-artifacts /tmp/development_node_modules node_modules
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential python && \
@@ -51,7 +51,7 @@ WORKDIR /app
 ENV PORT=3000
 ENV APP_ENV=production
 ENV NODE_ENV=production
-COPY frontend .
+COPY . .
 COPY --from=frontend-artifacts /tmp/node_modules node_modules
 COPY --from=builder /tmp/.next .next
 EXPOSE 3000

@@ -39,8 +39,8 @@ docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
 ROOT_DIR=$PWD
 cd authentication && docker build --target development -t k3d-registry.internal:5000/authentication:latest . && cd $ROOT_DIR
 cd api && docker build --target development -t k3d-registry.internal:5000/api:latest . && cd $ROOT_DIR
-docker build --target development -t k3d-registry.internal:5000/admin:latest -f admin/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
+cd admin && docker build --target development -t k3d-registry.internal:5000/admin:latest . && cd $ROOT_DIR
+cd frontend && docker build --target development -t k3d-registry.internal:5000/frontend:latest . && cd $ROOT_DIR
 
 # Push container images to local registry
 docker push k3d-registry.internal:5000/authentication:latest
