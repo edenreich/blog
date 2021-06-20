@@ -2,6 +2,7 @@
 
 namespace App\Controller\V1;
 
+use App\Controller\TokenAuthenticatedController;
 use App\Entity\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -9,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class NotificationController extends AbstractController
+class NotificationController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * Create or update a notification.

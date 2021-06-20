@@ -8,7 +8,6 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 abstract class AbstractTestCase extends KernelTestCase
@@ -46,31 +45,13 @@ abstract class AbstractTestCase extends KernelTestCase
         $executor = new ORMExecutor($this->entityManager, $purger);
         $executor->execute($loader->getFixtures());
 
-        $client = new Client([
-            'base_uri' => self::BASE_URI,
+        $this->client = new Client([
+            'base_uri' => self::BASE_URI.'v1/',
             RequestOptions::HEADERS => [
                 'Content-Type' => 'application/json',
                 'User-Agent' => 'Test',
             ],
         ]);
-        try {
-            $jwt = json_decode($client->post('authorize', [
-                RequestOptions::JSON => [
-                    'username' => 'admin@gmail.com',
-                    'password' => 'admin',
-                ],
-            ])->getBody(), true)['token'];
-            $this->client = new Client([
-                'base_uri' => self::BASE_URI.'v1/',
-                RequestOptions::HEADERS => [
-                    'Authorization' => sprintf('Bearer %s', $jwt),
-                    'Content-Type' => 'application/json',
-                    'User-Agent' => 'Test',
-                ],
-            ]);
-        } catch (ClientExceptionInterface $exception) {
-            dd('Could not fetch access token: '.$exception->getMessage());
-        }
     }
 
     /**
@@ -89,7 +70,6 @@ abstract class AbstractTestCase extends KernelTestCase
     private function getFixtures(): iterable
     {
         return [
-            new \App\DataFixtures\User(self::$container->get('security.password_encoder')),
             new \App\DataFixtures\Article(),
             new \App\DataFixtures\Reaction(),
             new \App\DataFixtures\Session(),

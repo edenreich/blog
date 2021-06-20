@@ -2,6 +2,7 @@
 
 namespace App\Controller\V1;
 
+use App\Controller\TokenAuthenticatedController;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -10,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ArticlesController extends AbstractController
+class ArticlesController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * @Route("/articles", methods={"GET"}, name="articles.list")

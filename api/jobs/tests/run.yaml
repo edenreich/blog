@@ -27,16 +27,6 @@ spec:
         env:
         - name: APP_ENV
           value: test
-        - name: JWT_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: api
-              key: jwt_secret_key
-        - name: JWT_PUBLIC_KEY
-          valueFrom:
-            secretKeyRef:
-              name: api
-              key: jwt_public_key
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
@@ -54,7 +44,7 @@ spec:
           limits:
             cpu: 499m
             memory: 499Mi
-        command: [ "/bin/sh", "-c", "supervisord -c /etc/supervisord.conf & bin/phpunit" ]
+        command: [ "/bin/sh", "-c", "bin/console swoole:server:run & ./vendor/bin/phpunit" ]
       restartPolicy: Never
       imagePullSecrets:
       - name: container-registry

@@ -2,6 +2,7 @@
 
 namespace App\Controller\V1;
 
+use App\Controller\TokenAuthenticatedController;
 use Google\Cloud\Storage\StorageClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -9,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\UuidV4;
 
-class MediaController extends AbstractController
+class MediaController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * @Route("/media/images", methods={"GET"}, name="media.list")

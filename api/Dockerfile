@@ -17,7 +17,8 @@ USER www-data:1000
 CMD [ "bin/console", "swoole:server:run" ]
 
 FROM php-common AS src
-COPY --chown=www-data src/backend/api .
+WORKDIR /app
+COPY --chown=www-data . .
 
 FROM src AS src-with-devtools
 USER root

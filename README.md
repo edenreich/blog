@@ -25,6 +25,8 @@ My blog for posting interesting content.
 
 ### Quick Start
 
+First you need to copy a service account file into ./api/keys/service_account.json
+
 To startup a cluster run:
 ```sh
 ./up.sh

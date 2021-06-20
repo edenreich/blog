@@ -77,8 +77,6 @@ jobs:
           APP_SECRET=${{ secrets.API_APP_SECRET }} \
           DATABASE_URL=${{ secrets.API_DATABASE_URL }} \
           TEST_DATABASE_URL=${{ secrets.API_TEST_DATABASE_URL }} \
-          JWT_PUBLIC_KEY=${{ secrets.API_JWT_PUBLIC_KEY }} \
-          JWT_SECRET_KEY=${{ secrets.API_JWT_SECRET_KEY }} \
           GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.API_GOOGLE_APPLICATION_CREDENTIALS }} \
           envsubst < api/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
@@ -103,8 +101,6 @@ jobs:
           APP_SECRET=${{ secrets.API_APP_SECRET }} \
           DATABASE_URL=${{ secrets.API_DATABASE_URL }} \
           TEST_DATABASE_URL=${{ secrets.API_TEST_DATABASE_URL }} \
-          JWT_PUBLIC_KEY=${{ secrets.API_JWT_PUBLIC_KEY }} \
-          JWT_SECRET_KEY=${{ secrets.API_JWT_SECRET_KEY }} \
           GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.API_GOOGLE_APPLICATION_CREDENTIALS }} \
           envsubst < api/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
@@ -121,18 +117,19 @@ jobs:
           fetch-depth: 0
       - name: Docker - build container image
         run: |
-          docker build \
+          docker build -t php-common -f ops/on-premises/docker/php/Dockerfile .
+          cd api && docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f api/Dockerfile .
+            .
       - name: Docker - build test container image
         run: |
-          docker build \
+          cd api && docker build \
             --target src-with-devtools \
             --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
             -t ${{ env.DOCKER_REPO_DEV }}:latest \
-            -f api/Dockerfile .
+            .
       - name: Docker - tag container images
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}

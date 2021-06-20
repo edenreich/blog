@@ -45,16 +45,6 @@ spec:
             secretKeyRef:
               name: api
               key: app_secret
-        - name: JWT_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: api
-              key: jwt_secret_key
-        - name: JWT_PUBLIC_KEY
-          valueFrom:
-            secretKeyRef:
-              name: api
-              key: jwt_public_key
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:

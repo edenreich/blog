@@ -36,8 +36,9 @@ kubectl create ns blog && kubectl config set-context --current --namespace=blog
 docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
 
 # Build container images
-docker build --target development -t k3d-registry.internal:5000/authentication:latest -f authentication/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/api:latest -f api/Dockerfile .
+ROOT_DIR=$PWD
+cd authentication && docker build --target development -t k3d-registry.internal:5000/authentication:latest . && cd $ROOT_DIR
+cd api && docker build --target development -t k3d-registry.internal:5000/api:latest . && cd $ROOT_DIR
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f admin/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
 
@@ -89,9 +90,7 @@ do
     APP_SECRET=`echo -n '875e1d50e3365aa7f4445fe71c0de8f3' | base64 -w0` \
     DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_api?serverVersion=13&charset=utf8' | base64 -w0` \
     TEST_DATABASE_URL=`echo -n 'postgresql://postgres:secret@postgres:5432/blog_api_test?serverVersion=13&charset=utf8' | base64 -w0` \
-    JWT_PUBLIC_KEY=`echo -n '%kernel.project_dir%/config/jwt/public.pem' | base64 -w0` \
-    JWT_SECRET_KEY=`echo -n '%kernel.project_dir%/config/jwt/private.pem' | base64 -w0` \
-    GOOGLE_APPLICATION_CREDENTIALS=`echo -n '/run/secrets/service_account.json' | base64 -w0` \
+    GOOGLE_APPLICATION_CREDENTIALS=`cat api/keys/service_account.json | base64 -w0` \
     envsubst < $manifest | kubectl apply -f -
 done
 log_info "Deploying the admin.."

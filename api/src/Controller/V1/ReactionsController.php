@@ -2,6 +2,7 @@
 
 namespace App\Controller\V1;
 
+use App\Controller\TokenAuthenticatedController;
 use App\Entity\Article;
 use App\Entity\Reaction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ReactionsController extends AbstractController
+class ReactionsController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * @Route("/reactions", methods={"POST"}, name="reactions.create")
