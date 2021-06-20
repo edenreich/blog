@@ -22,7 +22,7 @@ class TokenListener implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
-        if ('dev' === $_SERVER['APP_ENV'] && 'Test' === $event->getRequest()->headers->get('User-Agent')) {
+        if (in_array($_SERVER['APP_ENV'], ['dev', 'test']) && 'Test' === $event->getRequest()->headers->get('User-Agent')) {
             return;
         }
 
