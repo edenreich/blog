@@ -25,7 +25,7 @@ class TokenListener implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
-        if ($_SERVER['APP_ENV'] === 'dev' && 'Test' === $event->getRequest()->headers->get('User-Agent')) {
+        if ('dev' === $_SERVER['APP_ENV'] && 'Test' === $event->getRequest()->headers->get('User-Agent')) {
             return;
         }
 
@@ -42,10 +42,10 @@ class TokenListener implements EventSubscriberInterface
 
             try {
                 $client = new Client();
-                $client->post('http://authentication:8080/api/authentication/authorize', [ 
+                $client->post('http://authentication:8080/api/authentication/authorize', [
                     RequestOptions::HEADERS => [
                         'Authorization' => sprintf('Bearer %s', $token),
-                    ]
+                    ],
                 ]);
             } catch (ClientException $exception) {
                 throw new AccessDeniedException('This action needs a valid token!');

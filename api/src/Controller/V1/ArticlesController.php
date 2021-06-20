@@ -2,6 +2,7 @@
 
 namespace App\Controller\V1;
 
+use App\Controller\TokenAuthenticatedController;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -9,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\TokenAuthenticatedController;
 
 class ArticlesController extends AbstractController implements TokenAuthenticatedController
 {
