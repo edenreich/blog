@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r module-alias/register ./src/app.js",
-    "build": "tsc && yarn run build:assets && cp -r src/static build/src/static && cp package* build/ && cd build && yarn install --production",
+    "build": "tsc && yarn run build:assets && cp -r src/static build/src/static && cp package* build/ && cp -r src/views build/src/ && cd build && yarn install --production",
     "build:assets": "NODE_ENV=production webpack --progress",
     "dev": "nodemon --watch 'src/**' --watch 'webpack.config.js' --ext 'ts,html' --exec 'NODE_ENV=development webpack --progress && ts-node -r module-alias/register src/app.ts'",
     "lint": "tslint './src/**/*.ts' './__tests__/**/*.ts'",
