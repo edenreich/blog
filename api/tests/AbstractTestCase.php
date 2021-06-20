@@ -70,7 +70,6 @@ abstract class AbstractTestCase extends KernelTestCase
     private function getFixtures(): iterable
     {
         return [
-            new \App\DataFixtures\User(self::$container->get('security.password_encoder')),
             new \App\DataFixtures\Article(),
             new \App\DataFixtures\Reaction(),
             new \App\DataFixtures\Session(),
