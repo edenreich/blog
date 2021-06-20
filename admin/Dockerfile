@@ -6,12 +6,13 @@ WORKDIR /app
 FROM base AS src
 COPY --chown=node:node ./src ./src
 COPY --chown=node:node *.json .
+COPY --chown=node:node webpack.config.js .
 
 FROM src AS builder
+ENV NODE_ENV=prod
 RUN yarn install && yarn run build
 
 FROM base AS development
-USER 1000:1000
 VOLUME [ "/app" ]
 CMD [ "yarn", "dev" ]
 
