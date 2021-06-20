@@ -36,8 +36,9 @@ kubectl create ns blog && kubectl config set-context --current --namespace=blog
 docker build -t php-common:latest -f ops/on-premises/docker/php/Dockerfile .
 
 # Build container images
-docker build --target development -t k3d-registry.internal:5000/authentication:latest -f authentication/Dockerfile .
-docker build --target development -t k3d-registry.internal:5000/api:latest -f api/Dockerfile .
+ROOT_DIR=$PWD
+cd authentication && docker build --target development -t k3d-registry.internal:5000/authentication:latest . && cd $ROOT_DIR
+cd api && docker build --target development -t k3d-registry.internal:5000/api:latest . && cd $ROOT_DIR
 docker build --target development -t k3d-registry.internal:5000/admin:latest -f admin/Dockerfile .
 docker build --target development -t k3d-registry.internal:5000/frontend:latest -f frontend/Dockerfile .
 
