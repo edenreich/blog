@@ -16,6 +16,11 @@ FROM base AS development
 VOLUME [ "/app" ]
 CMD [ "yarn", "dev" ]
 
+FROM src AS src-with-devtools
+ENV NODE_ENV=dev
+RUN yarn install
+CMD [ "yarn", "start" ]
+
 FROM base AS staging
 ENV NODE_ENV=prod
 COPY --chown=node:node --from=builder /app/build .
