@@ -1,6 +1,6 @@
-import config from "@app/config";
-import axios from "axios";
-import { Context, Next } from "koa";
+import config from '@app/config';
+import axios from 'axios';
+import { Context, Next } from 'koa';
 
 export const auth = async (ctx: Context, next: Next) => {
   const matches: RegExpMatchArray | null | undefined = ctx.request.headers.cookie?.match(/token=(.*[^;]);?/);
@@ -14,8 +14,8 @@ export const auth = async (ctx: Context, next: Next) => {
     await axios.post(`${config.authentication_url}/api/authentication/authorize`, {}, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
+        'Authorization': `Bearer ${token}`,
+      },
     });
   } catch (error) {
     console.error(error);

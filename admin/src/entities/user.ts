@@ -7,7 +7,7 @@ export interface IRole {
 export interface IUser {
   id: string;
   username: string;
-  roles: IRole[]; 
+  roles: IRole[];
 }
 
 export interface IAuthenticateableDTO {

@@ -114,18 +114,8 @@ jobs:
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
+            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
             .
-      - name: Docker - build test container image
-        run: |
-          cd admin && docker build \
-            --target src-with-devtools \
-            --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
-            -t ${{ env.DOCKER_REPO_DEV }}:latest \
-            .
-      - name: Docker - tag container images
-        run: |
-          docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker tag ${{ env.DOCKER_REPO_DEV }}:latest ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
   push:
     needs: build
     runs-on: self-hosted
@@ -133,9 +123,7 @@ jobs:
       - name: Docker - push image to registry
         run: |
           docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker push ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
           docker push ${{ env.DOCKER_REPO }}:latest
-          docker push ${{ env.DOCKER_REPO_DEV }}:latest
   lint:
     needs: push
     runs-on: self-hosted
@@ -147,27 +135,9 @@ jobs:
           kubectl config use-context staging
       - name: Kubernetes - run linter
         run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
-          envsubst < admin/jobs/linting.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-linting-${{ env.DEPLOYMENT_VERSION }}
-  analyse:
-    needs: push
-    runs-on: self-hosted
-    environment:
-      name: staging
-    steps:
-      - name: Kubernetes - switch to staging context
-        run: |
-          kubectl config use-context staging
-      - name: Kubernetes - run static analysis
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
-          envsubst < admin/jobs/analyse.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-code-analysis-${{ env.DEPLOYMENT_VERSION }}
+          docker run --rm -it --user node:node -v ${PWD}:/app -w /app node:16.2.0-alpine3.12 yarn lint
   deploy_staging:
-    needs: [lint, analyse]
+    needs: [lint]
     runs-on: self-hosted
     environment:
       name: staging
@@ -180,12 +150,6 @@ jobs:
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
-      - name: Kubernetes - run database migrations
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < admin/jobs/migrations.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-migration-${{ env.DEPLOYMENT_VERSION }}
       - name: Kubernetes - create a new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
@@ -216,8 +180,6 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           envsubst < admin/service.yaml | kubectl apply -f -
-      - name: Kubernetes - remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   deploy_production:
     if: github.event.ref == 'refs/heads/master'
     needs: deploy_staging
@@ -233,12 +195,6 @@ jobs:
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
-      - name: Kubernetes - run database migrations
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < admin/jobs/migrations.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-migration-${{ env.DEPLOYMENT_VERSION }}
       - name: Kubernetes - create a new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
@@ -269,8 +225,6 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           envsubst < admin/service.yaml | kubectl apply -f -
-      - name: Kubernetes - remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   revert_production:
     needs: deploy_production
     runs-on: self-hosted
@@ -281,12 +235,6 @@ jobs:
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
-      - name: Kubernetes - revert database migrations to previous version
-        run: |
-          VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < admin/jobs/migrations.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-revert-migration-${{ env.DEPLOYMENT_PREVIOUS_VERSION }}
       - name: Kubernetes - apply horizontal pods autoscaling to previous deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
@@ -295,8 +243,6 @@ jobs:
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
           envsubst < admin/service.yaml | kubectl apply -f -
-      - name: Kubernetes - remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
   cleanup:
     runs-on: self-hosted
     needs: deploy_staging

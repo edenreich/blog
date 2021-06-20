@@ -11,7 +11,7 @@ const router: Router = new Router();
 
 router.get('web.healthcheck', '/healthcheck', (ctx: any) => {
   ctx.body = {
-    status: 'OK.'
+    status: 'OK.',
   };
   ctx.status = 200;
 });
@@ -36,11 +36,12 @@ router.post('web.login', '/login', guest, async (ctx: Context) => {
     }, {
       headers: {
         'Content-Type': 'application/json',
-      }
+      },
     });
     ctx.set('Set-Cookie', `token=${response.data.token};expires=${new Date(new Date().setHours(new Date().getHours() + 1)).toUTCString()}`);
     ctx.response.redirect('/dashboard');
   } catch (error) {
+    /* tslint:disable:no-console */
     console.log(error);
   }
 });
@@ -75,11 +76,11 @@ router.get('web.content.list', '/content/list', auth, async (ctx: Context) => {
         published_at: 'published_at',
         updated_at: 'updated_at',
         created_at: 'created_at',
-      }
+      },
     ];
     ctx.body = articles;
     return;
-  } 
+  }
 
   await ctx.render('content/list', {
     title: 'Admin - Content > List',
