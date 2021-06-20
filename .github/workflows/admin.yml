@@ -7,7 +7,7 @@ on:
       - develop
     paths:
       - ".github/workflows/admin.yml"
-      - "src/backend/admin/**"
+      - "admin/**"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -110,18 +110,18 @@ jobs:
           fetch-depth: 0
       - name: Docker - build container image
         run: |
-          docker build \
+          cd admin && docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f admin/Dockerfile .
+            .
       - name: Docker - build test container image
         run: |
-          docker build \
+          cd admin && docker build \
             --target src-with-devtools \
             --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
             -t ${{ env.DOCKER_REPO_DEV }}:latest \
-            -f admin/Dockerfile .
+            .
       - name: Docker - tag container images
         run: |
           docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
