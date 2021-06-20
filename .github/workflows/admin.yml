@@ -135,7 +135,7 @@ jobs:
           kubectl config use-context staging
       - name: Kubernetes - run linter
         run: |
-          docker run --rm --user node:node -v ${PWD}:/app -w /app node:16.2.0-alpine3.12 yarn lint
+          cd admin && docker run --rm --user node:node -v ${PWD}:/app -w /app node:16.2.0-alpine3.12 yarn lint
   deploy_staging:
     needs: [lint]
     runs-on: self-hosted
