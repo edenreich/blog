@@ -16,9 +16,6 @@ class TokenListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            // the priority must be greater than the Security HTTP
-            // ExceptionListener, to make sure it's called before
-            // the default exception listener
             KernelEvents::CONTROLLER => ['onKernelController', 10],
         ];
     }
@@ -31,8 +28,6 @@ class TokenListener implements EventSubscriberInterface
 
         $controller = $event->getController();
 
-        // when a controller class defines multiple action methods, the controller
-        // is returned as [$controllerInstance, 'methodName']
         if (is_array($controller)) {
             $controller = $controller[0];
         }
