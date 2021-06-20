@@ -8,9 +8,10 @@ import { User, IUser } from '@app/entities/User';
 connection.then(async (_connection) => {
   const appUser: IUser | undefined = await _connection.manager.getRepository<IUser>(User).findOne({username: config.app_username});
   if (!appUser) {
-    const roleUser: IRole = await _connection.manager.save(new Role('USER_ROLE'));
-    const roleAdmin: IRole = await _connection.manager.save(new Role('ADMIN_ROLE'));
     const user: IUser = new User();
+    const roleUser: IRole = await _connection.manager.getRepository<IRole>(Role).findOne({ name: 'USER_ROLE' }) ?? await _connection.manager.save(new Role('USER_ROLE'));
+    const roleAdmin: IRole = await _connection.manager.getRepository<IRole>(Role).findOne({ name: 'ADMIN_ROLE' }) ?? await _connection.manager.save(new Role('ADMIN_ROLE'));
+
     user.username = config.app_username;
     user.password = config.app_password;
     user.roles = [
