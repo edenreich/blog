@@ -26,7 +26,7 @@ export default {
           name: 'create',
           url: '/content/create',
           icon: 'fas fa-circle nav-icon',
-        }
+        },
       ],
     },
     {
@@ -34,6 +34,6 @@ export default {
       name: 'Media',
       url: '/media',
       icon: 'fas fa-photo-video',
-    }
+    },
   ],
 } as const;

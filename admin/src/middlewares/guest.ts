@@ -1,4 +1,4 @@
-import { Context, Next } from "koa";
+import { Context, Next } from 'koa';
 
 export const guest = async (ctx: Context, next: Next) => {
   const matches: RegExpMatchArray | null | undefined = ctx.request.headers.cookie?.match(/token=(.*[^;]);?/);

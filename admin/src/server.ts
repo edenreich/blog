@@ -1,9 +1,9 @@
 import router from '@app/routes/web';
 import Koa from 'koa';
 import BodyParser from 'koa-bodyparser';
+import ejs from 'koa-ejs';
 import Logger from 'koa-logger';
 import KoaStatic from 'koa-static';
-import ejs from 'koa-ejs';
 import { join } from 'path';
 
 export const server: Koa = new Koa();
