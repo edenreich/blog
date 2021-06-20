@@ -18,7 +18,7 @@ CMD [ "bin/console", "swoole:server:run" ]
 
 FROM php-common AS src
 WORKDIR /app
-COPY --chown=www-data api .
+COPY --chown=www-data . .
 
 FROM src AS src-with-devtools
 USER root
