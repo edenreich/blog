@@ -44,7 +44,7 @@ spec:
           limits:
             cpu: 499m
             memory: 499Mi
-        command: [ "/bin/sh", "-c", "supervisord -c /etc/supervisord.conf & ./vendor/bin/phpunit" ]
+        command: [ "/bin/sh", "-c", "bin/console swoole:server:run & ./vendor/bin/phpunit" ]
       restartPolicy: Never
       imagePullSecrets:
       - name: container-registry
