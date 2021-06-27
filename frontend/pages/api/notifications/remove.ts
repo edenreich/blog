@@ -22,7 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   };
   let notification: INotification;
   try {
-    const response: AxiosResponse = await axios.get(`${api.url}/v1/notifications/${session}`, config);
+    const response: AxiosResponse = await axios.get(`${api.url}/v1/notifications/?session_id=${session}`, config);
     notification = response.data;
   } catch (error) {
     console.error(`[api/notifications] ${JSON.stringify(error)}`);
@@ -31,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const response: AxiosResponse = await axios.put(`${api.url}/v1/notifications/${notification.uuid}`, {...req.body, is_enabled: false }, config);
+    const response: AxiosResponse = await axios.put(`${api.url}/v1/notifications/${notification.id}`, {...req.body, is_enabled: false }, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/notifications] ${JSON.stringify(error)}`);
