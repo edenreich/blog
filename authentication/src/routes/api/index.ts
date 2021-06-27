@@ -19,6 +19,7 @@ router.post('api.authentication.jwt', '/api/authentication/jwt', async (ctx: Con
       error: 'Invalid credentails.',
     };
     ctx.status = 401;
+    console.error('User could not be found in the database!', body);
     return;
   }
 
@@ -29,6 +30,7 @@ router.post('api.authentication.jwt', '/api/authentication/jwt', async (ctx: Con
         error: 'Invalid credentails.',
       };
       ctx.status = 401;
+      console.error('User is using invalid credentials!', body);
       return;
     }
   } catch (error) {
@@ -36,6 +38,7 @@ router.post('api.authentication.jwt', '/api/authentication/jwt', async (ctx: Con
       error: 'Invalid credentails.',
     };
     ctx.status = 401;
+    console.error('An unknown error occurred!', error);
     return;
   }
 

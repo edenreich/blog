@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, BeforeInsert } from 'typeorm';
 import { IRole, Role } from './Role';
-import { genSalt, hash } from 'bcryptjs';
+import { hash } from 'bcryptjs';
 
 export interface IUser {
   id?: string;
@@ -14,8 +14,7 @@ export class User implements IUser {
 
   @BeforeInsert()
   async encryptPassword() {
-    const salt: string = await genSalt(10);
-    this.password = await hash(this.password, salt);
+    this.password = await hash(this.password, 10);
   }
 
   @PrimaryGeneratedColumn('uuid')
