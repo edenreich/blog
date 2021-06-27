@@ -3,8 +3,11 @@ import * as React from 'react';
 import { AiFillLike, AiFillDislike, AiFillHeart } from 'react-icons/ai';
 import axios, { AxiosResponse } from 'axios';
 import { IVisitor } from '@/interfaces/visitor';
+import getConfig from 'next/config';
 
-import './Reactions.module.scss';
+const { publicRuntimeConfig: { apis: { frontend } } } = getConfig();
+
+import styles from './Reactions.module.scss';
 
 type selection = 'like' | 'love' | 'dislike' | null;
 
@@ -32,7 +35,7 @@ class Reactions extends React.Component<IProps, IState> {
       selected: null
     };
 
-    axios.get(`/likes/count?article=${this.props.articleId}`, { headers: { 'Content-Type': 'application/json' } }).then((response: AxiosResponse) => {
+    axios.get(`${frontend.url}/likes/count?article=${this.props.articleId}`, { headers: { 'Content-Type': 'application/json' } }).then((response: AxiosResponse) => {
       this.setState({
         like: response.data.like,
         love: response.data.love,
@@ -60,8 +63,8 @@ class Reactions extends React.Component<IProps, IState> {
     };
 
     try {
-      await axios.post('/api/likes', payload, { headers: { 'Content-Type': 'application/json' } });
-      const response: AxiosResponse = await axios.get(`/api/likes/count?article=${articleId}`, { headers: { 'Content-Type': 'application/json' } });
+      await axios.post(`${frontend.url}/likes`, payload, { headers: { 'Content-Type': 'application/json' } });
+      const response: AxiosResponse = await axios.get(`${frontend.url}/likes/count?article=${articleId}`, { headers: { 'Content-Type': 'application/json' } });
       this.setState({
         like: response.data.like,
         love: response.data.love,
@@ -75,26 +78,26 @@ class Reactions extends React.Component<IProps, IState> {
 
   render(): JSX.Element {
     return (
-      <div className="reactions grid-reactions">
-        <div className="reactions__hint grid-hint">
+      <div className={`${styles.reactions}`}>
+        <div className={`${styles.reactions__hint}`}>
           Did you find this article helpful ?
         </div>
-        <div className="grid-icons">
-          <div className="reactions__reaction">
+        <div className={`${styles.reactions__icons}`}>
+          <div className={styles.reactions__reaction}>
             <AiFillLike id="like" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{ color: this.state.selected === 'like' ? '#4c98c9' : '#9a8eb2' }} />
-            <div className="reactions__reaction--count">
+            <div className={styles.reactions__reaction__count}>
               {this.state.like}
             </div>
           </div>
-          <div className="reactions__reaction">
+          <div className={styles.reactions__reaction}>
             <AiFillHeart id="love" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{ color: this.state.selected === 'love' ? '#e45050' : '#9a8eb2' }} />
-            <div className="reactions__reaction--count">
+            <div className={styles.reactions__reaction__count}>
               {this.state.love}
             </div>
           </div>
-          <div className="reactions__reaction">
+          <div className={styles.reactions__reaction}>
             <AiFillDislike id="dislike" size="20px" cursor={'pointer'} onClick={(event) => this.handleReaction(event)} style={{ color: this.state.selected === 'dislike' ? '#272727' : '#9a8eb2' }} />
-            <div className="reactions__reaction--count">
+            <div className={styles.reactions__reaction__count}>
               {this.state.dislike}
             </div>
           </div>

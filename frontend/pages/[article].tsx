@@ -4,14 +4,17 @@ import Head from 'next/head';
 import moment from 'moment';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
-import ReactMarkDown from 'react-markdown';
 import axios, { AxiosResponse } from 'axios';
 import { Article as IArticle } from '@/interfaces/article';
 import Reactions from '@/components/Reactions';
 import { IVisitor } from '@/interfaces/visitor';
 import { asset } from '@/utils/asset';
+import getConfig from 'next/config';
 
-import './article.module.scss';
+const { publicRuntimeConfig: { apis: { frontend } } } = getConfig();
+
+import styles from './article.module.scss';
+import Section from '@/components/Section';
 
 interface IProps {
   visitor?: IVisitor;
@@ -37,7 +40,7 @@ class Article extends React.Component<IProps> {
     };
 
     try {
-      const response: AxiosResponse = await axios.get('/api/articles/${ctx.query.article}', { headers:  ctx?.req?.headers });
+      const response: AxiosResponse = await axios.get(`${frontend.url}/articles/${ctx.query.article}`, { headers:  ctx?.req?.headers });
       article = response.data;
     } catch (error) {
       console.error(`[pages][article] ${JSON.stringify(error)}`);
@@ -65,24 +68,14 @@ class Article extends React.Component<IProps> {
           <meta property="og:image" content={`${asset(this.props.article.meta_thumbnail)}`} />
           <meta property="og:description" content={this.props.article.meta_description} />
         </Head>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <span className="article__date"><small>{moment(this.props.article.published_at).fromNow()}</small></span>
-              <h3>{this.props.article.title}</h3>
-            </div>
-          </div>
-        </section>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <article>
-                <ReactMarkDown source={this.props.article.content} escapeHtml={false} linkTarget="_blank" />
-              </article>
-              <Reactions articleId={this.props.article.id} visitor={this.props.visitor} />
-            </div>
-          </div>
-        </section>
+        <Section>
+          <span className={styles.article__date}><small>{moment(this.props.article.published_at).fromNow()}</small></span>
+          <h3>{this.props.article.title}</h3>
+        </Section>
+        <Section>
+          <article dangerouslySetInnerHTML={{__html: this.props.article.content}} />
+          <Reactions articleId={this.props.article.id} visitor={this.props.visitor} />
+        </Section>
       </div>
     );
   }

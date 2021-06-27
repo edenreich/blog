@@ -10,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const token: string | null = await getJWT();
   if (! token) {
-    return res.status(200).json([]);
+    return res.status(200).json({});
   }
 
   const config: AxiosRequestConfig = {
@@ -20,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   };
   try {
-    const response: AxiosResponse = await axios.get(`${api.url}/articles/${article}`, config);
+    const response: AxiosResponse = await axios.get(`${api.url}/v1/articles/${article}`, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/article] ${JSON.stringify(error)}`);
