@@ -3,7 +3,7 @@ import getConfig from 'next/config';
 
 const { serverRuntimeConfig: { apiCredentials }, publicRuntimeConfig: { apis: { authentication } } } = getConfig();
 
-export const getJWT = async (): Promise<string> => {
+export const getJWT = async (): Promise<string | null> => {
   const config: AxiosRequestConfig = {
     headers: {
         'Content-Type': 'application/json'

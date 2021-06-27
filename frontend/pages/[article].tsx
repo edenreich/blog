@@ -31,9 +31,9 @@ class Article extends React.Component<IProps> {
       meta_thumbnail: '/default.jpg',
       likes: [],
       published: false,
-      published_at: new Date,
-      updated_at: new Date,
-      created_at: new Date,
+      published_at: new Date(),
+      updated_at: new Date(),
+      created_at: new Date(),
     };
 
     try {

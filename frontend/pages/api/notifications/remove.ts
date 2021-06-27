@@ -1,16 +1,28 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import getConfig from 'next/config';
 import { INotification } from '@/interfaces/notification';
+import { getJWT } from '@/utils/auth';
 
-const { publicRuntimeConfig } = getConfig();
+const { publicRuntimeConfig: { apis: { api } } } = getConfig();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { session } = req.body;
 
+  const token: string | null = await getJWT();
+  if (! token) {
+    return res.status(200).json({});
+  }
+
+  const config: AxiosRequestConfig = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  };
   let notification: INotification;
   try {
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/notifications/${session}`, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.get(`${api.url}/notifications/${session}`, config);
     notification = response.data;
   } catch (error) {
     console.error(`[api/notifications] ${JSON.stringify(error)}`);
@@ -19,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const response: AxiosResponse = await axios.put(`${publicRuntimeConfig.apis.admin.url}/notifications/${notification.uuid}`, {...req.body, is_enabled: false }, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.put(`${api.url}/notifications/${notification.uuid}`, {...req.body, is_enabled: false }, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/notifications] ${JSON.stringify(error)}`);

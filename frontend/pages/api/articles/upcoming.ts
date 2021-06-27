@@ -6,11 +6,11 @@ import { getJWT } from '@/utils/auth';
 const { publicRuntimeConfig } = getConfig();
 
 export default async (_req: NextApiRequest, res: NextApiResponse) => {
-  const token = await getJWT();
+  const token: string | null = await getJWT();
   if (!token) {
     return res.status(200).json([]);
   }
-  
+
   try {
     const config: AxiosRequestConfig = {
       headers: {

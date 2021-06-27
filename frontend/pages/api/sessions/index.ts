@@ -7,7 +7,7 @@ import { getJWT } from '@/utils/auth';
 const { publicRuntimeConfig: { apis: { api } } } = getConfig();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const ipAddress = getClientIpAddress(req);
+  const ipAddress: string | string[] | null = getClientIpAddress(req);
 
   if (!ipAddress) {
     console.error(`[api/sessions][${ipAddress}] can't resolve the client ip address`);
@@ -15,8 +15,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const token: string = await getJWT();
-  if (! token) {
+  const token: string | null = await getJWT();
+  if (!token) {
     return res.status(200).json({});
   }
 
