@@ -13,7 +13,6 @@ class ArticleTest extends AbstractTestCase
     {
         $response = $this->client->get('articles');
         $articles = json_decode($response->getBody());
-
         $this->assertCount(10, $articles);
     }
 
@@ -176,5 +175,25 @@ class ArticleTest extends AbstractTestCase
         $this->assertNull($responseArticle['deleted_at']);
         $this->assertNotNull($responseArticle['updated_at']);
         $this->assertNotNull($responseArticle['created_at']);
+    }
+
+    public function testCanFetchOnlyPublishedArticles(): void
+    {
+        $response = $this->client->get('articles/?filter=published_only');
+        $articles = json_decode($response->getBody(), true);
+
+        foreach ($articles as $article) {
+            $this->assertNotNull($article['published_at']);
+        }
+    }
+
+    public function testCanFetchOnlyUpcomingArticles(): void
+    {
+        $response = $this->client->get('articles/?filter=upcoming_only');
+        $articles = json_decode($response->getBody(), true);
+
+        foreach ($articles as $article) {
+            $this->assertNull($article['published_at']);
+        }
     }
 }

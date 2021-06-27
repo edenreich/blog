@@ -13,7 +13,7 @@ class Article extends Fixture implements OrderedFixtureInterface
     {
         $faker = Factory::create();
 
-        foreach (range(1, 10) as $key) {
+        foreach (range(1, 10) as $index => $value) {
             $article = new \App\Entity\Article();
             $article->setTitle($faker->text(20));
             $article->setContent($faker->randomHtml());
@@ -21,6 +21,10 @@ class Article extends Fixture implements OrderedFixtureInterface
             $article->setCreatedAt($faker->dateTimeThisMonth());
             $article->setMetaKeywords(sprintf('%s, %s, %s', $faker->word(), $faker->word(), $faker->word()));
             $article->setMetaDescription($faker->text(50));
+
+            if (0 === $index % 2) {
+                $article->setPublishedAt(new \DateTime());
+            }
 
             $manager->persist($article);
         }
