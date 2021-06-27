@@ -17,7 +17,7 @@ class UpcomingArticles extends React.Component<IProps> {
         return (
           <article className={styles.article} key={key}>
             <div className={styles.article__title}>
-              <img src={`${asset(article.meta_thumbnail.formats.thumbnail?.url)}`} />
+              <img src={`${asset(article.meta_thumbnail)}`} />
               <h3>{article.title}</h3>
             </div>
           </article>
