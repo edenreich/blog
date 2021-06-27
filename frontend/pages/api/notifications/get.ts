@@ -20,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         'Content-Type': 'application/json',
       }
     };
-    const response: AxiosResponse = await axios.get(`${api.url}/notifications/${session_id}`, config);
+    const response: AxiosResponse = await axios.get(`${api.url}/v1/notifications/${session_id}`, config);
     res.status(200).json(response?.data);
   } catch (error) {
     console.error(`[api/notifications] ${error}`);

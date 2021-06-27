@@ -7,7 +7,7 @@ const { publicRuntimeConfig: { apis: { api } } } = getConfig();
 
 export default async (_req: NextApiRequest, res: NextApiResponse) => {
   const token: string | null = await getJWT();
-  if (!token) {
+  if (! token) {
     return res.status(200).json([]);
   }
 

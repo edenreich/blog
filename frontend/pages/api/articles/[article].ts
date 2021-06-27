@@ -9,7 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { article } = req.query;
 
   const token: string | null = await getJWT();
-  if (!token) {
+  if (! token) {
     return res.status(200).json([]);
   }
 
