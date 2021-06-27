@@ -3,7 +3,8 @@ import Head from 'next/head';
 
 import ProgressBar from '@/components/ProgressBar';
 
-import './about.module.scss';
+import styles from './about.module.scss';
+import progressbarStyles from '../components/ProgressBar.module.scss';
 
 interface IProps {
   children?: React.ReactNode;
@@ -37,15 +38,15 @@ class AboutPage extends React.Component<IProps> {
                 About Me
               </h2>
               <figure>
-                <img className="about__me" src="pictures/profile_600.png" />
+                <img className={styles.about__me} src="pictures/profile_600.png" />
               </figure>
               <h3>Who am I?</h3>
-              <p className="lead">
+              <p>
                 I’m a passionate developer specializing in C++, PHP, Typescript, Javascript, Rust, CSS and some Go. I like to build desktop as well as web applications.
                 I'm based in Berlin.
               </p>
               <h3>My Skills</h3>
-              <ul className="progress-list">
+              <ul className={progressbarStyles['progress-list']}>
                 <ProgressBar label={'PHP'} color={'blue'} progress={95} />
                 <ProgressBar label={'Typescript'} color={'blue'} progress={85} />
                 <ProgressBar label={'CSS'} color={'purple'} progress={85} />

@@ -17,7 +17,49 @@ $color-violet: #9a8eb2;
 $color-sky: #7bc4e6;
 $color-dark: #272727;
 
-
 $color-green-transparent: rgba(63, 191, 174, 0.8);
 $color-white-transparent: rgba(255,255,255, 0.8);
 $color-black-transparent: rgba(0,0,0, 0.2);
+
+.blue svg path {
+    stroke: $color-default;
+}
+.green svg path {
+    stroke: $color-green;
+}
+.orange svg path {
+    stroke: $color-orange;
+}
+.red svg path {
+    stroke: $color-red;
+}
+.yellow svg path {
+    stroke: $color-yellow;
+}
+.pink svg path {
+    stroke: $color-pink;
+}
+.purple svg path {
+    stroke: $color-purple;
+}
+.brown svg path {
+    stroke: $color-brown;
+}
+.navy svg path {
+    stroke: $color-navy;
+}
+.aqua svg path {
+    stroke: $color-aqua;
+}
+.forest svg path {
+    stroke: $color-forest;
+}
+.lime svg path {
+    stroke: $color-lime;
+}
+.violet svg path {
+    stroke: $color-violet;
+}
+.sky svg path {
+    stroke: $color-sky;
+}
