@@ -36,15 +36,14 @@ abstract class AbstractTestCase extends KernelTestCase
             ->get('doctrine')
             ->getManager();
 
+        $purger = new ORMPurger();
+        $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
+        $executor = new ORMExecutor($this->entityManager, $purger);
         $loader = new Loader();
         foreach ($this->getFixtures() as $fixture) {
             $loader->addFixture($fixture);
         }
-        $purger = new ORMPurger();
-        $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
-        $executor = new ORMExecutor($this->entityManager, $purger);
         $executor->execute($loader->getFixtures());
-
         $this->client = new Client([
             'base_uri' => self::BASE_URI.'v1/',
             RequestOptions::HEADERS => [
@@ -73,6 +72,7 @@ abstract class AbstractTestCase extends KernelTestCase
             new \App\DataFixtures\Article(),
             new \App\DataFixtures\Reaction(),
             new \App\DataFixtures\Session(),
+            new \App\DataFixtures\Notification(),
         ];
     }
 }

@@ -27,16 +27,20 @@ class NotificationTest extends AbstractTestCase
             ->getRepository(Notification::class)
             ->findAll();
 
-        $this->assertCount(1, $notifications);
         $this->assertEquals(true, $notifications[0]->getIsEnabled());
         $this->assertEquals(201, $response->getStatusCode());
     }
 
     public function testCanDisableNotificationForTheCurrentSession(): void
     {
-        /** @var Session */
-        $session = $this->entityManager->getRepository(Session::class)->findAll()[mt_rand(0, 9)];
-        $notification = new Notification();
+        $attempts = 10;
+        do {
+            /** @var Session */
+            $session = $this->entityManager->getRepository(Session::class)->findAll()[mt_rand(0, 9)];
+            $notification = $session->getNotification();
+            --$attempts;
+        } while (null === $notification && 0 !== $attempts);
+
         $notification->setEmail('test@gmail.com');
         $notification->setIsEnabled(true);
         $session->setNotification($notification);
@@ -56,5 +60,28 @@ class NotificationTest extends AbstractTestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(false, $notificationAfterResponse->getIsEnabled());
+    }
+
+    public function testCanFetchAllNotifications(): void
+    {
+        $response = $this->client->get('notifications');
+
+        $this->assertNotNull(json_decode($response->getBody(), true));
+    }
+
+    public function testCanFetchSpecificNotificationByGivenSession(): void
+    {
+        $attempts = 10;
+        do {
+            /** @var Session */
+            $session = $this->entityManager->getRepository(Session::class)->findAll()[mt_rand(0, 9)];
+            $notification = $session->getNotification();
+            --$attempts;
+        } while (null === $notification && 0 !== $attempts);
+
+        $response = $this->client->get('notifications/?session_id='.$session->getId());
+        $notificationResponse = json_decode($response->getBody(), true);
+
+        $this->assertEquals($notification->getId(), $notificationResponse['id']);
     }
 }
