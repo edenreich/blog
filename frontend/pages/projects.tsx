@@ -2,7 +2,8 @@ import * as React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import './projects.module.scss';
+import styles from './projects.module.scss';
+import Section from '@/components/Section';
 
 interface IProps {
   children?: React.ReactNode;
@@ -16,7 +17,7 @@ class ProjectsPage extends React.Component<IProps> {
     const description = 'Welcome to my blog, I\'ll be posting about web app development, native apps, DevOps and more.';
 
     return (
-      <div id="projects" className="projects">
+      <div id="projects" className={styles.projects}>
         <Head>
           <title>{title}</title>
           <meta charSet="utf-8" />
@@ -29,46 +30,40 @@ class ProjectsPage extends React.Component<IProps> {
           <meta property="og:image" content="/pictures/profile_600.png" />
           <meta property="og:description" content={description} />
         </Head>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <h2>Projects</h2>
-              <p>List of projects</p>
+        <Section>
+          <h2>Projects</h2>
+          <p>List of projects</p>
+        </Section>
+        <Section>
+          <div className={styles.projects__list}>
+            <div className="card">
+              <Link href="https://github.com/edenreich/console-component">
+                <a target="_blank">
+                  <div className="card__teaser">
+                    <img src="pictures/projects/console_component.jpg" />
+                  </div>
+                  <h3>Console Component</h3>
+                  <p>
+                    An easy to use component for building powerful console applications written in C++
+                  </p>
+                </a>
+              </Link>
+            </div>
+            <div className="card">
+              <Link href="https://github.com/edenreich/gke-terraform">
+                <a target="_blank">
+                  <div className="card__teaser">
+                    <img src="pictures/projects/terraform_gke.png" />
+                  </div>
+                  <h3>Terraform a GKE Cluster</h3>
+                  <p>
+                    Minimalistic terraform module for deploying a GKE cluster
+                  </p>
+                </a>
+              </Link>
             </div>
           </div>
-        </section>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column projects__list">
-              <div className="card">
-                <Link href="https://github.com/edenreich/console-component">
-                  <a target="_blank">
-                    <div className="card__teaser">
-                      <img src="pictures/projects/console_component.jpg" />
-                    </div>
-                    <h3>Console Component</h3>
-                    <p>
-                      An easy to use component for building powerful console applications written in C++
-                    </p>
-                  </a>
-                </Link>
-              </div>
-              <div className="card">
-                <Link href="https://github.com/edenreich/gke-terraform">
-                  <a target="_blank">
-                    <div className="card__teaser">
-                      <img src="pictures/projects/terraform_gke.png" />
-                    </div>
-                    <h3>Terraform a GKE Cluster</h3>
-                    <p>
-                      Minimalistic terraform module for deploying a GKE cluster
-                    </p>
-                  </a>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+        </Section>
       </div>
     );
   }
