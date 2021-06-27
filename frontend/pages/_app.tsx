@@ -38,7 +38,7 @@ class Blog extends App<IProps, IState> {
     };
     let session: IVisitor;
     try {
-      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.frontend.url}/sessions`, {} ,{ headers:  ctx?.req?.headers });
+      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.frontend.url}/sessions`, {} , { headers:  ctx?.req?.headers });
       session = response.data;
     } catch (error) {
       session = anonymouse;
