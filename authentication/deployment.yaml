@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-${VERSION}
+  namespace: blog
+  labels:
+    app: authentication
+    version: "${VERSION}"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: authentication
+      version: "${VERSION}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: authentication
+        version: "${VERSION}"
+    spec:
+      containers:
+      - name: authentication
+        image: ${REPOSITORY}:${VERSION}
+        resources:
+          requests:
+            cpu: 499m
+            memory: 499Mi
+          limits:
+            cpu: 499m
+            memory: 499Mi
+        ports:
+          - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /api/authentication/healthcheck
+        livenessProbe:
+          httpGet:
+            port: 3000
+            path: /api/authentication/healthcheck
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: authentication
+              key: app_env
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: app_secret
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: database_url
+        - name: APP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: app_username
+        - name: APP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentication
+              key: app_password
+        imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+      - name: container-registry

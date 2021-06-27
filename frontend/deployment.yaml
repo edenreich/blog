@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-${VERSION}
+  namespace: blog
+  labels:
+    app: frontend
+    version: "${VERSION}"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+      version: "${VERSION}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: "${VERSION}"
+    spec:
+      containers:
+      - name: frontend
+        image: ${REPOSITORY}:${VERSION}
+        resources:
+          requests:
+            cpu: 499m
+            memory: 499Mi
+          limits:
+            cpu: 499m
+            memory: 499Mi
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: frontend
+              key: app_env
+        - name: API_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: frontend
+              key: api_username
+        - name: API_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: frontend
+              key: api_password
+        - name: MAILGUN_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: frontend
+              key: mailgun_domain
+        - name: MAILGUN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: frontend
+              key: mailgun_api_key
+        ports:
+          - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        livenessProbe:
+          httpGet:
+            port: 3000
+            path: /healthcheck
+        imagePullPolicy: Always
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+      - name: container-registry

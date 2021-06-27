@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-${VERSION}
+  namespace: blog
+  labels:
+    app: api
+    version: "${VERSION}"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+      version: "${VERSION}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: api
+        version: "${VERSION}"
+    spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: api
+          items:
+          - key: google_application_credentials
+            path: service_account.json
+      containers:
+      - name: api
+        image: ${REPOSITORY}:${VERSION}
+        volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/gcp
+            readOnly: true
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: api
+              key: app_env
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: api
+              key: app_secret
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: api
+              key: database_url
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          valueFrom:
+            configMapKeyRef:
+              name: api
+              key: google_application_credentials_path
+        resources:
+          requests:
+            cpu: 499m
+            memory: 499Mi
+          limits:
+            cpu: 499m
+            memory: 499Mi
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /healthcheck
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /healthcheck
+        imagePullPolicy: Always
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+      - name: container-registry

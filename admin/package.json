@@ -1,0 +1,56 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r module-alias/register ./src/app.js",
+    "build": "tsc && yarn run build:assets && cp -r src/static build/src/static && cp package* build/ && cp -r src/views build/src/ && cd build && yarn install --production",
+    "build:assets": "NODE_ENV=production webpack --progress",
+    "dev": "nodemon --watch 'src/**' --watch 'webpack.config.js' --ext 'ts,html' --exec 'NODE_ENV=development webpack --progress && ts-node -r module-alias/register src/app.ts'",
+    "lint": "tslint './src/**/*.ts' './__tests__/**/*.ts'",
+    "lint:fix": "tslint --fix './src/**/*.ts' './__tests__/**/*.ts'"
+  },
+  "keywords": [
+    "admin"
+  ],
+  "author": "Eden Reich",
+  "license": "MIT",
+  "dependencies": {
+    "admin-lte": "^3.1.0",
+    "axios": "^0.21.1",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-ejs": "^4.3.0",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^10.0.0",
+    "koa-static": "^5.0.0",
+    "module-alias": "^2.2.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.5",
+    "@types/axios": "^0.14.0",
+    "@types/koa": "^2.13.1",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-ejs": "^4.2.2",
+    "@types/koa-logger": "^3.1.1",
+    "@types/koa-router": "^7.4.2",
+    "@types/koa-static": "^4.0.1",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^9.0.0",
+    "css-loader": "^5.2.6",
+    "css-minimizer-webpack-plugin": "^3.0.1",
+    "file-loader": "^6.2.0",
+    "mini-css-extract-plugin": "^1.6.0",
+    "nodemon": "^2.0.7",
+    "ts-lint": "^4.5.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.2.4",
+    "webpack": "^5.39.1",
+    "webpack-cli": "^4.7.2"
+  },
+  "_moduleAliases": {
+    "@app": "./src"
+  }
+}

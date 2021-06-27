@@ -4,13 +4,10 @@ on:
   push:
     branches:
       - master
-      - develop
+      # - develop
     paths:
       - ".github/workflows/admin.yml"
-      - "src/backend/admin/**"
-      - "ops/on-premises/docker/backend/admin/**"
-      - "ops/on-premises/kubernetes/backend/admin/**"
-      - "ops/on-premises/kubernetes/config/admin.yaml"
+      - "admin/**"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -35,14 +32,17 @@ jobs:
     environment:
       name: staging
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
       - name: Kubernetes - update configmap in the cluster
         run: |
           APP_ENV=staging \
-          envsubst < ops/on-premises/kubernetes/config/admin.yaml | kubectl apply -f -
+          envsubst < admin/config.yaml | kubectl apply -f -
   update_configuration_production:
     if: github.event.ref == 'refs/heads/master'
     runs-on: self-hosted
@@ -56,20 +56,24 @@ jobs:
       - name: Kubernetes - update configmap in the cluster
         run: |
           APP_ENV=prod \
-          envsubst < ops/on-premises/kubernetes/config/admin.yaml | kubectl apply -f -
+          envsubst < admin/config.yaml | kubectl apply -f -
   update_secrets_staging:
     runs-on: self-hosted
     environment:
       name: staging
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
       - name: Kubernetes - update secrets in the cluster
         run: |
-          ADMIN_DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
-          envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
+          APP_SECRET=${{ secrets.ADMIN_APP_SECRET }} \
+          DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
+          envsubst < admin/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
@@ -80,14 +84,18 @@ jobs:
     environment:
       name: production
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
       - name: Kubernetes - update secrets in the cluster
         run: |
-          ADMIN_DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
-          envsubst < ops/on-premises/kubernetes/secrets/admin.yaml | kubectl apply -f -
+          APP_SECRET=${{ secrets.ADMIN_APP_SECRET }} \
+          DATABASE_URL=${{ secrets.ADMIN_DATABASE_URL }} \
+          envsubst < admin/secret.yaml | kubectl apply -f -
       - name: Kubernetes - add docker pull secrets if not exists
         run: |
           DOCKER_CONFIG_JSON=${{ secrets.DOCKER_CONFIG_JSON }} \
@@ -96,25 +104,18 @@ jobs:
     runs-on: self-hosted
     needs: docker_login
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Docker - build container image
         run: |
-          docker build \
+          cd admin && docker build \
             --target production \
             --cache-from ${{ env.DOCKER_REPO }}:latest \
             -t ${{ env.DOCKER_REPO }}:latest \
-            -f ops/on-premises/docker/backend/admin/Dockerfile .
-      - name: Docker - build test container image
-        run: |
-          docker build \
-            --target src-with-devtools \
-            --cache-from ${{ env.DOCKER_REPO_DEV }}:latest \
-            -t ${{ env.DOCKER_REPO_DEV }}:latest \
-            -f ops/on-premises/docker/backend/admin/Dockerfile .
-      - name: Docker - tag container images
-        run: |
-          docker tag ${{ env.DOCKER_REPO }}:latest ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker tag ${{ env.DOCKER_REPO_DEV }}:latest ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
+            -t ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }} \
+            .
   push:
     needs: build
     runs-on: self-hosted
@@ -122,61 +123,35 @@ jobs:
       - name: Docker - push image to registry
         run: |
           docker push ${{ env.DOCKER_REPO }}:${{ env.DEPLOYMENT_VERSION }}
-          docker push ${{ env.DOCKER_REPO_DEV }}:${{ env.DEPLOYMENT_VERSION }}
           docker push ${{ env.DOCKER_REPO }}:latest
-          docker push ${{ env.DOCKER_REPO_DEV }}:latest
   lint:
     needs: push
     runs-on: self-hosted
     environment:
       name: staging
     steps:
-      - name: Kubernetes - switch to staging context
+      - name: Run linter
         run: |
-          kubectl config use-context staging
-      - name: Kubernetes - run linter
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/linting.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-linting-${{ env.DEPLOYMENT_VERSION }}
-  analyse:
-    needs: push
-    runs-on: self-hosted
-    environment:
-      name: staging
-    steps:
-      - name: Kubernetes - switch to staging context
-        run: |
-          kubectl config use-context staging
-      - name: Kubernetes - run static analysis
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO_DEV }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/analyse.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-code-analysis-${{ env.DEPLOYMENT_VERSION }}
+          cd admin && docker run --rm --user node:node -v ${PWD}:/app -w /app node:16.2.0-alpine3.12 /bin/sh -c 'yarn install && yarn lint'
   deploy_staging:
-    needs: [lint, analyse]
+    needs: [lint]
     runs-on: self-hosted
     environment:
       name: staging
       url: https://stage-admin.eden-reich.com
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to staging context
         run: |
           kubectl config use-context staging
-      - name: Kubernetes - run database migrations
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/migrations.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-migration-${{ env.DEPLOYMENT_VERSION }}
       - name: Kubernetes - create a new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/deployment.yaml | kubectl apply -f -
+          envsubst < admin/deployment.yaml | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=60
@@ -197,13 +172,11 @@ jobs:
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/hpa.yaml | kubectl apply -f -
+          envsubst < admin/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
-      - name: Kubernetes - remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
+          envsubst < admin/service.yaml | kubectl apply -f -
   deploy_production:
     if: github.event.ref == 'refs/heads/master'
     needs: deploy_staging
@@ -212,21 +185,18 @@ jobs:
       name: production
       url: https://admin.eden-reich.com
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
-      - name: Kubernetes - run database migrations
-        run: |
-          VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/migrations.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-migration-${{ env.DEPLOYMENT_VERSION }}
       - name: Kubernetes - create a new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
           REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/deployment.yaml | kubectl apply -f -
+          envsubst < admin/deployment.yaml | kubectl apply -f -
       - name: Kubernetes - wait for new deployment to be successfully rolled out
         run: |
           max_count=60
@@ -247,13 +217,11 @@ jobs:
       - name: Kubernetes - apply horizontal pods autoscaling to new deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/hpa.yaml | kubectl apply -f -
+          envsubst < admin/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to green deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
-      - name: Kubernetes - remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
+          envsubst < admin/service.yaml | kubectl apply -f -
   revert_production:
     needs: deploy_production
     runs-on: self-hosted
@@ -264,22 +232,14 @@ jobs:
       - name: Kubernetes - switch to production context
         run: |
           kubectl config use-context production
-      - name: Kubernetes - revert database migrations to previous version
-        run: |
-          VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-          REPOSITORY=${{ env.DOCKER_REPO }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/jobs/migrations.yaml | kubectl apply -f -
-          ./ops/on-premises/kubernetes/utils/wait_for_job.sh admin-database-revert-migration-${{ env.DEPLOYMENT_PREVIOUS_VERSION }}
       - name: Kubernetes - apply horizontal pods autoscaling to previous deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/hpa.yaml | kubectl apply -f -
+          envsubst < admin/hpa.yaml | kubectl apply -f -
       - name: Kubernetes - switch LB to previous deployment
         run: |
           VERSION=${{ env.DEPLOYMENT_PREVIOUS_VERSION }} \
-          envsubst < ops/on-premises/kubernetes/backend/admin/service.yaml | kubectl apply -f -
-      - name: Kubernetes - remove completed jobs
-        run: kubectl delete jobs $(kubectl get jobs | grep ${{ env.DEPLOYMENT_NAME }} | grep 1/1 | awk '{ print $1 }' | xargs) || true
+          envsubst < admin/service.yaml | kubectl apply -f -
   cleanup:
     runs-on: self-hosted
     needs: deploy_staging

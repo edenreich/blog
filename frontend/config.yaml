@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend
+  namespace: blog
+  labels:
+    app: frontend
+data:
+  app_env: ${APP_ENV}

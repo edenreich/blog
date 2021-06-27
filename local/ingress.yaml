@@ -2,11 +2,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
+  namespace: blog
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  namespace: blog
 spec:
   rules:  
     - host: eden-reich.com
@@ -47,5 +47,22 @@ spec:
           backend:
             service:
               name: api
+              port: 
+                number: 8080
+    - host: dev-api.eden-reich.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: /api/authentication/jwt
+          backend:
+            service:
+              name: authentication
+              port: 
+                number: 8080
+        - pathType: Prefix
+          path: /api/authentication/authorize
+          backend:
+            service:
+              name: authentication
               port: 
                 number: 8080

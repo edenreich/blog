@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-integration-tests-${VERSION}
+  namespace: blog
+  labels:
+    app: api
+    version: "${VERSION}"
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: api
+          items:
+          - key: google_application_credentials
+            path: service_account.json
+      containers:
+      - name: api-integration-tests
+        image: ${REPOSITORY}:${VERSION}
+        volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/gcp
+            readOnly: true
+        env:
+        - name: APP_ENV
+          value: test
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: api
+              key: test_database_url
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          valueFrom:
+            configMapKeyRef:
+              name: api
+              key: google_application_credentials_path
+        resources:
+          requests:
+            cpu: 499m
+            memory: 499Mi
+          limits:
+            cpu: 499m
+            memory: 499Mi
+        command: [ "/bin/sh", "-c", "bin/console swoole:server:run & ./vendor/bin/phpunit" ]
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: container-registry
+  backoffLimit: 1
