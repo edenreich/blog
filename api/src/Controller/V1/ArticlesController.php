@@ -16,12 +16,20 @@ class ArticlesController extends AbstractController implements TokenAuthenticate
     /**
      * @Route("/articles", methods={"GET"}, name="articles.list")
      */
-    public function list(EntityManagerInterface $entityManager): JsonResponse
+    public function list(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        $filter = $request->get('filter');
+
         /** @var \App\Repository\ArticleRepository */
         $articleRepository = $entityManager->getRepository(Article::class);
 
-        $articles = $articleRepository->findAll();
+        if ('published_only' === $filter) {
+            $articles = $articleRepository->findAllPublished();
+        } elseif ('upcoming_only' === $filter) {
+            $articles = $articleRepository->findAllUpcoming();
+        } else {
+            $articles = $articleRepository->findAll();
+        }
 
         return $this->json($articles, 200, [], ['groups' => ['admin', 'frontend']]);
     }
