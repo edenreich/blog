@@ -6,7 +6,8 @@ import { Formik } from 'formik';
 import axios, { AxiosResponse } from 'axios';
 import { FaEnvelope } from 'react-icons/fa';
 
-import './contact.module.scss';
+import styles from './contact.module.scss';
+import Section from '@/components/Section';
 
 interface FieldsInterface {
   name?: string;
@@ -52,139 +53,131 @@ class ContactPage extends React.Component<IProps, IState> {
           <meta property="og:image" content="/pictures/profile_600.png" />
           <meta property="og:description" content={description} />
         </Head>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <h2>Get in Touch</h2>
-              <p>Have questions? feel free to leave me a message.</p>
-              <ul className="contact__icons grid-icons">
-                <li className="grid-icon">
-                  <span><FaEnvelope color="#3fbfae" size="50px" /></span>
-                  <p>
-                    <Link href="mailto:eden.reich@gmail.com">
-                      <a>eden.reich@gmail.com</a>
-                    </Link>
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <Formik
-                initialValues={{ name: '', email: '', tel: '', message: ''}}
-                validate={values => {
-                  const errors: FieldsInterface = {};
+        <Section>
+          <h2>Get in Touch</h2>
+          <p>Have questions? feel free to leave me a message.</p>
+          <ul className={`${styles.contact__icons}`}>
+            <li>
+              <span><FaEnvelope color="#3fbfae" size="50px" /></span>
+              <p>
+                <Link href="mailto:eden.reich@gmail.com">
+                  <a>eden.reich@gmail.com</a>
+                </Link>
+              </p>
+            </li>
+          </ul>
+        </Section>
+        <Section>
+          <Formik
+            initialValues={{ name: '', email: '', tel: '', message: ''}}
+            validate={values => {
+              const errors: FieldsInterface = {};
 
-                  if (!values.name) {
-                    errors.name = 'Required';
-                  }
+              if (!values.name) {
+                errors.name = 'Required';
+              }
 
-                  if (!values.email) {
-                    errors.email = 'Required';
-                  } else if (
-                    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-                  ) {
-                    errors.email = 'Invalid email address';
-                  }
+              if (!values.email) {
+                errors.email = 'Required';
+              } else if (
+                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+              ) {
+                errors.email = 'Invalid email address';
+              }
 
-                  return errors;
-                }}
-                onSubmit={async (values, { resetForm, setSubmitting }) => {
-                  const response: AxiosResponse = await axios.post(`/api/email/send`, JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
+              return errors;
+            }}
+            onSubmit={async (values, { resetForm, setSubmitting }) => {
+              const response: AxiosResponse = await axios.post(`/api/email/send`, JSON.stringify(values), { headers: { 'Content-Type': 'application/json;charset=utf-8' }});
 
-                  if (response.data.success) {
-                    this.setState({
-                      success: true
-                    });
-                    resetForm();
-                  }
+              if (response.data.success) {
+                this.setState({
+                  success: true
+                });
+                resetForm();
+              }
 
-                  setSubmitting(false);
-                }}
-                render={({
-                  touched,
-                  errors,
-                  values,
-                  isSubmitting,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                }) => (
-                  <form action={'/api/email/send'} method="post" className="contact__form grid-form" noValidate onSubmit={handleSubmit}>
-                    <div className="contact__form-group grid-form-group-1">
-                      <input
-                        type="text"
-                        className={
-                          errors.name && touched.name
-                          ? 'form-control--error'
-                          : 'form-control'
-                        }
-                        name="name"
-                        placeholder="Your name"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.name}
-                      />
-                    </div>
-                    <div className="contact__form-group grid-form-group-2">
-                      <input
-                        type="email"
-                        className={
-                          errors.email && touched.email
-                          ? 'form-control--error'
-                          : 'form-control'
-                        }
-                        name="email"
-                        placeholder="Your e-mail"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.email}
-                      />
-                    </div>
-                    <div className="contact__form-group grid-form-group-3">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="tel"
-                        value={values.tel}
-                        onChange={handleChange}
-                        placeholder="Phone"
-                      />
-                    </div>
-                    <div className="contact__form-group grid-form-group-4">
-                      <textarea
-                        name="message"
-                        className="form-control"
-                        rows={3}
-                        value={values.message}
-                        onChange={handleChange}
-                        placeholder="Type your message here..."
-                        required
-                      />
-                    </div>
-                    <div className="contact__form-group grid-form-button">
-                      <button
-                          type="submit"
-                          className="form-button"
-                          disabled={isSubmitting}
-                        >
-                        {isSubmitting ? 'Sending...' : 'Send'}
-                      </button>
-                    </div>
-                    {
-                      this.state.success && <div className={'contact__notification-box grid-form-notification'} >
-                        Thanks! I'll reach you out as soon as possible !
-                      </div>
+              setSubmitting(false);
+            }}
+            render={({
+              touched,
+              errors,
+              values,
+              isSubmitting,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+            }) => (
+              <form action={'/api/email/send'} method="post" className={styles.contact__form} noValidate onSubmit={handleSubmit}>
+                <div>
+                  <input
+                    type="text"
+                    className={
+                      errors.name && touched.name
+                      ? 'form-control--error'
+                      : 'form-control'
                     }
-                  </form>
-                )}
-              />
-            </div>
-          </div>
-        </section>
+                    name="name"
+                    placeholder="Your name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name}
+                  />
+                </div>
+                <div className={styles.contact__form__group}>
+                  <input
+                    type="email"
+                    className={
+                      errors.email && touched.email
+                      ? 'form-control--error'
+                      : 'form-control'
+                    }
+                    name="email"
+                    placeholder="Your e-mail"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                  />
+                </div>
+                <div className={styles.contact__form__group}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="tel"
+                    value={values.tel}
+                    onChange={handleChange}
+                    placeholder="Phone"
+                  />
+                </div>
+                <div className={styles.contact__form__group}>
+                  <textarea
+                    name="message"
+                    className="form-control"
+                    rows={3}
+                    value={values.message}
+                    onChange={handleChange}
+                    placeholder="Type your message here..."
+                    required
+                  />
+                </div>
+                <div className={`${styles.contact__button} ${styles.contact__form__group}`}>
+                  <button
+                      type="submit"
+                      className="form-button"
+                      disabled={isSubmitting}
+                    >
+                    {isSubmitting ? 'Sending...' : 'Send'}
+                  </button>
+                </div>
+                {
+                  this.state.success && <div className={`${styles.contact__notification}`} >
+                    Thanks! I'll reach you out as soon as possible !
+                  </div>
+                }
+              </form>
+            )}
+          />
+        </Section>
       </div>
     );
   }
