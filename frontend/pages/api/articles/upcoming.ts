@@ -18,7 +18,7 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
         'Content-Type': 'application/json',
       }
     };
-    const response: AxiosResponse = await axios.get(`${api.url}/v1/articles?published_at_null=true`, config);
+    const response: AxiosResponse = await axios.get(`${api.url}/v1/articles/?filter=upcoming_only`, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/upcoming] ${JSON.stringify(error)}`);

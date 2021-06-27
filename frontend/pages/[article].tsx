@@ -73,7 +73,9 @@ class Article extends React.Component<IProps> {
           <h3>{this.props.article.title}</h3>
         </Section>
         <Section>
-          <article dangerouslySetInnerHTML={{__html: this.props.article.content}} />
+          <article>
+            <div dangerouslySetInnerHTML={{__html: this.props.article.content}} />
+          </article>
           <Reactions articleId={this.props.article.id} visitor={this.props.visitor} />
         </Section>
       </div>
