@@ -2,6 +2,7 @@ import * as React from 'react';
 import Head from 'next/head';
 
 import ProgressBar from '@/components/ProgressBar';
+import Section from '@/components/Section';
 
 import styles from './about.module.scss';
 import progressbarStyles from '../components/ProgressBar.module.scss';
@@ -31,34 +32,34 @@ class AboutPage extends React.Component<IProps> {
           <meta property="og:image" content="/pictures/profile_600.png" />
           <meta property="og:description" content={description} />
         </Head>
-        <section className="content__section">
-          <div className="content__wrapper grid-content-wrapper">
-            <div className="grid-column">
-              <h2 className="section-title text-center">
-                About Me
-              </h2>
-              <figure>
-                <img className={styles.about__me} src="pictures/profile_600.png" />
-              </figure>
-              <h3>Who am I?</h3>
-              <p>
-                I’m a passionate developer specializing in C++, PHP, Typescript, Javascript, Rust, CSS and some Go. I like to build desktop as well as web applications.
-                I'm based in Berlin.
-              </p>
-              <h3>My Skills</h3>
-              <ul className={progressbarStyles['progress-list']}>
-                <ProgressBar label={'PHP'} color={'blue'} progress={95} />
-                <ProgressBar label={'Typescript'} color={'blue'} progress={85} />
-                <ProgressBar label={'CSS'} color={'purple'} progress={85} />
-                <ProgressBar label={'Javascript'} color={'yellow'} progress={85} />
-                <ProgressBar label={'C++'} color={'pink'} progress={90} />
-                <ProgressBar label={'Rust'} color={'brown'} progress={85} />
-                <ProgressBar label={'SQL'} color={'pink'} progress={85} />
-                <ProgressBar label={'Go'} color={'aqua'} progress={65} />
-              </ul>
-            </div>
-          </div>
-        </section>
+        <Section>
+          <h2 className="section-title text-center">
+            About Me
+          </h2>
+          <figure>
+            <img className={styles.about__me} src="pictures/profile_600.png" />
+          </figure>
+        </Section>
+        <Section>
+          <h3>Who am I?</h3>
+          <p>
+            I’m a passionate developer specializing in C++, PHP, Typescript, Javascript, Rust, CSS and some Go. I like to build desktop as well as web applications.
+            I'm based in Berlin.
+          </p>
+        </Section>
+        <Section>
+          <h3>My Skills</h3>
+          <ul className={progressbarStyles['progress-list']}>
+            <ProgressBar label={'PHP'} color={'blue'} progress={95} />
+            <ProgressBar label={'Typescript'} color={'blue'} progress={85} />
+            <ProgressBar label={'CSS'} color={'purple'} progress={85} />
+            <ProgressBar label={'Javascript'} color={'yellow'} progress={85} />
+            <ProgressBar label={'C++'} color={'pink'} progress={90} />
+            <ProgressBar label={'Rust'} color={'brown'} progress={85} />
+            <ProgressBar label={'SQL'} color={'pink'} progress={85} />
+            <ProgressBar label={'Go'} color={'aqua'} progress={65} />
+          </ul>
+        </Section>
       </div>
     );
   }
