@@ -61,12 +61,11 @@ spec:
         readinessProbe:
           httpGet:
             port: 3000
-            path: /healthcheck
+            path: /api/healthcheck
         livenessProbe:
           httpGet:
             port: 3000
-            path: /healthcheck
+            path: /api/healthcheck
         imagePullPolicy: Always
-      terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: container-registry
