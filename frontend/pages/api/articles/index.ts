@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import getConfig from 'next/config';
 import { getJWT } from '@/utils/auth';
 
-const { publicRuntimeConfig } = getConfig();
+const { publicRuntimeConfig: { apis: { api } } } = getConfig();
 
 export default async (_req: NextApiRequest, res: NextApiResponse) => {
   const token = await getJWT();
@@ -18,7 +18,7 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
         'Content-Type': 'application/json',
       }
     };
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.api.url}/v1/articles`, config);
+    const response: AxiosResponse = await axios.get(`${api.url}/v1/articles`, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/articles] ${JSON.stringify(error)}`);

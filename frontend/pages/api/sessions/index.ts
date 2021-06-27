@@ -4,7 +4,7 @@ import getConfig from 'next/config';
 import { getClientIpAddress } from '@/utils/visitor';
 import { getJWT } from '@/utils/auth';
 
-const { publicRuntimeConfig } = getConfig();
+const { publicRuntimeConfig: { apis: { api } } } = getConfig();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const ipAddress = getClientIpAddress(req);
@@ -27,7 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         'Content-Type': 'application/json',
       },
     };
-    const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.api.url}/v1/sessions?ip_address=${ipAddress}`, {}, config);
+    const response: AxiosResponse = await axios.post(`${api.url}/v1/sessions?ip_address=${ipAddress}`, {}, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/sessions] ${JSON.stringify(error)}`);
