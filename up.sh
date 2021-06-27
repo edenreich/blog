@@ -123,6 +123,9 @@ kubectl patch deploy api-latest -p '{"metadata":{"name":"api-latest"},"spec":{"t
 kubectl patch deploy admin-latest -p '{"metadata":{"name":"admin-latest"},"spec":{"template":{"spec":{"containers":[{"name":"admin","volumeMounts":[{"name":"admin-volume","mountPath":"/app"}]}],"volumes":[{"name":"admin-volume","hostPath":{"path":"/app/admin"}}]}}}}'
 kubectl patch deploy frontend-latest -p '{"metadata":{"name":"frontend-latest"},"spec":{"template":{"spec":{"containers":[{"name":"frontend","volumeMounts":[{"name":"frontend-volume","mountPath":"/app"}]}],"volumes":[{"name":"frontend-volume","hostPath":{"path":"/app/frontend"}}]}}}}'
 
+# Give frontend more resources for dev server
+kubectl patch deploy frontend-latest -p '{"spec":{"template":{"spec":{"containers":[{"name":"frontend", "resources":{"limits":{"cpu":"1499m","memory":"1499Mi"},"requests":{"cpu":"1499m","memory":"1499Mi"}}}]}}}}'
+
 # Deploy Nginx Ingress
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
