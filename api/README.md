@@ -7,14 +7,30 @@
 docker build -t api --target development .
 ```
 
-2. Run it with mounted volume:
+2. Create a network:
 ```sh
-docker run --rm -it -v ${PWD}:/app -p 80:3000 api
+docker network create app
 ```
 
 3. Create a local database:
 ```sh
-docker run --rm -it -e POSTGRES_DB=api -e POSTGRES_PASSWORD=secret postgres
+docker run --rm -it \
+  -e POSTGRES_DB=blog_api \
+  -e POSTGRES_PASSWORD=secret \
+  --network=app \
+  --name=postgres \
+  --hostname=postgres \
+  -p=127.0.0.1:5432:5432 \
+  postgres
+```
+
+4. Run it with mounted volume:
+```sh
+docker run --rm -it \
+  -v=${PWD}:/app \
+  --network=app \
+  -p=80:3000 \
+  api
 ```
 
 ### Documentation
