@@ -22,20 +22,17 @@ fastify.register(postgres, {
 });
 fastify.register(typeorm, {
   type: 'postgres',
-  url: process.env.DATABASE_URL || 'postgres://postgres:secret@postgres/blog_api',
+  url:
+    process.env.DATABASE_URL || 'postgres://postgres:secret@postgres/blog_api',
   synchronize: true,
   logging: false,
-  entities: [
-    "src/entities/**/*.js"
-  ],
-  migrations: [
-    "src/migrations/**/*.js"
-  ],
+  entities: ['src/entities/**/*.js'],
+  migrations: ['src/migrations/**/*.js'],
   cli: {
-    entitiesDir: "src/entity",
-    migrationsDir: "src/migration",
-  }
-})
+    entitiesDir: 'src/entity',
+    migrationsDir: 'src/migration',
+  },
+});
 
 fastify.addHook('onClose', async (instance, done) => {
   fastify.close();
