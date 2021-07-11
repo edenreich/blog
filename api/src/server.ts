@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import swagger from 'fastify-swagger';
+import postgres from 'fastify-postgres';
 import routes from './routes/api';
 
 const fastify: FastifyInstance = Fastify({
@@ -18,7 +19,10 @@ fastify.register(swagger, {
   },
 });
 fastify.register(routes);
-
+fastify.register(postgres, {
+  connectionString:
+    process.env.DATABASE_URL || 'postgres://postgres:secret@localhost/api',
+});
 
 const start = async (): Promise<void> => {
   try {

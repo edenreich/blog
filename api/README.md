@@ -12,6 +12,11 @@ docker build -t api --target development .
 docker run --rm -it -v ${PWD}:/app -p 80:3000 api
 ```
 
+3. Create a local database:
+```sh
+docker run --rm -it -e POSTGRES_DB=api -e POSTGRES_PASSWORD=secret postgres
+```
+
 ### Documentation
 
 Start the server and go to /docs
