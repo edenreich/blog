@@ -18,4 +18,4 @@ Start the server and go to /docs
 
 ### Testing Endpoints
 
-On VS-Code install [Http REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) and open [http/client/README.md](http/client/README.md)
+On VS-Code install [Http REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) and open [http/client/README.md](http/client/#README.md)
