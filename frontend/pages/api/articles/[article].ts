@@ -1,13 +1,26 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import getConfig from 'next/config';
+import { getJWT } from '@/utils/auth';
 
-const { publicRuntimeConfig } = getConfig();
+const { publicRuntimeConfig: { apis: { api } } } = getConfig();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { article } = req.query;
+
+  const token: string | null = await getJWT();
+  if (! token) {
+    return res.status(200).json({});
+  }
+
+  const config: AxiosRequestConfig = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  };
   try {
-    const response: AxiosResponse = await axios.get(`${publicRuntimeConfig.apis.admin.url}/articles/${article}`, { headers: { 'Content-Type': 'application/json' } });
+    const response: AxiosResponse = await axios.get(`${api.url}/v1/articles/${article}`, config);
     res.status(200).json(response.data);
   } catch (error) {
     console.error(`[api/article] ${JSON.stringify(error)}`);

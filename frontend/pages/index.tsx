@@ -11,6 +11,9 @@ import { INotification } from '@/interfaces/notification';
 import Section from '@/components/Section';
 import PublishedArticles from '@/components/PublishedArticles';
 import UpcomingArticles from '@/components/UpcomingArticles';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig: { apis: { frontend } } } = getConfig();
 
 import styles from './index.module.scss';
 
@@ -32,7 +35,7 @@ class IndexPage extends React.Component<IProps, IState> {
   static async getInitialProps(): Promise<any> {
     let publishedArticles: Article[];
     try {
-      const response: AxiosResponse = await axios.get('/api/articles');
+      const response: AxiosResponse = await axios.get(`${frontend.url}/articles`);
       publishedArticles = response.data;
     } catch (error) {
       publishedArticles = [];
@@ -40,7 +43,7 @@ class IndexPage extends React.Component<IProps, IState> {
 
     let upcomingArticles: Article[];
     try {
-      const response: AxiosResponse = await axios.get('/api/articles/upcoming');
+      const response: AxiosResponse = await axios.get(`${frontend.url}/articles/upcoming`);
       upcomingArticles = response.data;
     } catch (error) {
       upcomingArticles = [];
@@ -71,7 +74,7 @@ class IndexPage extends React.Component<IProps, IState> {
       const notification: INotification = response.data;
       await this.setState({ notification });
     } catch (error) {
-      console.error(`[pages][index][componentDidMount] ${JSON.stringify(error)}`);
+      console.warn(`[pages][index][componentDidMount] ${JSON.stringify(error)}`);
       await this.setState({});
     }
   }

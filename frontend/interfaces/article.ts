@@ -58,12 +58,11 @@ declare type Like = {
 
 export interface Article {
   id: string;
-  uuid: string;
   title: string;
   slug: string;
   meta_keywords: string;
   meta_description: string;
-  meta_thumbnail: ArticleThumbnail;
+  meta_thumbnail: string;
   content: string;
   published: boolean;
   likes: Like[];

@@ -13,7 +13,7 @@ import Footer from '@/components/Footer';
 import { Article } from '@/interfaces/article';
 import { IVisitor } from '@/interfaces/visitor';
 
-const { publicRuntimeConfig } = getConfig();
+const { publicRuntimeConfig: { apis: { frontend } } } = getConfig();
 
 import '@/styles/scss/globals.scss';
 
@@ -38,14 +38,19 @@ class Blog extends App<IProps, IState> {
     };
     let session: IVisitor;
     try {
-      const response: AxiosResponse = await axios.post(`${publicRuntimeConfig.apis.frontend.url}/sessions`, {} ,{ headers:  ctx?.req?.headers });
+      const response: AxiosResponse = await axios.post(`${frontend.url}/sessions`, {} , { headers:  ctx?.req?.headers });
       session = response.data;
     } catch (error) {
       session = anonymouse;
       console.error(`[app][session] ${JSON.stringify(error)}`);
     }
+
     if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
+      try {
+        pageProps = await Component.getInitialProps(ctx);
+      } catch (error) {
+        console.error('[app][child.getInitialProps] Could not get initial props from child', error);
+      }
     }
 
     return { session, pageProps };

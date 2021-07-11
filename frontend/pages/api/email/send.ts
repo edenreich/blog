@@ -45,11 +45,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResponseInterfac
     // serialize json to form data...crappy mailgun API don't understand JSON
     let formData: string = '';
     // tslint:disable-next-line forin
-    for(const field in data) {
-        formData += field+'='+encodeURIComponent(data[field] || '');
+    for (const field in data) {
+        formData += field + '=' + encodeURIComponent(data[field] || '');
         formData += '&';
     }
-    if (formData[formData.length-1] === '&') formData = formData.substring(0, formData.length - 1);
+    if (formData[formData.length - 1] === '&') formData = formData.substring(0, formData.length - 1);
 
     res.setHeader('Content-Type', 'application/json;charset=utf-8');
 

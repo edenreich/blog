@@ -1,16 +1,11 @@
 
-@import '../styles/scss/colors.module.scss';
-
 .projects {
 
   &__list {
-    justify-items: center;
-    justify-content: center;
-
-    &.grid-column {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 280px);
-      grid-gap: 30px 30px;;
-    }
+    display: flex;
+    justify-content: space-between;
+    justify-items: space-between;
+    flex-wrap: wrap;
   }
+
 }

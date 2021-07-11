@@ -1,6 +1,5 @@
 export interface INotification {
   id: number;
-  uuid: string;
   session: string;
   email: string;
   is_enabled: boolean;

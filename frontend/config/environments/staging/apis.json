@@ -1,4 +1,7 @@
 {
+  "authentication": {
+    "url": "http://authentication:8080/api"
+  },
   "api": {
     "url": "http://api:8080/api"
   },
