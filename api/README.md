@@ -6,3 +6,7 @@
 docker build -t api --target development .
 docker run --rm -it -v ${PWD}:/app -p 80:3000 api
 ```
+
+### Documentation
+
+Just start the server and go to /docs

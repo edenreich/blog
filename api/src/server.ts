@@ -1,4 +1,5 @@
 import Fastify, { FastifyInstance } from 'fastify';
+import swagger from 'fastify-swagger';
 import routes from './routes/api';
 
 const app: FastifyInstance = Fastify({
@@ -9,7 +10,13 @@ app.addHook('onClose', async (instance, done) => {
   app.close();
   done();
 });
-
+app.register(swagger, {
+  exposeRoute: true,
+  routePrefix: '/docs',
+  swagger: {
+    info: { version: 'v1', title: 'API' },
+  },
+});
 app.register(routes);
 
 const start = async (): Promise<void> => {
