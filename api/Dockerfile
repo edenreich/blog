@@ -1,36 +1,37 @@
-FROM php-common AS development
+FROM node:16.2.0-alpine3.12 AS base
+USER node
+ENV NODE_ENV=development
+WORKDIR /app
+
+FROM base AS src
+COPY --chown=node:node src src
+COPY --chown=node:node *.json .
+
+FROM src AS builder
+RUN yarn && NODE_ENV=production yarn build && \
+    NODE_ENV=production yarn
+
+FROM base AS development
+ENV APP_ENV=development
+ENV NODE_ENV=development
+ENV DATABASE_URL='postgres://postgres:secret@postgres/blog_api'
 VOLUME [ "/app" ]
-WORKDIR /app
-ENV APP_ENV=dev
-USER root
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-# RUN apk add --update --no-cache --virtual .build-deps $PHPIZE_DEPS && \
-#     pecl install xdebug && \
-#     docker-php-ext-enable xdebug && \
-#     apk del .build-deps
-# RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-#     echo 'xdebug.client_port=9000' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-#     echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-#     echo 'xdebug.log_level=0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-#     echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-USER www-data:1000
-CMD [ "bin/console", "swoole:server:run" ]
+CMD [ "yarn", "dev" ]
 
-FROM php-common AS src
-WORKDIR /app
-COPY --chown=www-data . .
+FROM base AS staging
+ENV APP_ENV=staging
+ENV NODE_ENV=production
+ENV DATABASE_URL='postgres://postgres:secret@postgres/blog_api_staging'
+COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
+COPY --chown=node:node --from=builder /app/dist /app/dist
+COPY --chown=node:node --from=builder /app/package.json /app/package.json
+CMD [ "yarn", "start" ]
 
-FROM src AS src-with-devtools
-USER root
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-USER www-data
-RUN composer install
-
-
-FROM src AS production
-ENV APP_ENV=prod
-USER root
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-USER www-data
-RUN composer install --no-dev
-CMD [ "bin/console", "swoole:server:run" ]
+FROM base AS production
+ENV APP_ENV=production
+ENV NODE_ENV=production
+ENV DATABASE_URL='postgres://postgres:secret@postgres/blog_api'
+COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
+COPY --chown=node:node --from=builder /app/dist /app/dist
+COPY --chown=node:node --from=builder /app/package.json /app/package.json
+CMD [ "yarn", "start" ]

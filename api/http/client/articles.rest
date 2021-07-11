@@ -1,0 +1,40 @@
+# List all articles.
+GET http://localhost/api/v1/articles HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Find an article.
+GET http://localhost/api/v1/articles/1 HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Delete an article.
+DELETE http://localhost/api/v1/articles/1 HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Create an article.
+POST http://localhost/api/v1/articles HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Test Article",
+  "slug": "test-article",
+  "meta_keywords": "keyword1, keyword2",
+  "meta_description": "This is a test article.", 
+  "content": "<h2>This is a test article.</h2><p>This a test content</p>",
+  "publushed_at": null
+}
+
+###
+
+# Update an existing article.
+PUT http://localhost/api/v1/articles/:id HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Test Article Modified"
+}

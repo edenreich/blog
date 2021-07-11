@@ -1,16 +1,42 @@
-![api](https://github.com/edenreich/blog/workflows/api/badge.svg)
-
 ## API
-
-Temporary api, will be deprecated / replaced into smaller services. most likely to be written in typescript.
 
 ### Quick Start
 
-1. Copy a service account into ./keys/service_account.json
-2. Restart the cluster following the main guide [blog](../#README.md)
-3. Run migrations in one of the pods:
+1. Build a container image with development target:
 ```sh
-kubectl exec -it api-latest-<hash> -- sh
-php bin/console doctrine:migrations:migrate
-php bin/console doctrine:fixtures:load
+docker build -t api --target development .
 ```
+
+2. Create a network:
+```sh
+docker network create app
+```
+
+3. Create a local database:
+```sh
+docker run --rm -it \
+  -e POSTGRES_DB=blog_api \
+  -e POSTGRES_PASSWORD=secret \
+  --network=app \
+  --name=postgres \
+  --hostname=postgres \
+  -p=127.0.0.1:5432:5432 \
+  postgres
+```
+
+4. Run it with mounted volume:
+```sh
+docker run --rm -it \
+  -v=${PWD}:/app \
+  --network=app \
+  -p=80:3000 \
+  api
+```
+
+### Documentation
+
+Start the server and go to /docs
+
+### Testing Endpoints
+
+On VS-Code install [Http REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) and open [http/client/README.md](http/client/#README.md)
